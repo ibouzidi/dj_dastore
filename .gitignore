@@ -1,0 +1,9 @@
+/venv/
+.idea
+/my.cnf
+migrations/
+/static/
+__pycache__/
+/media/
+/api/debug.log
+.env
