@@ -2,8 +2,8 @@
 .idea
 /my.cnf
 migrations/
-/static/
+/static_cdn/
 __pycache__/
-/media/
+/media_cdn/
 /api/debug.log
 .env

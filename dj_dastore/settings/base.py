@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'accounts.apps.AccountsConfig',
+    'app.apps.AppConfig',
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -64,7 +66,7 @@ MIDDLEWARE = [
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR.parent / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -99,8 +101,11 @@ DATABASES = {
 # AUTHENTICATION BACKENDS SETTINGS
 # =====================================================================
 
+AUTH_USER_MODEL = 'accounts.Account' #
+
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
+    'django.contrib.auth.backends.AllowAllUsersModelBackend', 
+    'accounts.backends.CaseInsensitiveModelBackend',
 ]
 
 # =====================================================================
@@ -144,17 +149,25 @@ USE_TZ = False
 # STATIC FILES AND MEDIA FILES SETTINGS
 # =====================================================================
 
-# Static files (CSS, JavaScript, Images)
+STATICFILES_DIRS = [
+    BASE_DIR.parent / 'static',
+    BASE_DIR.parent / 'media',
+]
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR.parent / 'static'
-
-# STATICFILES_DIRS = (os.path.join(BASE_DIR, 'accounts/static/'),)
-
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR.parent / 'media/'
+STATIC_ROOT = BASE_DIR.parent / 'static_cdn'
+MEDIA_ROOT = BASE_DIR.parent / 'media_cdn'
+
+TEMP = BASE_DIR.parent / 'media_cdn/temp'
+
+BASE_URL = "http://127.0.0.1:8000"
 
 # =====================================================================
 # THIRD-PARTY SETTINGS SETTINGS
 # =====================================================================
 
 
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # During development only
+
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb = 10 * 1024 *1024

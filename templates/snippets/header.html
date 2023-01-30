@@ -1,0 +1,34 @@
+{% load static %}
+<!-- ======= HEADER ======= -->
+<header id="nav-header">
+    <div class="container d-flex">
+        <div class="logo mr-auto">
+            <a href="{% url 'home' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid"></a>
+        </div>
+        <!-- NAVIGATION -->
+        <nav class="nav-menu d-none d-lg-block">
+            <ul>
+                <li><a href="">Backup</a></li>
+                <li><a href="#">Contact</a></li>
+                {% if request.user.is_authenticated %}
+                    <li class="drop-down">
+                        <a href="#">{{request.user.username }}
+                        </a>
+                        <ul>
+                            <img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" src="{{ request.user.profile_image.url }}" alt="default_user_icon logo" width="40" height="40">
+                            <p class="text-center">{{ request.user.username }}({{request.user.firstname }} {{ request.user.lastname }})</p>
+                            <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                            <li><a href="{% url 'accounts:account_view' user_id=request.user.id %}">Profil</a></li>
+                        </ul>
+                    </li>
+
+                {% else %}
+                    <li><a href="{% url 'accounts:login' %}">Login</a></li>
+                    <li><a href="{% url 'accounts:register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        <!-- NAVIGATION -->
+    </div>
+</header>
+<!-- ======= END HEADER ======= -->
