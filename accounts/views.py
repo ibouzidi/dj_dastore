@@ -123,7 +123,7 @@ def save_temp_profile_image_from_base64String(imageString, user):
 		if not os.path.exists(f'{settings.TEMP}/{user.pk}'):
 			os.mkdir(f'{settings.TEMP}/{user.pk}')
 
-		url = os.path.join(settings.TEMP, str(user.pk), TEMP_PROFILE_IMAGE_NAME)
+		url = os.path.join(f'{settings.TEMP}/{user.pk}', TEMP_PROFILE_IMAGE_NAME)
 		print(url)
 		storage = FileSystemStorage(location=url)
 		image = base64.b64decode(imageString)
@@ -195,8 +195,6 @@ def edit_account_view(request, *args, **kwargs):
 		form = AccountUpdateForm(request.POST, request.FILES,
 								 instance=request.user)
 		if form.is_valid():
-			# delete old profile image so the name is preserved
-			# account.profile_image.delete()
 			form.save()
 			return redirect("accounts:account_view", user_id=account.pk)
 		else:

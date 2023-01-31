@@ -12,6 +12,7 @@ Variables
 :root {
     /* dark shades of primary color*/
     --clr-cod-grey: #1b1b1b;
+    --clr-dark-1: #1C1C1C;
     --clr-shark: #1c1e1e;
     /* white / grey shades of primary color*/
     --clr-white: #fefefe;
@@ -43,7 +44,7 @@ Main
 */
 
 body {
-    background: var(--clr-cod-grey);
+    background: var(--clr-dark-1);
     color: var(--clr-swift);
     font-family: 'Roboto', Sans-serif;
 }
@@ -83,7 +84,7 @@ h5,
 h6 {
     font-family: "Poppins", Sans-serif;
     font-weight: 700;
-    color: #353535;
+    color: var(--clr-white);
 }
 
 /*
@@ -579,7 +580,77 @@ height: 100%;
 */
 
 .user-profile .card,
-.user-profile .breadcrumb,
 .user-profile .card-body{
     background-color: var(--clr-cod-grey);
+}
+.breadcrumb{
+    background-color: var(--clr-cod-grey);
+}
+
+.btn-dark-all {
+  background: var(--clr-cyan-1);
+  backface-visibility: hidden;
+  border-radius: .375rem;
+  box-sizing: border-box;
+  color: var(--clr-shark);
+  cursor: pointer;
+  display: inline-block;
+  font-family: Circular,Helvetica,sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+  line-height: 1.3;
+  padding: .875rem 1.125rem;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transform: translateZ(0) scale(1);
+  transition: transform .2s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.btn-dark-all:not(:disabled):hover {
+  transform: scale(1.05);
+  color: var(--clr-shark);
+}
+
+.btn-dark-all:not(:disabled):hover:active {
+  transform: scale(1.05) translateY(.125rem);
+}
+
+.btn-dark-all:focus {
+  outline: 0 solid transparent;
+}
+
+.btn-dark-all:focus:before {
+  content: "";
+  left: calc(-1*.375rem);
+  pointer-events: none;
+  position: absolute;
+  top: calc(-1*.375rem);
+  transition: border-radius;
+  user-select: none;
+}
+
+.btn-dark-all:focus:not(:focus-visible) {
+  outline: 0 solid transparent;
+}
+
+.btn-dark-all:focus:not(:focus-visible):before {
+  border-width: 0;
+}
+
+.btn-dark-all:not(:disabled):active {
+  transform: translateY(.125rem);
+}
+
+
+.my-form select,
+.my-form input,
+.my-form textarea{
+  border: 1px solid var(--clr-cod-grey);
+  color: var(--white);
+  background: var(--clr-swift);
 }
