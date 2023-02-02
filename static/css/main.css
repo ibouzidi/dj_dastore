@@ -44,13 +44,15 @@ Main
 */
 
 body {
-    background: var(--clr-dark-1);
-    color: var(--clr-swift);
+    /*background: var(--clr-dark-1);*/
+    /*color: var(--clr-swift);*/
+    background: rgb(187,187,187);
+    background: linear-gradient(196deg, rgba(187,187,187,1) 0%, rgba(221,249,255,1) 100%);
     font-family: 'Roboto', Sans-serif;
 }
 
 a {
-    color: var(--clr-white);
+    color: var(--clr-shark);
     transition: 0.5s;
 }
 
@@ -84,7 +86,7 @@ h5,
 h6 {
     font-family: "Poppins", Sans-serif;
     font-weight: 700;
-    color: var(--clr-white);
+    color: var(--clr-shark);
 }
 
 /*
@@ -176,6 +178,7 @@ Header
     transition: 0.3s;
     font-size: 1rem;
     font-family: "Poppins", sans-serif;
+    color: var(--clr-white);
 }
 
 .nav-menu a:hover,
@@ -581,11 +584,10 @@ height: 100%;
 
 .user-profile .card,
 .user-profile .card-body{
-    background-color: var(--clr-cod-grey);
+    background-color: var(--clr-white);
+    box-shadow: 0 7px 10px 5px rgba(0, 0, 0, 0.15);
 }
-.breadcrumb{
-    background-color: var(--clr-cod-grey);
-}
+
 
 .btn-dark-all {
   background: var(--clr-cyan-1);

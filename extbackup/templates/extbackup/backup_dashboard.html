@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %} Backup {% endblock title %}
+
+{% block content %}
+    <section>
+        <div class="container p-5">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card shadow mb-4">
+                        <div class="card-body text-center">
+                            <!-- upload your file form -->
+                            <br>
+                            <table class="table">
+                                <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Backup</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Date upload</th>
+                                    <th scope="col">Size</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for file in zip_files %}
+                                    <tr>
+                                        <td scope="row"><i class="fa fa-check-circle checkicon"></i> {{file.1}}</td>
+                                        <td>{{file.2}}</td>
+                                        <td>{{file.3}}</td>
+                                        <td>25 kb</td>
+                                        <td>
+                                            <a href="{% url 'extbackup:delete_zip_file' file.0  %}" class="badge badge-danger xl">🗙</a>
+                                            <a href="{% url 'extbackup:download_zip_file' file.0  %}" class="badge badge-primary">📥</a></td>
+                                    </tr>
+                                {%endfor%}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .file-upload input[type='file'] {
+            display: none;
+        }
+
+        body {
+            background: rgb(187,187,187);
+            background: linear-gradient(196deg, rgba(187,187,187,1) 0%, rgba(221,249,255,1) 100%);
+        }
+
+        .rounded-lg {
+            border-radius: 1rem;
+        }
+
+        .custom-file-label.rounded-pill {
+            border-radius: 50rem;
+        }
+
+        .custom-file-label.rounded-pill::after {
+            border-radius: 0 50rem 50rem 0;
+        }
+        .checkicon {
+            color: green;
+            font-size: 19px;
+        }
+    </style>
+
+{% endblock content %}

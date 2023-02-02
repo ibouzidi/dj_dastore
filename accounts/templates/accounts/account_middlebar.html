@@ -7,8 +7,8 @@
 <div class="container py-5">
     <div class="row">
         <div class="col">
-            <nav aria-label="breadcrumb" class="breadcrumb rounded-3">
-                <ol class="breadcrumb mb-0">
+            <nav aria-label="breadcrumb" class="breadcrumb shadow bg-light rounded-3">
+                <ol class="breadcrumb bg-light mb-0">
                     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'accounts:account_view' user_id=request.user.id %}">User</a></li>
                     {% if request.path == url_account_view %}

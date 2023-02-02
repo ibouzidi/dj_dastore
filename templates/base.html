@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{% static 'css/icofont/icofont.min.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" media="all">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
     <link rel="stylesheet" href="{% static 'js/cropperjs/dist/cropper.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
@@ -26,8 +27,9 @@
     </div>
 </div>
 <!-- Body -->
-<main id='main'>
+<main id='main' class="container py-5">
 <div class="middlebar">{% block middlebar %}{% endblock %}</div>
+{% include 'snippets/messages.html' %}
     {% block content %}
         this is my content !
     {% endblock content %}

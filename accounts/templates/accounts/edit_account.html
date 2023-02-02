@@ -48,7 +48,7 @@
                                 <span id="id_confirm" class="material-icons">check</span>
                             </div>
                             <div class="image-container" id="id_image_container">
-                                <img class="border border-dark rounded-circle img-fluid mx-auto profile-image" id="id_profile_image_display" src="{{form.initial.profile_image.url}}" alt="user profile image logo">
+	  				            <img class="border border-dark rounded-circle img-fluid mx-auto profile-image" id="id_profile_image_display" src="{% if form.initial.profile_image %}{{ form.initial.profile_image.url }}{% else %}{% static 'dastore/default_user_icon.png' %}{% endif %}" alt="codingwithmitch logo">
                                 <div class="middle" id="id_middle_container">
                                     <div class="text" id="id_text">Edit</div>
                                 </div>
@@ -61,13 +61,6 @@
                                 <h6 class="mt-4 field-heading">Username</h6>
                                 <input type="text" name="username" id="id_input_username" class="form-control" placeholder="Username" required
                                        value="{{form.initial.username}}">
-                                <div class="mt-4 checkbox">
-                                    <label>
-                                        <input type="checkbox" name="hide_email" id="id_input_hide_email" {% if form.initial.hide_email %}checked{%endif%}>
-                                        Hide Email
-                                    </label>
-
-                                </div>
 
                                 {% for field in form %}
                                     <p>

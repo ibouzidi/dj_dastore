@@ -1,0 +1,13 @@
+{% for message in messages %}
+    <div class="alert {{ message.tags }} alert-dismissible fade show text-center div_messages" role="alert">
+        <strong>{% if message.level_tag == 'alert-info' %}INFO
+            {% elif  message.level_tag == 'alert-success' %}SUCCESS
+            {% elif  message.level_tag == 'alert-warning' %}WARNING
+            {% elif  message.level_tag == 'alert-danger' %}ERROR
+            {% endif %}
+            -</strong> {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endfor %}

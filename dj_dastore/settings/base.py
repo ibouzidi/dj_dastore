@@ -3,13 +3,6 @@ from decouple import Csv, config
 import os
 from django.contrib.messages import constants as messages
 
-MESSAGE_TAGS = {
-    messages.DEBUG:     'alert-info',
-    messages.INFO:      'alert-info',
-    messages.SUCCESS:   'alert-success',
-    messages.WARNING:   'alert-warning',
-    messages.ERROR:     'alert-danger',
-}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +30,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'app.apps.AppConfig',
+    'extbackup.apps.ExtbackupConfig',
+    'storages',
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -167,7 +162,19 @@ BASE_URL = "http://127.0.0.1:8000"
 # =====================================================================
 
 
+MESSAGE_TAGS = {
+    messages.DEBUG:     'alert-info',
+    messages.INFO:      'alert-info',
+    messages.SUCCESS:   'alert-success',
+    messages.WARNING:   'alert-warning',
+    messages.ERROR:     'alert-danger',
+}
+
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # During development only
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb = 10 * 1024 *1024
+
+# CONFIGURE FTP
+# DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+# FTP_STORAGE_LOCATION = 'ftp://test:test@localhost:21/'
