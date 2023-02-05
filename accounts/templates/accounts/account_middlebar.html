@@ -1,7 +1,7 @@
 {#{% url 'account:register' as url_register %}#}
 {#{% url 'account:login' as url_login %}#}
-{% url 'accounts:account_view' user_id=request.user.id as url_account_view %}
-{% url 'accounts:edit_account_view' user_id=request.user.id as url_edit_account_view %}
+{% url 'accounts:account_profile' user_id=request.user.id as url_account_profile %}
+{% url 'accounts:account_edit' user_id=request.user.id as url_edit_account %}
 
 
 <div class="container py-5">
@@ -10,10 +10,10 @@
             <nav aria-label="breadcrumb" class="breadcrumb shadow bg-light rounded-3">
                 <ol class="breadcrumb bg-light mb-0">
                     <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'accounts:account_view' user_id=request.user.id %}">User</a></li>
-                    {% if request.path == url_account_view %}
+                    <li class="breadcrumb-item"><a href="{% url 'accounts:account_profile' user_id=request.user.id %}">User</a></li>
+                    {% if request.path == url_account_profile %}
                     <li class="breadcrumb-item active" aria-current="page">User Profile</li>
-                    {% elif request.path == url_edit_account_view %}
+                    {% elif request.path == url_edit_account %}
                     <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
                     {% endif %}
                 </ol>

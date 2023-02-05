@@ -16,15 +16,21 @@
                         <a href="#">{{request.user.username }}
                         </a>
                         <ul>
-								<img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="python," alt="codingwithmitch logo" width="40" height="40">
+								<img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" alt="profile user image" width="40" height="40">
                             <p class="text-center">{{ request.user.username }}({{request.user.firstname }} {{ request.user.lastname }})</p>
                             <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
-                            <li><a href="{% url 'accounts:account_view' user_id=request.user.id %}">Profil</a></li>
+                            <li>
+
+                                <a href="{% url 'accounts:account_profile' user_id=request.user.id %}">Profil</a>
+
+                            </li>
                         </ul>
                     </li>
 
                 {% else %}
-                    <li><a href="{% url 'accounts:login' %}">Login</a></li>
+                    <li>
+                        <a href="{% url 'accounts:login' %}">Login</a>
+                    </li>
                 {% endif %}
             </ul>
         </nav>

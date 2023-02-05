@@ -159,7 +159,7 @@
                 $.ajax({
                     type: 'POST',
                     dataType: "json",
-                    url: "{% url 'accounts:crop_image' user_id=form.initial.id %}",
+                    url: "{% url 'accounts:account_crop_image' user_id=form.initial.id %}",
                     data: requestData,
                     timeout: 10000,
                     success: function (data){

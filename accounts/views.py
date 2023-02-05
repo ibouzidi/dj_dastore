@@ -2,7 +2,6 @@ from django.conf import settings
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
-
 from accounts.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
 from accounts.models import Account

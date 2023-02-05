@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load file_size %}
 {% block title %} Backup {% endblock title %}
 
 {% block content %}
@@ -9,6 +9,11 @@
                 <div class="col-lg-12">
                     <div class="card shadow mb-4">
                         <div class="card-body text-center">
+                                <div style="margin-right: 20px">
+                                    <a class="nav-item" href="{% url 'extbackup:backup_refresh' %}">
+                                    Refresh
+                                    </a>
+                                </div>
                             <!-- upload your file form -->
                             <br>
                             <table class="table">
@@ -27,10 +32,11 @@
                                         <td scope="row"><i class="fa fa-check-circle checkicon"></i> {{file.1}}</td>
                                         <td>{{file.2}}</td>
                                         <td>{{file.3}}</td>
-                                        <td>25 kb</td>
+                                        <td>{{ file.4|sizify }}</td>
                                         <td>
                                             <a href="{% url 'extbackup:delete_zip_file' file.0  %}" class="badge badge-danger xl">🗙</a>
-                                            <a href="{% url 'extbackup:download_zip_file' file.0  %}" class="badge badge-primary">📥</a></td>
+                                            <a href="{% url 'extbackup:download_zip_file' file.0  %}" class="badge badge-primary">📥</a>
+                                            <a href="{% url 'extbackup:view_zip_content' file.0  %}" class="badge badge-primary">VOIR</a></td>
                                     </tr>
                                 {%endfor%}
                                 </tbody>

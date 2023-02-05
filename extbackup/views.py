@@ -1,6 +1,7 @@
 import ftplib
 
 from django.contrib import messages
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -43,11 +44,14 @@ def upload_files(request):
             timestamp = now.strftime("%Y%m%d_%H%M%S")
             file_name = f'uploads/upload_{request.user.username}/save_{timestamp}_{request.user.username}.zip'
             saved_file = default_storage.save(file_name, zip_file)
+            file_path = default_storage.path(saved_file)
+            file_size = os.path.getsize(file_path)
             # Save the compressed file in the database model
             saved_file_model = File(
                 user=request.user,
                 file=saved_file.split("/")[-1],
-                description=form.cleaned_data['description']
+                description=form.cleaned_data['description'],
+                size=file_size,
             )
             saved_file_model.save()
             return redirect('extbackup:upload_files')
@@ -58,7 +62,7 @@ def upload_files(request):
 
 def backup_dashboard(request):
     files = File.objects.filter(user=request.user)
-    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at)
+    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at, file.size)
                  for file in files if file.file.name.endswith('.zip')]
     return render(request, 'extbackup/backup_dashboard.html',
                   {'zip_files': zip_files})
@@ -79,7 +83,7 @@ def decrypt_zip_file(file_data):
 
 
 def download_zip_file(request, file_id):
-    ftp_storage = FTPStorage()
+    ftp_storage = default_storage
     zip_files = f'uploads/upload_{request.user.username}/'
     file = File.objects.get(pk=file_id)
     if ftp_storage.exists(zip_files + file.file.name):
@@ -128,3 +132,57 @@ def delete_zip_file(request, file_id):
     except File.DoesNotExist:
         messages.error(request, "Zip file not found")
         return redirect('extbackup:backup_dashboard')
+
+
+def view_zip_content(request, file_id):
+    ftp_storage = default_storage
+    zip_files = f'uploads/upload_{request.user.username}/'
+    try:
+        file = File.objects.get(pk=file_id)
+    except ObjectDoesNotExist:
+        messages.error(request, "File not found")
+        return redirect('extbackup:backup_dashboard')
+    if ftp_storage.exists(zip_files + file.file.name):
+        try:
+            with ftp_storage.open(zip_files + file.file.name, 'rb') as f:
+                file_data = f.read()
+            decrypted_zip = decrypt_zip_file(file_data)
+            zip_buffer = io.BytesIO()
+            with zipfile.ZipFile(zip_buffer, mode="w") as zf:
+                with zipfile.ZipFile(decrypted_zip, mode="r") as zf_decrypted:
+                    for info in zf_decrypted.infolist():
+                        if "_encrypted" in info.filename:
+                            new_file_name = info.filename.replace("_encrypted", "")
+                        else:
+                            new_file_name = info.filename
+                        zf.writestr(new_file_name,
+                                    zf_decrypted.read(info.filename))
+            zip_buffer.seek(0)
+            with zipfile.ZipFile(zip_buffer) as zf:
+                zip_content = zf.namelist()
+            return render(request, 'extbackup/view_zip_content.html',
+                          {'zip_content': zip_content})
+        except Exception as e:
+            return HttpResponse(f"An error occured: {e}", status=500)
+    else:
+        messages.error(request, "file not found")
+        return redirect('extbackup:backup_dashboard')
+
+def backup_refresh(request):
+    ftp_storage = default_storage
+    zip_files_folder = f'uploads/upload_{request.user.username}/'
+    actual_zip_files = ftp_storage.listdir(zip_files_folder)[1]
+    for zip_file in actual_zip_files:
+        file_path = os.path.join(zip_files_folder, zip_file)
+        file_size = ftp_storage.size(file_path)
+        File.objects.update_or_create(file=zip_file, user=request.user,
+                                      defaults={'file': zip_file, 'size': file_size})
+    # Check for files in model not in folder
+    for file in File.objects.filter(user=request.user):
+        if file.file not in actual_zip_files:
+            file.delete()
+    # Get updated zip files
+    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at, file.size)
+                 for file in File.objects.filter(user=request.user) if file.file.name.endswith('.zip')]
+    return render(request, 'extbackup/backup_dashboard.html',
+                  {'zip_files': zip_files})

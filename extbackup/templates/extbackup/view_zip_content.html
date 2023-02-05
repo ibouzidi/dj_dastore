@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %} Backup {% endblock title %}
+
+{% block content %}
+    <section>
+        <div class="container p-5">
+            <h1>Content of Zip File</h1>
+  <ul>
+    {% for content in zip_content %}
+      <li>{{ content }}</li>
+    {% endfor %}
+  </ul>
+        </div>
+    </section>
+{% endblock content %}
