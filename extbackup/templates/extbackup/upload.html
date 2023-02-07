@@ -4,46 +4,10 @@
 
 
 {% block content %}
-    <section>
-        <div class="container p-5">
-
-            <div class="row">
-                <div class="col-lg-5 mx-auto">
-                    <div class="p-5 bg-white shadow rounded-lg">
-                        <img src="https://i.ibb.co/Zx10NQW/13748754681552302086-256.png"
-                             alt="" width="200" class="d-block mx-auto mb-4">
-                        <h6 class="text-center mb-4 text-muted">
-                            Upload your files.
-                        </h6>
-                        <form method='post' enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="custom-file text-center mb-5">
-                              {{ form.as_p }}
-                                <label class="custom-file-label" for="customFile">Select files</label>
-                                <br>
-                                <div id="file-count"></div>
-                                <br>
-                                <input class="btn btn-primary" type="submit" value="Upload">
-                            </div>
-                            </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-    </section>
-
-    <script>
-        document.querySelector('input[type=file]').addEventListener('change', previewFiles);
-
-        function previewFiles() {
-            var files = this.files;
-            var count = document.querySelector('#file-count');
-            count.innerHTML = files.length + (files.length > 1 ? " Files are " : " File is ")+ " selected.";
-        }
-    </script>
-
-    <style>
+        <style>
+        .not-visible{
+        display: none;
+    }
         .file-upload input[type='file'] {
             display: none;
         }
@@ -65,4 +29,97 @@
             border-radius: 0 50rem 50rem 0;
         }
     </style>
+    <section>
+        <div class="container p-5">
+
+            <div class="row">
+                <div class="col-lg-5 mx-auto">
+                    <div class="p-5 bg-white shadow rounded-lg">
+                        <img src="https://i.ibb.co/Zx10NQW/13748754681552302086-256.png"
+                             alt="" width="200" class="d-block mx-auto mb-4">
+                        <h6 class="text-center mb-4 text-muted">
+                            Upload your files.
+                        </h6>
+                        <form action="" method='post' id="upload_form" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="custom-file text-center mb-5">
+                              {{ form.as_p }}
+                                <label class="custom-file-label" for="customFile">Select files</label>
+                                <br>
+                                <div id="file-count"></div>
+                                <br>
+                                <input class="btn btn-primary" type="submit" value="Upload">
+                            </div>
+                            </form>
+                        <div class="container not-visible progress" id="progress">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
 {% endblock content %}
+
+{% block script %}
+    <script>
+
+    const uploadForm = document.getElementById('upload_form');
+        const input_file = document.getElementById('customFile');
+        const progress_bar = document.getElementById('progress');
+
+        $("#upload_form").submit(function(e){
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            const media_data = input_file.files[0];
+            if(media_data != null){
+                console.log(media_data);
+                progress_bar.classList.remove("not-visible");
+            }
+
+            $.ajax({
+                type: 'POST',
+                url:'{% url 'extbackup:upload_files' %}',
+                data: formData,
+                dataType: 'json',
+                beforeSend: function(){
+
+                },
+                xhr:function(){
+                    const xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener('progress', e=>{
+                        if(e.lengthComputable){
+                            const percentProgress = (e.loaded/e.total)*100;
+                            console.log(percentProgress);
+                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success"
+                    role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0"
+                    aria-valuemax="100"></div>`
+                        }
+                    });
+                    return xhr
+                },
+                success: function(response){
+                    console.log(response);
+                    uploadForm.reset()
+                    progress_bar.classList.add('not-visible')
+                },
+                error: function(err){
+                    console.log(err);
+                },
+                cache: false,
+                contentType: false,
+                processData: false,
+            });
+        });
+
+
+        document.querySelector('input[type=file]').addEventListener('change', previewFiles);
+
+        function previewFiles() {
+            var files = this.files;
+            var count = document.querySelector('#file-count');
+            count.innerHTML = files.length + (files.length > 1 ? " Files are " : " File is ")+ " selected.";
+        }
+    </script>
+{% endblock script %}

@@ -5,6 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.views import View
 
 from extbackup.forms import FileForm
 from extbackup.models import File
@@ -25,43 +26,59 @@ from .key import key
 from cryptography.fernet import Fernet
 
 
-def upload_files(request):
-    if request.method == 'POST':
+def encrypt_files(files):
+    zip_file = BytesIO()
+    with zipfile.ZipFile(zip_file, mode='w') as zf:
+        for file in files:
+            if file.content_type == "application/x-zip-compressed":
+                folder_file = BytesIO(file.read())
+                with zipfile.ZipFile(folder_file) as folder_zip:
+                    for inner_file in folder_zip.infolist():
+                        inner_file_data = folder_zip.read(inner_file)
+                        fernet = Fernet(key)
+                        encrypted = fernet.encrypt(inner_file_data)
+                        zf.writestr(inner_file.filename + '_encrypted', encrypted)
+            else:
+                fernet = Fernet(key)
+                original = file.read()
+                encrypted = fernet.encrypt(original)
+                zf.writestr(file.name + '_encrypted', encrypted)
+    zip_file.seek(0)
+    return zip_file
+
+
+class UploadFilesView(View):
+    def get(self, request):
+        form = FileForm()
+        return render(request, 'extbackup/upload.html', {'form': form})
+
+    def post(self, request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
-            zip_file = BytesIO()
-            with zipfile.ZipFile(zip_file, mode='w') as zf:
-                for file in request.FILES.getlist('file'):
-                    # encrypt each file
-                    fernet = Fernet(key)
-                    original = file.read()
-                    encrypted = fernet.encrypt(original)
-                    # write into zip
-                    zf.writestr(file.name + '_encrypted', encrypted)
-                    file_data = File(user=request.user, file=file)
-            zip_file.seek(0)
+            files = request.FILES.getlist('file')
+            # crypte files using Fernet encryption
+            zip_file = encrypt_files(files)
             now = datetime.now()
             timestamp = now.strftime("%Y%m%d_%H%M%S")
-            file_name = f'uploads/upload_{request.user.username}/save_{timestamp}_{request.user.username}.zip'
+            file_name = f'uploads/upload_{request.user.username}' \
+                        f'/save_{timestamp}_{request.user.username}.zip'
             saved_file = default_storage.save(file_name, zip_file)
             file_path = default_storage.path(saved_file)
             file_size = os.path.getsize(file_path)
-            # Save the compressed file in the database model
+            # save the file in database
             saved_file_model = File(
                 user=request.user,
-                file=saved_file.split("/")[-1],
+                file=saved_file.split("/")[-1], # name of the file without the path
                 description=form.cleaned_data['description'],
                 size=file_size,
             )
             saved_file_model.save()
-            return redirect('extbackup:upload_files')
-    else:
-        form = FileForm()
-    return render(request, 'extbackup/upload.html', {'form': form})
+            return JsonResponse({'data':'Data uploaded'})
+        return JsonResponse({'data':'Something went wrong!!'})
 
 
 def backup_dashboard(request):
-    files = File.objects.filter(user=request.user)
+    files = File.objects.filter(user=request.user).order_by('-uploaded_at')
     zip_files = [(file.id, file.file.name, file.description, file.uploaded_at, file.size)
                  for file in files if file.file.name.endswith('.zip')]
     return render(request, 'extbackup/backup_dashboard.html',
