@@ -45,7 +45,11 @@
 <script type="module" src="{% static 'js/cropperjs/dist/cropper.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 <script src="{% static 'js/main.js' %}"></script>
-<script type="text/javascript">
+
+
+</body>
+{% block script %}
+    <script type="text/javascript">
     function displayLoadingSpinner(isDisplayed){
         var spinner = document.getElementById("id_loading_spinner")
         if(isDisplayed){
@@ -56,9 +60,6 @@
         }
     }
 </script>
-{% block script %}
 {% endblock %}
-</body>
-
 
 </html>

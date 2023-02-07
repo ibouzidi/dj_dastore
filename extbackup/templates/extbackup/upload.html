@@ -12,33 +12,20 @@
                     <div class="p-5 bg-white shadow rounded-lg">
                         <img src="https://i.ibb.co/Zx10NQW/13748754681552302086-256.png"
                              alt="" width="200" class="d-block mx-auto mb-4">
-
-                        <!-- upload your file form -->
                         <h6 class="text-center mb-4 text-muted">
                             Upload your files.
                         </h6>
                         <form method='post' enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="custom-file text-center mb-5">
-{#                                {% render_field form.file id="customFile" class="custom-file-input" multiple=multiple onchange="previewFiles()" name="file"%}#}
-{#                                <input type="file" class="custom-file-input" name="file" id="customFile" onchange="previewFiles()" multiple>#}
                               {{ form.as_p }}
                                 <label class="custom-file-label" for="customFile">Select files</label>
                                 <br>
                                 <div id="file-count"></div>
                                 <br>
-
-                                <input class="btn btn-primary" type="submit" value="convert">
+                                <input class="btn btn-primary" type="submit" value="Upload">
                             </div>
-                            <form>
-                                <!-- End -->
-                                <br>   <br> <br>
-                                <!-- simple menu-->
-                                <div class="text-center">
-                                    {#              <a href="{% url 'backupView' %}">backup</a>,#}
-                                    {#             <a href="{% url 'logoutView' %}">logout</a>#}
-                                </div>
-                                <!-- End -->
+                            </form>
                     </div>
                 </div>
             </div>
