@@ -4,10 +4,10 @@
 
 
 {% block content %}
-        <style>
+    <style>
         .not-visible{
-        display: none;
-    }
+            display: none;
+        }
         .file-upload input[type='file'] {
             display: none;
         }
@@ -43,19 +43,32 @@
                         <form action="" method='post' id="upload_form" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="custom-file text-center mb-5">
-                              {{ form.as_p }}
+                                {{ form.as_p }}
+                                {% for field in form %}
+                                    <p>
+                                        {% for error in field.errors %}
+                                            <p style="color: red">{{ error }}</p>
+                                        {% endfor %}
+                                    </p>
+                                {% endfor %}
+                                {% if form.non_field_errors %}
+                                    <div style="color: red">
+                                        <p>{{form.non_field_errors}}</p>
+                                    </div>
+
+                                {% endif %}
                                 <label class="custom-file-label" for="customFile">Select files</label>
                                 <br>
                                 <div id="file-count"></div>
                                 <br>
                                 <input class="btn btn-primary" type="submit" value="Upload">
                             </div>
-                            </form>
-                        <div class="container not-visible progress" id="progress">
+                        </form>
+                        <div class="not-visible progress" id="progress">
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
 
@@ -64,7 +77,7 @@
 {% block script %}
     <script>
 
-    const uploadForm = document.getElementById('upload_form');
+        const uploadForm = document.getElementById('upload_form');
         const input_file = document.getElementById('customFile');
         const progress_bar = document.getElementById('progress');
 
@@ -72,45 +85,62 @@
             e.preventDefault();
             $form = $(this)
             var formData = new FormData(this);
+
+
             const media_data = input_file.files[0];
+            let totalSize = media_data.size;
+            const max_length = 1024 * 1024 * 10;
+            const chunkSize = max_length;
+            let start = 0;
+            let end = chunkSize;
             if(media_data != null){
                 console.log(media_data);
                 progress_bar.classList.remove("not-visible");
             }
+            while (start < totalSize) {
+                if (end > totalSize) {
+                    end = totalSize;
+                }
+                formData.set("chunk", media_data.slice(start, end));
+                formData.set("start", start);
+                formData.set("end", end);
+                formData.set("totalSize", totalSize);
+                $.ajax({
+                    type: 'POST',
+                    url:'{% url 'extbackup:upload_files' %}',
+                    data: formData,
+                    dataType: 'json',
+                    beforeSend: function(){
 
-            $.ajax({
-                type: 'POST',
-                url:'{% url 'extbackup:upload_files' %}',
-                data: formData,
-                dataType: 'json',
-                beforeSend: function(){
-
-                },
-                xhr:function(){
-                    const xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener('progress', e=>{
-                        if(e.lengthComputable){
-                            const percentProgress = (e.loaded/e.total)*100;
-                            console.log(percentProgress);
-                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success"
+                    },
+                    xhr:function(){
+                        const xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener('progress', e=>{
+                            if(e.lengthComputable){
+                                const percentProgress = Math.round((e.loaded / e.total) * 100);
+                                console.log(percentProgress);
+                                progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success"
                     role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0"
-                    aria-valuemax="100"></div>`
-                        }
-                    });
-                    return xhr
-                },
-                success: function(response){
-                    console.log(response);
-                    uploadForm.reset()
-                    progress_bar.classList.add('not-visible')
-                },
-                error: function(err){
-                    console.log(err);
-                },
-                cache: false,
-                contentType: false,
-                processData: false,
-            });
+                    aria-valuemax="100">${percentProgress}%</div>`
+                            }
+                        });
+                        return xhr
+                    },
+                    success: function(response){
+                        console.log(response);
+                        progress_bar.classList.add('not-visible')
+                    },
+                    error: function(err){
+                        console.log(err);
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                });
+                start = end;
+                end = start + chunkSize;
+            }
+            uploadForm.reset();
         });
 
 

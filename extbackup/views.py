@@ -48,6 +48,8 @@ def encrypt_files(files):
 
 
 class UploadFilesView(View):
+    MAX_FILE_SIZE = 1024 * 1024 * 10 # 10 MB
+
     def get(self, request):
         form = FileForm()
         return render(request, 'extbackup/upload.html', {'form': form})
@@ -57,7 +59,18 @@ class UploadFilesView(View):
         if form.is_valid():
             files = request.FILES.getlist('file')
             # crypte files using Fernet encryption
-            zip_file = encrypt_files(files)
+            chunks = []
+            for file in files:
+                if file.size > self.MAX_FILE_SIZE:
+                    chunk_size = self.MAX_FILE_SIZE
+                    chunk_count = int(file.size / chunk_size) + 1
+                    for i in range(chunk_count):
+                        chunk = file.read(chunk_size)
+                        chunks.append(chunk)
+                else:
+                    chunks.append(file.read())
+
+            zip_file = encrypt_files(chunks)
             now = datetime.now()
             timestamp = now.strftime("%Y%m%d_%H%M%S")
             file_name = f'uploads/upload_{request.user.username}' \
