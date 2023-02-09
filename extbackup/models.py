@@ -18,13 +18,7 @@ class File(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
     size = models.PositiveIntegerField(default=0)
     file = models.FileField(upload_to='uploads/')
-    # existingPath = models.CharField(unique=True, max_length=100, null=True)
-    # eof = models.BooleanField()
     content = jsonfield.JSONField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    # def save(self, *args, **kwargs):
-    #     self.size = self.file.size
-    #     super().save(*args, **kwargs)
 
 

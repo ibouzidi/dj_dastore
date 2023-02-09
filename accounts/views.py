@@ -109,6 +109,12 @@ def account_view(request, *args, **kwargs):
         elif not user.is_authenticated:
             is_self = False
         context['is_self'] = is_self
+        if account.storage_usage > account.storage_limit:
+            storage_percentage = 100
+        else:
+            storage_percentage = (account.storage_usage / account.storage_limit) * 100
+        context['storage_percentage'] = int(storage_percentage)
+        print(storage_percentage)
         return render(request, "accounts/account.html", context)
 
 

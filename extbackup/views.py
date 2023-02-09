@@ -2,6 +2,7 @@ import ftplib
 
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Sum
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
@@ -85,15 +86,22 @@ class UploadFilesView(View):
                 print("file_extension")
                 print(file_extension)
                 if not SupportedExtension.objects.filter(extension=file_extension).exists():
-                    # messages.error(request, f'File extension {file_extension} is not supported.')
-                    # return render(request, 'extbackup/upload.html', {'form': form})
-                    # return JsonResponse({'error': f"File extension {file_extension} is not supported."})
                     return JsonResponse({'data': f"File extension {file_extension} is not supported.", 'messages': [
                         {'level_tag': 'alert-danger', 'message': f"File extension {file_extension} is not supported."}]})
 
             # crypte files using Fernet encryption
             try:
                 zip_file = encrypt_files(files)
+                size = zip_file.tell()
+                # Check if the user has enough storage space
+                storage_limit = 1 * 1024 * 1024 * 1024  # 5 GB
+                user_account = request.user
+                if user_account.storage_usage + size > storage_limit:
+                    return JsonResponse(
+                        {'data': f"Storage limit of {storage_limit / (1024 * 1024 * 1024)} GB has been reached.",
+                         'messages': [
+                             {'level_tag': 'alert-danger',
+                              'message': f"Storage limit of {storage_limit / (1024 * 1024 * 1024)} GB has been reached."}]})
             except Exception as e:
                 return JsonResponse({'error': str(e)})
             now = datetime.now()
@@ -118,8 +126,10 @@ class UploadFilesView(View):
                     content=extracted_content,
                 )
                 saved_file_model.save()
+                request.user.storage_usage += file_size
+                request.user.save()
                 return JsonResponse({'data': 'Data uploaded', 'messages': [
-                    {'level_tag': 'alert-danger', 'message': 'Data uploaded'}]})
+                    {'level_tag': 'alert-sucess', 'message': 'Data uploaded'}]})
             except Exception as e:
                 return JsonResponse({'error': str(e)})
         return JsonResponse({'error': 'Form is not valid'})

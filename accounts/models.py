@@ -57,6 +57,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
                                       upload_to=get_profile_image_filepath,
                                       null=True, blank=True,
                                       default=get_default_profile_image)
+    storage_usage = models.PositiveIntegerField(default=0)
+    storage_limit = models.PositiveIntegerField(default=1 * 1024**3) # 1 GB
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

@@ -31,6 +31,12 @@ class AccountAdmin(UserAdmin):
         ('Avatar', {
             'fields': ('profile_image',)
         }),
+        ('Storage Usage', {
+            'fields': ('storage_usage',)
+        }),
+        ('Storage limit', {
+            'fields': ('storage_limit',)
+        }),
     )
 
 
