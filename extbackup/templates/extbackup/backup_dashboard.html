@@ -9,38 +9,45 @@
                 <div class="col-lg-12">
                     <div class="card shadow mb-4">
                         <div class="card-body text-center">
-                                <div style="margin-right: 20px">
-                                    <a class="nav-item" href="{% url 'extbackup:backup_refresh' %}">
+                            <div style="margin-right: 20px">
+                                <a class="btn btn-primary mb-2 d-block" href="{% url 'extbackup:backup_refresh' %}">
                                     Refresh
-                                    </a>
-                                </div>
+                                </a>
+                            </div>
                             <!-- upload your file form -->
                             <br>
-                            <table class="table">
-                                <thead class="thead-dark">
-                                <tr>
-                                    <th scope="col">Backup</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Date upload</th>
-                                    <th scope="col">Size</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% for file in zip_files %}
+                            <form action="{% url 'extbackup:delete_zip_file' %}" method="post">
+                                {% csrf_token %}
+                                <button class="btn btn-danger mb-2 d-flex" type="submit">Delete Selected Files</button>
+                                <table class="table">
+
+                                    <thead class="thead-dark">
                                     <tr>
-                                        <td scope="row"><i class="fa fa-check-circle checkicon"></i> {{file.1}}</td>
-                                        <td>{{file.2}}</td>
-                                        <td>{{file.3}}</td>
-                                        <td>{{ file.4|sizify }}</td>
-                                        <td>
-                                            <a href="{% url 'extbackup:delete_zip_file' file.0  %}" class="badge badge-danger xl">🗙</a>
-                                            <a href="{% url 'extbackup:download_zip_file' file.0  %}" class="badge badge-primary">📥</a>
-                                            <a href="{% url 'extbackup:view_zip_content' file.0  %}" class="badge badge-primary">VOIR</a></td>
+                                        <th><input id="check_all" type="checkbox"></th>
+                                        <th scope="col">Backup</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Date upload</th>
+                                        <th scope="col">Size</th>
+                                        <th scope="col">Action</th>
                                     </tr>
-                                {%endfor%}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                    {% for file in zip_files %}
+                                        <tr>
+                                            <td><input type="checkbox" name="ids" value="{{ file.0 }}"></td>
+                                            <td scope="row"><i class="fa fa-check-circle checkicon"></i> {{file.1}}</td>
+                                            <td>{{file.2}}</td>
+                                            <td>{{file.3}}</td>
+                                            <td>{{ file.4|sizify }}</td>
+                                            <td>
+                                                {#                                            <a href="{% url 'extbackup:delete_zip_file' file.0  %}" class="badge badge-danger xl">🗙</a>#}
+                                                <a href="{% url 'extbackup:download_zip_file' file.0  %}" class="badge badge-primary">📥</a>
+                                                <a href="{% url 'extbackup:view_zip_content' file.0  %}" class="badge badge-primary">VOIR</a></td>
+                                        </tr>
+                                    {%endfor%}
+                                    </tbody>
+                                </table>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -76,3 +83,32 @@
     </style>
 
 {% endblock content %}
+
+{% block script %}
+
+    <script>
+       $(function() {
+            //If check_all checked then check all table rows
+            $("#check_all").on("click", function () {
+                if ($("input:checkbox").prop("checked")) {
+                    $("input:checkbox[name='ids']").prop("checked", true);
+                } else {
+                    $("input:checkbox[name='ids']").prop("checked", false);
+                }
+            });
+            // Check each table row checkbox
+            $("input:checkbox[name='ids']").on("change", function () {
+                var total_check_boxes = $("input:checkbox[name='ids']").length;
+                var total_checked_boxes = $("input:checkbox[name='ids']:checked").length;
+
+                // If all checked manually then check check_all checkbox
+                if (total_check_boxes === total_checked_boxes) {
+                    $("#check_all").prop("checked", true);
+                }
+                else {
+                    $("#check_all").prop("checked", false);
+                }
+            });
+        });
+    </script>
+{% endblock script %}

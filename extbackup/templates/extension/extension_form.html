@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{% if object %}Edit{% else %}Add{% endif %} Extension</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary " type="submit">Save</button>
+    <a class="btn btn-danger" href="{% url 'extbackup:extension_list' %}">Cancel</a>
+  </form>
+{% endblock %}

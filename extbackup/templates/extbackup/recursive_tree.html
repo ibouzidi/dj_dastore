@@ -1,0 +1,13 @@
+{% for key, value in sub_folders.items %}
+  <ul class="pure-tree">
+    <li>
+      <input type="checkbox" id="trigger-{{ key }}">
+      <label for="trigger-{{ key }}">{{ key }}</label>
+      {% if value %}
+        {{ recursive_tree(value) }}
+      {% else %}
+        <li class="pure-tree_link"><a href="" title="index.jade" target="_blank">{{ key }}</a></li>
+      {% endif %}
+    </li>
+  </ul>
+{% endfor %}

@@ -29,7 +29,32 @@
 <!-- Body -->
 <main id='main' class="container py-5">
 <div class="middlebar">{% block middlebar %}{% endblock %}</div>
-{% include 'snippets/messages.html' %}
+{#{% include 'snippets/messages.html' %}#}
+ <div id="messages"></div>
+    <script>
+function displayJsonMessages(response) {
+  if (response.hasOwnProperty('messages')) {
+    var messages = response.messages;
+    var messagesDiv = $('#messages');
+
+    for (var i = 0; i < messages.length; i++) {
+      var message = messages[i];
+      var messageDiv = $('<div>')
+        .addClass('alert')
+        .addClass(message.level_tag)
+        .addClass('alert-dismissible')
+        .addClass('fade show')
+        .addClass('text-center')
+        .addClass('div_messages')
+        .attr('role', 'alert')
+        .html('<strong>' + message.level_tag.toUpperCase() + ' -</strong> ' + message.message + '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>');
+
+      messagesDiv.append(messageDiv);
+    }
+  }
+}
+
+    </script>
     {% block content %}
         this is my content !
     {% endblock content %}
@@ -50,6 +75,9 @@
 </body>
 {% block script %}
     <script type="text/javascript">
+
+
+
     function displayLoadingSpinner(isDisplayed){
         var spinner = document.getElementById("id_loading_spinner")
         if(isDisplayed){

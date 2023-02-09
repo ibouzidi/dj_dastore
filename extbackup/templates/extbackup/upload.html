@@ -4,10 +4,10 @@
 
 
 {% block content %}
-        <style>
+    <style>
         .not-visible{
-        display: none;
-    }
+            display: none;
+        }
         .file-upload input[type='file'] {
             display: none;
         }
@@ -43,19 +43,21 @@
                         <form action="" method='post' id="upload_form" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="custom-file text-center mb-5">
-                              {{ form.as_p }}
+                                {{ form.as_p }}
                                 <label class="custom-file-label" for="customFile">Select files</label>
                                 <br>
                                 <div id="file-count"></div>
                                 <br>
                                 <input class="btn btn-primary" type="submit" value="Upload">
                             </div>
-                            </form>
+                        </form>
                         <div class="not-visible progress" id="progress">
+                        </div>
+
+
                     </div>
                 </div>
             </div>
-        </div>
         </div>
     </section>
 
@@ -64,10 +66,10 @@
 {% block script %}
     <script>
 
-    const uploadForm = document.getElementById('upload_form');
+        const uploadForm = document.getElementById('upload_form');
         const input_file = document.getElementById('customFile');
         const progress_bar = document.getElementById('progress');
-
+        const messages = document.getElementById("messages")
         $("#upload_form").submit(function(e){
             e.preventDefault();
             $form = $(this)
@@ -93,8 +95,8 @@
                             const percentProgress = Math.round((e.loaded / e.total) * 100);
                             console.log(percentProgress);
                             progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success"
-                    role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0"
-                    aria-valuemax="100">${percentProgress}%</div>`
+                                                       role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0"
+                                                       aria-valuemax="100">${percentProgress}%</div>`
                         }
                     });
                     return xhr
@@ -103,9 +105,10 @@
                     console.log(response);
                     uploadForm.reset()
                     progress_bar.classList.add('not-visible')
+                    displayJsonMessages(response);
                 },
                 error: function(err){
-                    console.log(err);
+                   displayJsonMessages(err);
                 },
                 cache: false,
                 contentType: false,

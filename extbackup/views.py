@@ -4,11 +4,12 @@ from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
 from django.utils import timezone
 from django.views import View
 
-from extbackup.forms import FileForm
-from extbackup.models import File
+from extbackup.forms import FileForm, ExtensionForm
+from extbackup.models import File, SupportedExtension
 from django.conf import settings
 from django.core.files.storage import default_storage
 from io import BytesIO
@@ -19,6 +20,7 @@ from django.http import FileResponse, JsonResponse, HttpResponseRedirect, \
     Http404, HttpResponseForbidden
 import io
 from urllib.request import urlopen
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 # import wget
 import tempfile
 import zipfile
@@ -68,8 +70,6 @@ def extract_zip_contents(zip_file_path):
     return file_tree
 
 
-
-
 class UploadFilesView(View):
     def get(self, request):
         form = FileForm()
@@ -79,6 +79,18 @@ class UploadFilesView(View):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             files = request.FILES.getlist('file')
+            # Check if the file extension is supported
+            for file in files:
+                file_extension = file.name.split(".")[-1].lower()
+                print("file_extension")
+                print(file_extension)
+                if not SupportedExtension.objects.filter(extension=file_extension).exists():
+                    # messages.error(request, f'File extension {file_extension} is not supported.')
+                    # return render(request, 'extbackup/upload.html', {'form': form})
+                    # return JsonResponse({'error': f"File extension {file_extension} is not supported."})
+                    return JsonResponse({'data': f"File extension {file_extension} is not supported.", 'messages': [
+                        {'level_tag': 'alert-danger', 'message': f"File extension {file_extension} is not supported."}]})
+
             # crypte files using Fernet encryption
             try:
                 zip_file = encrypt_files(files)
@@ -106,7 +118,8 @@ class UploadFilesView(View):
                     content=extracted_content,
                 )
                 saved_file_model.save()
-                return JsonResponse({'data': 'Data uploaded'})
+                return JsonResponse({'data': 'Data uploaded', 'messages': [
+                    {'level_tag': 'alert-danger', 'message': 'Data uploaded'}]})
             except Exception as e:
                 return JsonResponse({'error': str(e)})
         return JsonResponse({'error': 'Form is not valid'})
@@ -161,22 +174,29 @@ def download_zip_file(request, file_id):
         return HttpResponse("file not found")
 
 
-def delete_zip_file(request, file_id):
-    ftp_storage = default_storage
-    try:
-        file = File.objects.get(pk=file_id)
-        if file.user == request.user:
-            zip_files = f'uploads/upload_{request.user.username}/'
-            ftp_storage.delete(zip_files + file.file.name)
-
-            file.delete()
-            messages.success(request, "Zip file deleted successfully")
-            return redirect('extbackup:backup_dashboard')
-        else:
-            messages.error(request, "Cannot delete someone else's zip files")
-            return redirect('extbackup:backup_dashboard')
-    except File.DoesNotExist:
-        messages.error(request, "Zip file not found")
+class DeleteZipFileView(View):
+    def post(self, request):
+        ids = request.POST.getlist('ids')
+        ftp_storage = default_storage
+        deleted_files = []
+        for file_id in ids:
+            try:
+                file = File.objects.get(id=file_id)
+                if file.user == request.user:
+                    zip_files = f'uploads/upload_{request.user.username}/'
+                    ftp_storage.delete(zip_files + file.file.name)
+                    file.delete()
+                    deleted_files.append(file.file.name)
+                else:
+                    messages.error(request, "Cannot delete someone else's zip files")
+                    return redirect('extbackup:backup_dashboard')
+            except File.DoesNotExist:
+                messages.error(request, "Zip file not found")
+                return redirect('extbackup:backup_dashboard')
+            except PermissionError:
+                messages.error(request, "Cannot delete a zip file that is used or open by another processus")
+        if deleted_files:
+            messages.success(request, "Zip files deleted successfully")
         return redirect('extbackup:backup_dashboard')
 
 
@@ -221,9 +241,6 @@ def view_zip_content(request, file_id):
     return render(request, 'extbackup/view_zip_content.html', {'tree': tree})
 
 
-
-
-
 def backup_refresh(request):
     ftp_storage = default_storage
     zip_files_folder = f'uploads/upload_{request.user.username}/'
@@ -239,6 +256,47 @@ def backup_refresh(request):
             file.delete()
     # Get updated zip files
     zip_files = [(file.id, file.file.name, file.description, file.uploaded_at, file.size)
-                 for file in File.objects.filter(user=request.user) if file.file.name.endswith('.zip')]
+                 for file in File.objects.filter(user=request.user).order_by('-uploaded_at')
+                 if file.file.name.endswith('.zip')]
     return render(request, 'extbackup/backup_dashboard.html',
                   {'zip_files': zip_files})
+
+
+class SupportedExtensionListView(ListView):
+    model = SupportedExtension
+    ordering = ['-id']
+    template_name = 'extension/extension_list.html'
+
+
+class SupportedExtensionCreateView(CreateView):
+    model = SupportedExtension
+    template_name = 'extension/extension_form.html'
+    form_class = ExtensionForm
+    success_url = reverse_lazy('extbackup:extension_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Add any additional processing here, such as sending an email or
+        # logging the action.
+        return response
+
+
+class SupportedExtensionUpdateView(UpdateView):
+    model = SupportedExtension
+    template_name = 'extension/extension_form.html'
+    form_class = ExtensionForm
+    success_url = reverse_lazy('extbackup:extension_list')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        # Add any additional processing here, such as sending an email or
+        # logging the action.
+        return response
+
+
+class SupportedExtensionDeleteView(DeleteView):
+    model = SupportedExtension
+    success_url = reverse_lazy('extbackup:extension_list')
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)

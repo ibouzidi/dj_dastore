@@ -6,6 +6,13 @@ from accounts.models import Account
 # fs = FTPStorage()
 
 
+class SupportedExtension(models.Model):
+    extension = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.extension
+
+
 class File(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
     description = models.CharField(max_length=255, null=True, blank=True)

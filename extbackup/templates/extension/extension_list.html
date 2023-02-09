@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Supported Extensions</h1>
+        <a class="btn btn-primary m-xl-3" href="{% url 'extbackup:extension_create' %}">Add Extension</a>
+        <table class="table bg-light">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Extension</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for extension in object_list %}
+                <tr>
+                    <td>{{ extension.pk }}</td>
+                    <td>{{ extension.extension }}</td>
+                    <td>
+                        <a href="{% url 'extbackup:extension_update' extension.pk %}" class="badge badge-warning xl">Edit</a>
+                        <a href="{% url 'extbackup:extension_delete' extension.pk %}" class="badge badge-danger xl">🗙</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content%}
