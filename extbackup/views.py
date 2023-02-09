@@ -35,16 +35,39 @@ def encrypt_files(files):
                 with zipfile.ZipFile(folder_file) as folder_zip:
                     for inner_file in folder_zip.infolist():
                         inner_file_data = folder_zip.read(inner_file)
-                        fernet = Fernet(key)
-                        encrypted = fernet.encrypt(inner_file_data)
+                        encrypted = fernet_encrypt(inner_file_data)
                         zf.writestr(inner_file.filename + '_encrypted', encrypted)
             else:
-                fernet = Fernet(key)
                 original = file.read()
-                encrypted = fernet.encrypt(original)
+                encrypted = fernet_encrypt(original)
                 zf.writestr(file.name + '_encrypted', encrypted)
     zip_file.seek(0)
     return zip_file
+
+
+def fernet_encrypt(data):
+    fernet = Fernet(key)
+    encrypted = fernet.encrypt(data)
+    return encrypted
+
+
+def extract_zip_contents(zip_file_path):
+    file_tree = {}
+    with zipfile.ZipFile(zip_file_path) as zip_file:
+        for inner_file in zip_file.infolist():
+            path = inner_file.filename
+            parts = path.split('/')
+            parent = file_tree
+            for part in parts[:-1]:
+                if part not in parent:
+                    parent[part.replace("_encrypted", "")] = {}
+                parent = parent[part.replace("_encrypted", "")]
+            if parts[-1] == '':
+                continue
+            parent[parts[-1].replace("_encrypted", "")] = None
+    return file_tree
+
+
 
 
 class UploadFilesView(View):
@@ -57,24 +80,36 @@ class UploadFilesView(View):
         if form.is_valid():
             files = request.FILES.getlist('file')
             # crypte files using Fernet encryption
-            zip_file = encrypt_files(files)
+            try:
+                zip_file = encrypt_files(files)
+            except Exception as e:
+                return JsonResponse({'error': str(e)})
             now = datetime.now()
             timestamp = now.strftime("%Y%m%d_%H%M%S")
             file_name = f'uploads/upload_{request.user.username}' \
                         f'/save_{timestamp}_{request.user.username}.zip'
-            saved_file = default_storage.save(file_name, zip_file)
-            file_path = default_storage.path(saved_file)
-            file_size = os.path.getsize(file_path)
-            # save the file in database
-            saved_file_model = File(
-                user=request.user,
-                file=saved_file.split("/")[-1], # name of the file without the path
-                description=form.cleaned_data['description'],
-                size=file_size,
-            )
-            saved_file_model.save()
-            return JsonResponse({'data':'Data uploaded'})
-        return JsonResponse({'data':'Something went wrong!!'})
+            try:
+                saved_file = default_storage.save(file_name, zip_file)
+                file_path = default_storage.path(saved_file)
+                file_size = os.path.getsize(file_path)
+                # extract the contents of the zip file
+                try:
+                    extracted_content = extract_zip_contents(file_path)
+                except Exception as e:
+                    return JsonResponse({'error': str(e)})
+                # save the file in database
+                saved_file_model = File(
+                    user=request.user,
+                    file=saved_file.split("/")[-1],  # name of the file without the path
+                    description=form.cleaned_data['description'],
+                    size=file_size,
+                    content=extracted_content,
+                )
+                saved_file_model.save()
+                return JsonResponse({'data': 'Data uploaded'})
+            except Exception as e:
+                return JsonResponse({'error': str(e)})
+        return JsonResponse({'error': 'Form is not valid'})
 
 
 def backup_dashboard(request):
@@ -127,7 +162,7 @@ def download_zip_file(request, file_id):
 
 
 def delete_zip_file(request, file_id):
-    ftp_storage = FTPStorage()
+    ftp_storage = default_storage
     try:
         file = File.objects.get(pk=file_id)
         if file.user == request.user:
@@ -136,13 +171,7 @@ def delete_zip_file(request, file_id):
 
             file.delete()
             messages.success(request, "Zip file deleted successfully")
-            # TODO: remove empty folders
-            # folder_path = os.path.dirname(
-            #     os.path.join(zip_files, file.file.name))
-            # folder_contents = ftp_storage.listdir(zip_files)
-            # if not folder_contents:
-            #     os.rmdir(folder_path)
-            # return redirect('extbackup:backup_dashboard')
+            return redirect('extbackup:backup_dashboard')
         else:
             messages.error(request, "Cannot delete someone else's zip files")
             return redirect('extbackup:backup_dashboard')
@@ -151,39 +180,49 @@ def delete_zip_file(request, file_id):
         return redirect('extbackup:backup_dashboard')
 
 
+# def build_tree(data, parent=None):
+#     data = json.loads(data)
+#     tree = defaultdict(list)
+#     print(data)
+#     for key, value in data.items():
+#         print("key")
+#         print(key)
+#         print("value")
+#         print(value)
+#         if parent == key:
+#             print("YES")
+#             tree[parent].append(value)
+#             print(tree)
+#             print(data)
+#             tree.update(build_tree(json.dumps(value), parent=key))
+#     return tree
+
+def build_tree(data, parent=None):
+    tree = []
+    for key, value in data.items():
+        if not parent:
+            node = {"name": key}
+        else:
+            node = {"name": key, "parent": parent}
+        if isinstance(value, dict):
+            node["children"] = build_tree(value, key)
+        tree.append(node)
+    return tree
+
+
 def view_zip_content(request, file_id):
-    ftp_storage = default_storage
-    zip_files = f'uploads/upload_{request.user.username}/'
     try:
         file = File.objects.get(pk=file_id)
     except ObjectDoesNotExist:
         messages.error(request, "File not found")
         return redirect('extbackup:backup_dashboard')
-    if ftp_storage.exists(zip_files + file.file.name):
-        try:
-            with ftp_storage.open(zip_files + file.file.name, 'rb') as f:
-                file_data = f.read()
-            decrypted_zip = decrypt_zip_file(file_data)
-            zip_buffer = io.BytesIO()
-            with zipfile.ZipFile(zip_buffer, mode="w") as zf:
-                with zipfile.ZipFile(decrypted_zip, mode="r") as zf_decrypted:
-                    for info in zf_decrypted.infolist():
-                        if "_encrypted" in info.filename:
-                            new_file_name = info.filename.replace("_encrypted", "")
-                        else:
-                            new_file_name = info.filename
-                        zf.writestr(new_file_name,
-                                    zf_decrypted.read(info.filename))
-            zip_buffer.seek(0)
-            with zipfile.ZipFile(zip_buffer) as zf:
-                zip_content = zf.namelist()
-            return render(request, 'extbackup/view_zip_content.html',
-                          {'zip_content': zip_content})
-        except Exception as e:
-            return HttpResponse(f"An error occured: {e}", status=500)
-    else:
-        messages.error(request, "file not found")
-        return redirect('extbackup:backup_dashboard')
+
+    tree = build_tree(file.content)
+    return render(request, 'extbackup/view_zip_content.html', {'tree': tree})
+
+
+
+
 
 def backup_refresh(request):
     ftp_storage = default_storage

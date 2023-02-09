@@ -6,11 +6,95 @@
     <section>
         <div class="container p-5">
             <h1>Content of Zip File</h1>
-  <ul>
-    {% for content in zip_content %}
-      <li>{{ content }}</li>
-    {% endfor %}
-  </ul>
+<ul id="compositions-list" class="pure-tree main-tree">
+{% for node in tree %}
+    <li>
+        <input type="checkbox" id="trigger-{{ node.name }}" checked="checked">
+        <label for="trigger-{{ node.name }}">{{ node.name }}</label>
+        {% if node.children %}
+            <ul class="pure-tree">
+                {% for child in node.children %}
+                    <li>
+                        <input type="checkbox" id="trigger-{{ child.name }}" checked="checked">
+                        <label for="trigger-{{ child.name }}">{{ child.name }}</label>
+                        {% if child.children %}
+                            {{ child.children|safe }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}
+</ul>
+
+
+
         </div>
     </section>
+    <style>
+        .pure-tree {
+            text-align: left;
+            display: block;
+        }
+        .pure-tree.main-tree {
+            width: 30em;
+            display: inline-block;
+        }
+        .pure-tree:not(.main-tree) {
+            padding-left: 1.2em;
+        }
+        .pure-tree:not(.main-tree) li {
+            overflow: hidden;
+            height: 0;
+            display: block;
+        }
+        .pure-tree label {
+            display: block;
+            cursor: pointer;
+            color: #717780;
+            border-bottom: 1px dashed #B0B9C5;
+            padding: 1.125em 1.125em 1.125em 0;
+        }
+        .pure-tree label:before {
+            width: 1em;
+            height: 1em;
+            line-height: 1em;
+            display: inline-block;
+            font-family: 'FontAwesome', sans-serif;
+            content: "\f114";
+            padding-right: .75em;
+        }
+        .pure-tree label:hover {
+            color: #434a58;
+            border-bottom-color: #434a58;
+        }
+        .pure-tree .pure-tree_link a {
+            padding: 1.500em 1.125em 0.750em 0;
+            display: block;
+            border-radius: .2em;
+            color: #717780;
+            text-decoration: none;
+        }
+        .pure-tree .pure-tree_link a:hover {
+            color: #434a58;
+        }
+        .pure-tree.nested {
+            padding-left: 1.7em;
+        }
+        .pure-tree [type="checkbox"] {
+            display: none;
+        }
+        .pure-tree [type="checkbox"]:checked + label {
+            color: #434a58;
+            border-bottom-color: #434a58;
+        }
+        .pure-tree [type="checkbox"]:checked ~ ul > li {
+            height: auto;
+        }
+    </style>
 {% endblock content %}
+
+{% block script %}
+
+{% endblock script %}
