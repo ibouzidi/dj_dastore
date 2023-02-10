@@ -14,24 +14,41 @@ import base64
 import requests
 from django.core import files
 
+from subscription_plan.models import SubscriptionPlan
+
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
 
-def register_view(request, *args, **kwargs):
+def register_view(request, plan_name, *args, **kwargs):
     user = request.user
     if user.is_authenticated:
         return HttpResponse(
             "You are already authenticated as " + str(user.email))
 
+    if not plan_name:
+        return redirect('subscription_plan:subscription_plan_index')
     context = {}
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email').lower()
-            raw_password = form.cleaned_data.get('password1')
-            account = authenticate(email=email, password=raw_password)
-            login(request, account)
+            # Retrieve the selected plan
+            plan = SubscriptionPlan.objects.get(name__iexact=plan_name)
+
+            # Create a new Account instance
+            account = Account.objects.create_user(
+                email=form.cleaned_data.get('email').lower(),
+                password=form.cleaned_data.get('password1'),
+                subscription_plan=plan,
+                username=form.cleaned_data.get('username'),
+            )
+            account.save()
+
+            # Authenticate and log in the new user
+            user = authenticate(email=account.email,
+                                password=form.cleaned_data.get('password1'))
+            login(request, user)
+
+            # Redirect to the desired page
             destination = kwargs.get("next")
             if destination:
                 return redirect(destination)
@@ -89,6 +106,33 @@ def get_redirect_if_exists(request):
     return redirect
 
 
+def calculate_storage_usage(account):
+    # Calculate storage limit based on subscription plan
+    if account.subscription_plan is not None:
+        storage_limit_gb = account.subscription_plan.storage_limit * 1024 ** 3
+    else:
+        storage_limit_gb = 0
+
+    # Determine the unit for storage limit and usage (GB or MB)
+    if storage_limit_gb >= 1073741824:
+        storage_limit = round(storage_limit_gb / 1073741824, 2)
+        storage_limit_unit = "GB"
+    else:
+        storage_limit = round(storage_limit_gb / 1048576, 2)
+        storage_limit_unit = "MB"
+
+    # Calculate storage usage in the same unit as the limit
+    if account.storage_usage > storage_limit_gb:
+        storage_used = storage_limit
+    else:
+        storage_used = round(account.storage_usage / 1073741824,
+                             2) if storage_limit_unit == "GB" else round(
+            account.storage_usage / 1048576, 2)
+
+    # Return the calculated values
+    return storage_used, storage_limit, storage_limit_unit
+
+
 def account_view(request, *args, **kwargs):
     context = {}
     user_id = kwargs.get("user_id")
@@ -109,31 +153,13 @@ def account_view(request, *args, **kwargs):
         elif not user.is_authenticated:
             is_self = False
         context['is_self'] = is_self
-        if account.storage_usage > account.storage_limit:
-            storage_used = account.storage_limit
-        else:
-            storage_used = account.storage_usage
 
-        # Convert storage used from bytes to GB or MB
-        if account.storage_limit >= 1073741824:
-            storage_limit = round(account.storage_limit / 1073741824, 2)
-            storage_limit_unit = "GB"
-        else:
-            storage_limit = round(account.storage_limit / 1048576, 2)
-            storage_limit_unit = "MB"
-
-        if account.storage_usage > account.storage_limit:
-            storage_used = storage_limit
-        else:
-            storage_used = round(account.storage_usage / 1073741824,
-                                 2) if storage_limit_unit == "GB" else round(
-                account.storage_usage / 1048576, 2)
-
-        storage_unit = storage_limit_unit
-
+        storage_used, storage_limit, storage_limit_unit = calculate_storage_usage(
+            account)
+        # Store the values in the context dictionary
         context['storage_used'] = storage_used
         context['storage_limit'] = storage_limit
-        context['storage_unit'] = storage_unit
+        context['storage_unit'] = storage_limit_unit
 
         return render(request, "accounts/account.html", context)
 

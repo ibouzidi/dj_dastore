@@ -10,6 +10,7 @@ from app.views import (
 )
 
 urlpatterns = [
+    path('subscription/price/', include('subscription_plan.urls')),
     path('backup/', include('extbackup.urls')),
     path('', home_screen_view, name='home'),
     path('admin/', admin.site.urls),

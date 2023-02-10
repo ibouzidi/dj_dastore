@@ -34,8 +34,8 @@ class AccountAdmin(UserAdmin):
         ('Storage Usage', {
             'fields': ('storage_usage',)
         }),
-        ('Storage limit', {
-            'fields': ('storage_limit',)
+        ('Subscription Plan', {
+            'fields': ('subscription_plan',)
         }),
     )
 

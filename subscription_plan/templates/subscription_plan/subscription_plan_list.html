@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Subscription Plan</h1>
+        <a class="btn btn-primary m-xl-3" href="{% url 'subscription_plan:subscription_plan_create' %}">Add Subscription Plan</a>
+        <table class="table bg-light">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Storage Limit</th>
+                <th scope="col">Price</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for subscription_plan in object_list %}
+                <tr>
+                    <td>{{ subscription_plan.pk }}</td>
+                    <td>{{ subscription_plan.name }}</td>
+                    <td>{{ subscription_plan.storage_limit }}</td>
+                    <td>{{ subscription_plan.price }}</td>
+                    <td>{{ subscription_plan.description }}</td>
+                    <td>
+                        <a href="{% url 'subscription_plan:subscription_plan_update' subscription_plan.pk %}" class="badge badge-warning xl">Edit</a>
+                        <a href="{% url 'subscription_plan:subscription_plan_delete' subscription_plan.pk %}" class="badge badge-danger xl">🗙</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content%}

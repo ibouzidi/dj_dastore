@@ -12,7 +12,7 @@ from accounts.views import (
 )
 
 urlpatterns = [
-    path('register/', register_view, name='register'),
+    path('register/plan/<str:plan_name>/', register_view, name='register_with_plan'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
     path('<user_id>/', account_view, name="account_profile"),

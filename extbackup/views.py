@@ -94,14 +94,20 @@ class UploadFilesView(View):
                 zip_file = encrypt_files(files)
                 size = zip_file.tell()
                 # Check if the user has enough storage space
-                storage_limit = 1 * 1024 * 1024 * 1024  # 5 GB
                 user_account = request.user
-                if user_account.storage_usage + size > storage_limit:
+                if user_account.subscription_plan is not None:
+                    storage_limit = user_account.subscription_plan.storage_limit
+                    storage_limit_gb = storage_limit * 1024**3
+                else:
+                    storage_limit = 0
+
+                if user_account.storage_usage + size > storage_limit_gb:
                     return JsonResponse(
-                        {'data': f"Storage limit of {storage_limit / (1024 * 1024 * 1024)} GB has been reached.",
-                         'messages': [
-                             {'level_tag': 'alert-danger',
-                              'message': f"Storage limit of {storage_limit / (1024 * 1024 * 1024)} GB has been reached."}]})
+                        {
+                            'data': f"Storage limit of {storage_limit:.2f} GB has been reached.",
+                            'messages': [
+                                {'level_tag': 'alert-danger',
+                                 'message': f"Storage limit of {storage_limit:.2f} GB has been reached."}]})
             except Exception as e:
                 return JsonResponse({'error': str(e)})
             now = datetime.now()
@@ -129,7 +135,7 @@ class UploadFilesView(View):
                 request.user.storage_usage += file_size
                 request.user.save()
                 return JsonResponse({'data': 'Data uploaded', 'messages': [
-                    {'level_tag': 'alert-sucess', 'message': 'Data uploaded'}]})
+                    {'level_tag': 'alert-success', 'message': 'Data uploaded'}]})
             except Exception as e:
                 return JsonResponse({'error': str(e)})
         return JsonResponse({'error': 'Form is not valid'})

@@ -5,9 +5,12 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os
 
+from subscription_plan.models import SubscriptionPlan
+
 
 class MyAccountManager(BaseUserManager):
-    def create_user(self, email, username, password=None):
+    def create_user(self, email, username, password=None,
+                    subscription_plan=None):
         if not email:
             raise ValueError('Users must have an email address')
         if not username:
@@ -16,6 +19,7 @@ class MyAccountManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email),
             username=username,
+            subscription_plan=subscription_plan,
         )
 
         user.set_password(password)
@@ -58,7 +62,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
                                       null=True, blank=True,
                                       default=get_default_profile_image)
     storage_usage = models.PositiveIntegerField(default=0)
-    storage_limit = models.PositiveIntegerField(default=1 * 1024**3) # 1 GB
+    subscription_plan = models.ForeignKey(SubscriptionPlan,
+                                          on_delete=models.SET_NULL, null=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -84,3 +89,5 @@ class Account(AbstractBaseUser, PermissionsMixin):
     # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
     def has_module_perms(self, app_label):
         return True
+
+

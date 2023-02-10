@@ -95,9 +95,18 @@
 {% block script %}
     <!-- Add JavaScript to create the chart -->
     <script>
+            function getRandomColor() {
+            let letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
         var storageUsed = {{ storage_used }};
         var storageLimit = {{ storage_limit }};
         var storageUnit = "{{ storage_unit }}";
+
 
         var ctx = document.getElementById('storageUsageChart').getContext('2d');
         var storageUsageChart = new Chart(ctx, {
@@ -106,7 +115,7 @@
                 labels: ['Used', 'Available'],
                 datasets: [{
                     data: [storageUsed, storageLimit - storageUsed],
-                    backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)'],
+                    backgroundColor: [getRandomColor(), getRandomColor],
                 }]
             },
             options: {
@@ -125,6 +134,7 @@
                 }
             }
         });
+
 
     </script>
 {% endblock script %}
