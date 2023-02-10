@@ -110,11 +110,31 @@ def account_view(request, *args, **kwargs):
             is_self = False
         context['is_self'] = is_self
         if account.storage_usage > account.storage_limit:
-            storage_percentage = 100
+            storage_used = account.storage_limit
         else:
-            storage_percentage = (account.storage_usage / account.storage_limit) * 100
-        context['storage_percentage'] = int(storage_percentage)
-        print(storage_percentage)
+            storage_used = account.storage_usage
+
+        # Convert storage used from bytes to GB or MB
+        if account.storage_limit >= 1073741824:
+            storage_limit = round(account.storage_limit / 1073741824, 2)
+            storage_limit_unit = "GB"
+        else:
+            storage_limit = round(account.storage_limit / 1048576, 2)
+            storage_limit_unit = "MB"
+
+        if account.storage_usage > account.storage_limit:
+            storage_used = storage_limit
+        else:
+            storage_used = round(account.storage_usage / 1073741824,
+                                 2) if storage_limit_unit == "GB" else round(
+                account.storage_usage / 1048576, 2)
+
+        storage_unit = storage_limit_unit
+
+        context['storage_used'] = storage_used
+        context['storage_limit'] = storage_limit
+        context['storage_unit'] = storage_unit
+
         return render(request, "accounts/account.html", context)
 
 

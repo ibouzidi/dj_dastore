@@ -196,6 +196,9 @@ class DeleteZipFileView(View):
                     zip_files = f'uploads/upload_{request.user.username}/'
                     ftp_storage.delete(zip_files + file.file.name)
                     file.delete()
+                    file_size = file.size
+                    request.user.storage_usage -= file_size
+                    request.user.save()
                     deleted_files.append(file.file.name)
                 else:
                     messages.error(request, "Cannot delete someone else's zip files")

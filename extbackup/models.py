@@ -1,4 +1,3 @@
-import jsonfield as jsonfield
 from django.db import models
 # from storages.backends.ftp import FTPStorage
 from accounts.models import Account
@@ -18,7 +17,7 @@ class File(models.Model):
     description = models.CharField(max_length=255, null=True, blank=True)
     size = models.PositiveIntegerField(default=0)
     file = models.FileField(upload_to='uploads/')
-    content = jsonfield.JSONField()
+    content = models.JSONField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 
