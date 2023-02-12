@@ -109,25 +109,19 @@ def get_redirect_if_exists(request):
 def calculate_storage_usage(account):
     # Calculate storage limit based on subscription plan
     if account.subscription_plan is not None:
-        storage_limit_gb = account.subscription_plan.storage_limit * 1024 ** 3
+        storage_limit = account.subscription_plan.storage_limit * 1024 ** 3
     else:
-        storage_limit_gb = 0
+        storage_limit = 0
 
     # Determine the unit for storage limit and usage (GB or MB)
-    if storage_limit_gb >= 1073741824:
-        storage_limit = round(storage_limit_gb / 1073741824, 2)
+    if storage_limit >= 1073741824:
+        storage_limit = round(storage_limit / 1073741824, 2)
+        storage_used = round(account.storage_usage / 1073741824, 2)
         storage_limit_unit = "GB"
     else:
-        storage_limit = round(storage_limit_gb / 1048576, 2)
+        storage_limit = round(storage_limit / 1048576, 2)
+        storage_used = round(account.storage_usage / 1048576, 2)
         storage_limit_unit = "MB"
-
-    # Calculate storage usage in the same unit as the limit
-    if account.storage_usage > storage_limit_gb:
-        storage_used = storage_limit
-    else:
-        storage_used = round(account.storage_usage / 1073741824,
-                             2) if storage_limit_unit == "GB" else round(
-            account.storage_usage / 1048576, 2)
 
     # Return the calculated values
     return storage_used, storage_limit, storage_limit_unit
@@ -156,9 +150,15 @@ def account_view(request, *args, **kwargs):
 
         storage_used, storage_limit, storage_limit_unit = calculate_storage_usage(
             account)
-        # Store the values in the context dictionary
-        context['storage_used'] = storage_used
-        context['storage_limit'] = storage_limit
+        print("storage_used")
+        print(storage_used)
+        print("storage_limit")
+        print(storage_limit)
+        print("storage_limit_unit")
+        print(storage_limit_unit)
+        # # Store the values in the context dictionary
+        context['storage_used'] = '{:.2f}'.format(storage_used)
+        context['storage_limit'] = '{:.2f}'.format(storage_limit)
         context['storage_unit'] = storage_limit_unit
 
         return render(request, "accounts/account.html", context)

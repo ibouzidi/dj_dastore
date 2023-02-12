@@ -1,5 +1,5 @@
 from django.contrib import admin
-from extbackup.models import File
+from extbackup.models import File, SupportedExtension
 
 
 class FileAdmin(admin.ModelAdmin):
@@ -10,3 +10,4 @@ class FileAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(File)
+admin.site.register(SupportedExtension)

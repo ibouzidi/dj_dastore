@@ -93,15 +93,19 @@ class UploadFilesView(View):
             try:
                 zip_file = encrypt_files(files)
                 size = zip_file.tell()
+                # zip_file.seek(0, 2)  # move to the end of the file
+                # size = zip_file.tell()  # get the current position, which is the length of the file
+                # zip_file.seek(0)  # reset the position to the beginning of the file
                 # Check if the user has enough storage space
                 user_account = request.user
                 if user_account.subscription_plan is not None:
                     storage_limit = user_account.subscription_plan.storage_limit
-                    storage_limit_gb = storage_limit * 1024**3
+                    storage_limit_gb = storage_limit * 1024 ** 3
                 else:
                     storage_limit = 0
+                size_conversion = size * 1024 ** 3
+                if user_account.storage_usage + size_conversion > storage_limit_gb:
 
-                if user_account.storage_usage + size > storage_limit_gb:
                     return JsonResponse(
                         {
                             'data': f"Storage limit of {storage_limit:.2f} GB has been reached.",

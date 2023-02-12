@@ -82,20 +82,14 @@
                             <!-- Create a canvas element to display the chart -->
                             <canvas id="storageUsageChart"></canvas>
 
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 
 {% endblock content %}
 
 {% block script %}
-    <!-- Add JavaScript to create the chart -->
+    {#    <!-- Add JavaScript to create the chart -->#}
     <script>
-            function getRandomColor() {
+        function getRandomColor() {
             let letters = '0123456789ABCDEF';
             let color = '#';
             for (let i = 0; i < 6; i++) {
@@ -107,14 +101,16 @@
         var storageLimit = {{ storage_limit }};
         var storageUnit = "{{ storage_unit }}";
 
-
+        console.log("storageUsed", storageUsed)
+        console.log("storageLimit", storageLimit)
+        console.log("storageUnit", storageUnit)
         var ctx = document.getElementById('storageUsageChart').getContext('2d');
         var storageUsageChart = new Chart(ctx, {
             type: 'pie',
             data: {
                 labels: ['Used', 'Available'],
                 datasets: [{
-                    data: [storageUsed, storageLimit - storageUsed],
+                    data: [Math.round(storageUsed * 100) / 100, Math.round((storageLimit - storageUsed) * 100) / 100],
                     backgroundColor: [getRandomColor(), getRandomColor],
                 }]
             },
