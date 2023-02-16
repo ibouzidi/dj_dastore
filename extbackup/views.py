@@ -83,20 +83,23 @@ class UploadFilesView(View):
             # Check if the file extension is supported
             for file in files:
                 file_extension = file.name.split(".")[-1].lower()
-                print("file_extension")
-                print(file_extension)
-                if not SupportedExtension.objects.filter(extension=file_extension).exists():
-                    return JsonResponse({'data': f"File extension {file_extension} is not supported.", 'messages': [
-                        {'level_tag': 'alert-danger', 'message': f"File extension {file_extension} is not supported."}]})
+                if not SupportedExtension.objects.filter(
+                        extension=file_extension).exists():
+                    return JsonResponse(
+                        {
+                            'data': f"File extension {file_extension} "
+                                    f"is not supported.",
+                            'messages': [
+                                {'level_tag': 'alert-danger',
+                                 'message': f"File extension {file_extension} "
+                                            f"is not supported."
+                                 }]
+                        })
 
             # crypte files using Fernet encryption
             try:
                 zip_file = encrypt_files(files)
                 size = zip_file.tell()
-                # zip_file.seek(0, 2)  # move to the end of the file
-                # size = zip_file.tell()  # get the current position, which is the length of the file
-                # zip_file.seek(0)  # reset the position to the beginning of the file
-                # Check if the user has enough storage space
                 user_account = request.user
                 if user_account.subscription_plan is not None:
                     storage_limit = user_account.subscription_plan.storage_limit
@@ -122,11 +125,14 @@ class UploadFilesView(View):
                 saved_file = default_storage.save(file_name, zip_file)
                 file_path = default_storage.path(saved_file)
                 file_size = os.path.getsize(file_path)
+                request.user.storage_usage += file_size
+                request.user.save()
                 # extract the contents of the zip file
                 try:
                     extracted_content = extract_zip_contents(file_path)
                 except Exception as e:
                     return JsonResponse({'error': str(e)})
+
                 # save the file in database
                 saved_file_model = File(
                     user=request.user,
@@ -136,8 +142,6 @@ class UploadFilesView(View):
                     content=extracted_content,
                 )
                 saved_file_model.save()
-                request.user.storage_usage += file_size
-                request.user.save()
                 return JsonResponse({'data': 'Data uploaded', 'messages': [
                     {'level_tag': 'alert-success', 'message': 'Data uploaded'}]})
             except Exception as e:

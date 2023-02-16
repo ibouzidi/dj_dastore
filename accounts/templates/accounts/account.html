@@ -97,21 +97,33 @@
             }
             return color;
         }
-        var storageUsed = {{ storage_used }};
-        var storageLimit = {{ storage_limit }};
-        var storageUnit = "{{ storage_unit }}";
 
-        console.log("storageUsed", storageUsed)
-        console.log("storageLimit", storageLimit)
-        console.log("storageUnit", storageUnit)
+        var storageUsed = {{ storage_used }};
+        var storageUsedUnit = "{{ storage_used_unit }}";
+        var storageLimit = {{ storage_limit }};
+        var storageLimitUnit = "{{ storage_limit_unit }}";
+
+        if (storageUsedUnit == "GB") {
+            storageUsed *= 1024;
+        }
+        var usedPercentage = Math.round((storageUsed / (storageLimit * 1024)) * 100);
+        var availablePercentage = 100 - usedPercentage;
+
+        console.log("storageUsed", storageUsed);
+        console.log("storageUsedUnit", storageUsedUnit);
+        console.log("storageLimit", storageLimit);
+        console.log("storageLimitUnit", storageLimitUnit);
+        console.log("usedPercentage", usedPercentage);
+        console.log("availablePercentage", availablePercentage);
+
         var ctx = document.getElementById('storageUsageChart').getContext('2d');
         var storageUsageChart = new Chart(ctx, {
             type: 'pie',
             data: {
                 labels: ['Used', 'Available'],
                 datasets: [{
-                    data: [Math.round(storageUsed * 100) / 100, Math.round((storageLimit - storageUsed) * 100) / 100],
-                    backgroundColor: [getRandomColor(), getRandomColor],
+                    data: [usedPercentage, availablePercentage],
+                    backgroundColor: [getRandomColor(), getRandomColor()],
                 }]
             },
             options: {
@@ -124,15 +136,24 @@
                         label: function(tooltipItem, data) {
                             var dataset = data.datasets[tooltipItem.datasetIndex];
                             var index = tooltipItem.index;
-                            return dataset.data[index] + " " + storageUnit;
+
+                            if (index == 0) {
+                                if (storageUsedUnit == "GB") {
+                                    return 'Used: ' + (storageUsed / 1024).toFixed(2) + ' ' + storageUsedUnit;
+                                }
+                                else{
+                                    return 'Used: ' + (storageUsed).toFixed(2) + ' ' + storageUsedUnit;
+                                }
+                            } else {
+                                    return 'Available: ' + (storageLimit - (storageUsed / 1024)).toFixed(2) + ' ' + storageLimitUnit;
+                            }
                         }
                     }
                 }
             }
         });
-
-
     </script>
+
 {% endblock script %}
 
 

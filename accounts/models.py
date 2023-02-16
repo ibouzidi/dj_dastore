@@ -61,7 +61,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
                                       upload_to=get_profile_image_filepath,
                                       null=True, blank=True,
                                       default=get_default_profile_image)
-    storage_usage = models.PositiveIntegerField(default=0)
+    storage_usage = models.BigIntegerField(default=0)
     subscription_plan = models.ForeignKey(SubscriptionPlan,
                                           on_delete=models.SET_NULL, null=True)
 
