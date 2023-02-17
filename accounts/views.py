@@ -112,7 +112,6 @@ def calculate_storage_usage(account):
         storage_limit = account.subscription_plan.storage_limit * 1024 ** 3
     else:
         storage_limit = 0
-
     # Determine the unit for storage limit and usage (GB or MB)
     if storage_limit >= 1073741824:
         storage_limit = round(storage_limit / 1073741824, 2)
@@ -160,15 +159,6 @@ def account_view(request, *args, **kwargs):
         context['storage_limit'] = storage_limit
         context['storage_limit_unit'] = storage_limit_unit
         context['storage_used_unit'] = storage_used_unit
-
-        print("storage_used")
-        print(storage_used)
-        print("storage_used_unit")
-        print(storage_used_unit)
-        print("storage_limit")
-        print(storage_limit)
-        print("storage_limit_unit")
-        print(storage_limit_unit)
 
         return render(request, "accounts/account.html", context)
 
