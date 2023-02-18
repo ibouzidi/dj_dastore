@@ -5,6 +5,7 @@ from django.contrib.auth import login, authenticate, logout
 from accounts.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
 from accounts.models import Account
+from .calc_storage_limit import calculate_storage_usage
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
 import os
@@ -104,31 +105,6 @@ def get_redirect_if_exists(request):
         if request.GET.get("next"):
             redirect = str(request.GET.get("next"))
     return redirect
-
-
-def calculate_storage_usage(account):
-    # Calculate storage limit based on subscription plan
-    if account.subscription_plan is not None:
-        storage_limit = account.subscription_plan.storage_limit * 1024 ** 3
-    else:
-        storage_limit = 0
-    # Determine the unit for storage limit and usage (GB or MB)
-    if storage_limit >= 1073741824:
-        storage_limit = round(storage_limit / 1073741824, 2)
-        storage_limit_unit = "GB"
-    else:
-        storage_limit = round(storage_limit / 1048576, 2)
-        storage_limit_unit = "MB"
-
-    if account.storage_usage >= 1073741824:
-        storage_used = round(account.storage_usage / 1073741824, 2)
-        storage_used_unit = "GB"
-    else:
-        storage_used = round(account.storage_usage / 1048576, 2)
-        storage_used_unit = "MB"
-
-    # Return the calculated values
-    return storage_used, storage_limit, storage_limit_unit, storage_used_unit
 
 
 def account_view(request, *args, **kwargs):
