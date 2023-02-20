@@ -44,16 +44,21 @@
                             {% csrf_token %}
                             <div class="custom-file text-center mb-5">
                                 {{ form.as_p }}
-                                <label class="custom-file-label" for="customFile">Select files</label>
+                                <label class="custom-file-label" for="customFile" id="customFileLabel">
+                                    <span id="file-count">Select files</span>
+                                </label>
+
                                 <br>
-                                <div id="file-count"></div>
+
                                 <br>
-                                <input class="btn btn-primary" type="submit" value="Upload">
+                                <button type="submit" class="btn btn-primary">Upload</button>
+                                <button id="cancel_upload_button" class="btn btn-danger">Cancel</button>
+
                             </div>
                         </form>
                         <div class="not-visible progress" id="progress">
                         </div>
- <div id="messages"></div>
+                        <div id="messages"></div>
 
 
                     </div>
@@ -71,6 +76,8 @@
         const input_file = document.getElementById('customFile');
         const progress_bar = document.getElementById('progress');
         const messages = document.getElementById("messages")
+        let xhr = null;
+
         $("#upload_form").submit(function(e){
             e.preventDefault();
             $form = $(this)
@@ -81,14 +88,11 @@
                 progress_bar.classList.remove("not-visible");
             }
 
-            $.ajax({
+            xhr = $.ajax({
                 type: 'POST',
                 url:'{% url 'extbackup:upload_files' %}',
                 data: formData,
                 dataType: 'json',
-                beforeSend: function(){
-
-                },
                 xhr:function(){
                     const xhr = new window.XMLHttpRequest();
                     xhr.upload.addEventListener('progress', e=>{
@@ -96,20 +100,22 @@
                             const percentProgress = Math.round((e.loaded / e.total) * 100);
                             console.log(percentProgress);
                             progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success"
-                                                       role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0"
-                                                       aria-valuemax="100">${percentProgress}%</div>`
+                                               role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0"
+                                               aria-valuemax="100">${percentProgress}%</div>`
                         }
                     });
                     return xhr
                 },
                 success: function(response){
-                    console.log(response);
+                    console.log(response)
                     uploadForm.reset()
                     progress_bar.classList.add('not-visible')
                     displayJsonMessages(response);
+                     customFileLabel.innerText = "Select files"
+            updateFileCount();
                 },
                 error: function(err){
-                   displayJsonMessages(err);
+                    displayJsonMessages(err);
                 },
                 cache: false,
                 contentType: false,
@@ -117,13 +123,29 @@
             });
         });
 
+        $("#cancel_upload_button").click(function(e) {
+            e.preventDefault();
+            if(xhr !== null){
+                xhr.abort();
+                console.log('Upload cancelled');
+                progress_bar.innerHTML = '';
+                progress_bar.classList.add('not-visible');
+                messages.innerHTML = '<div class="alert alert-warning">Upload cancelled by user</div>';
+            }
+        });
 
-        document.querySelector('input[type=file]').addEventListener('change', previewFiles);
 
-        function previewFiles() {
-            var files = this.files;
-            var count = document.querySelector('#file-count');
-            count.innerHTML = files.length + (files.length > 1 ? " Files are " : " File is ")+ " selected.";
+        const file_count = document.getElementById('file-count');
+        input_file.addEventListener('change', updateFileCount);
+
+        function updateFileCount() {
+            const files = input_file.files;
+            if (files.length === 0) {
+                file_count.textContent = 'Select files';
+            } else {
+                const countText = files.length > 1 ? ' files are ' : ' file is ';
+                file_count.textContent = files.length + countText + 'selected';
+            }
         }
     </script>
 {% endblock script %}

@@ -39,11 +39,11 @@ def encrypt_files(files):
                     for inner_file in folder_zip.infolist():
                         inner_file_data = folder_zip.read(inner_file)
                         encrypted = fernet_encrypt(inner_file_data)
-                        zf.writestr(inner_file.filename + '_encrypted', encrypted)
+                        zf.writestr(inner_file.filename + '_encrypted', encrypted, compress_type=zipfile.ZIP_DEFLATED)
             else:
                 original = file.read()
                 encrypted = fernet_encrypt(original)
-                zf.writestr(file.name + '_encrypted', encrypted)
+                zf.writestr(file.name + '_encrypted', encrypted, compress_type=zipfile.ZIP_DEFLATED)
     zip_file.seek(0)
     return zip_file
 
@@ -166,7 +166,7 @@ def decrypt_zip_file(file_data):
             for file in zf.infolist():
                 original = zf.read(file)
                 decrypted = fernet.decrypt(original)
-                new_zf.writestr(file.filename, decrypted)
+                new_zf.writestr(file.filename, decrypted, compress_type=zipfile.ZIP_DEFLATED)
     new_zip_file.seek(0)
     return new_zip_file
 
