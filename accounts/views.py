@@ -151,6 +151,7 @@ def account_view(request, *args, **kwargs):
         context['zip'] = account.zip
         context['email'] = account.email
         context['profile_image'] = account.profile_image
+        context['subscription_plan'] = account.subscription_plan
 
         is_self = True
         user = request.user

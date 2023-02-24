@@ -118,11 +118,22 @@
                                     {{ email }}
                                 </h5>
                                 <p class="text-gray mb-4">{{ city|default:'' }} | {{ number }}, {{ address|default:'' }}</p>
+
+                                <p>subscription_plan : {{ subscription_plan }}</p>
                             </div>
                         </div>
                     </div>
+                            <div class="col-12 mb-4">
+                    <div class="card card-body bg-white border-light shadow-sm mb-4">
+                        <h2 class="h5 mb-4">Storage information</h2>
+                        <!-- Create a canvas element to display the chart -->
+                        <canvas id="storageUsageChart"></canvas>
+                    </div>
+            </div>
                 </div>
             </div>
+
+
         </div>
     </div>
     {#    <section class="user-profile">#}
