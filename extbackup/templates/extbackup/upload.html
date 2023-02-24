@@ -2,33 +2,21 @@
 {#{% load widget_tweaks %}#}
 {% block title %} Home {% endblock title %}
 
+{% block breadcrumb %}
+    {% include "extbackup/exbackup_breadcrumb.html" %}
+{% endblock %}
 
 {% block content %}
-    <style>
-        .not-visible{
-            display: none;
-        }
-        .file-upload input[type='file'] {
-            display: none;
-        }
+     <div class="extension_dashboard">
+        <div class="row">
+            <div class="col-12 col-xl-12">
+                <div class="card card-body bg-white border-light shadow-sm mb-4 table-wrapper table-responsive">
+                    <h2 class="h5 mb-4">Upload Files</h2>
 
-        body {
-            background: rgb(187,187,187);
-            background: linear-gradient(196deg, rgba(187,187,187,1) 0%, rgba(221,249,255,1) 100%);
-        }
-
-        .rounded-lg {
-            border-radius: 1rem;
-        }
-
-        .custom-file-label.rounded-pill {
-            border-radius: 50rem;
-        }
-
-        .custom-file-label.rounded-pill::after {
-            border-radius: 0 50rem 50rem 0;
-        }
-    </style>
+                </div>
+            </div>
+        </div>
+     </div>
     <section>
         <div class="container p-5">
 

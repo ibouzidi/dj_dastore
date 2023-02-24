@@ -1,7 +1,18 @@
 from django.conf import settings
-from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth.views import PasswordChangeView
+from django.core.mail import send_mail, BadHeaderError
+from django.db.models import Q
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
+from django.template.loader import render_to_string
+from django.urls import reverse_lazy
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from accounts.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
 from accounts.models import Account
@@ -23,18 +34,22 @@ TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 def register_view(request, plan_name, *args, **kwargs):
     user = request.user
     if user.is_authenticated:
-        return HttpResponse(
-            "You are already authenticated as " + str(user.email))
+        messages.info(request,
+                      "You are already authenticated as " + str(user.email))
+        return redirect('subscription_plan:subscription_plan_index')
 
+    try:
+        # Retrieve the selected plan
+        plan = SubscriptionPlan.objects.get(name__iexact=plan_name)
+    except SubscriptionPlan.DoesNotExist:
+        messages.error(request, f'The plan with {plan_name} does not exit.')
+        return redirect('subscription_plan:subscription_plan_index')
     if not plan_name:
         return redirect('subscription_plan:subscription_plan_index')
     context = {}
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            # Retrieve the selected plan
-            plan = SubscriptionPlan.objects.get(name__iexact=plan_name)
-
             # Create a new Account instance
             account = Account.objects.create_user(
                 email=form.cleaned_data.get('email').lower(),
@@ -56,9 +71,11 @@ def register_view(request, plan_name, *args, **kwargs):
             return redirect('home')
         else:
             context['registration_form'] = form
+            context['plan'] = plan
 
     else:
         form = RegistrationForm()
+        context['plan'] = plan
         context['registration_form'] = form
     return render(request, 'accounts/register.html', context)
 
@@ -111,12 +128,27 @@ def account_view(request, *args, **kwargs):
     context = {}
     user_id = kwargs.get("user_id")
     try:
-        account = Account.objects.get(pk=user_id)
+        account = get_object_or_404(Account, pk=user_id)
+        if account.pk != request.user.pk:
+            messages.warning(request,
+                             "You cannot see someone else's profile.")
+            return redirect("accounts:account_profile",
+                            user_id=request.user.id)
     except:
-        return HttpResponse("Something went wrong.")
+        messages.error(request, "No user with that id.")
+        return redirect("accounts:account_profile",
+                        user_id=request.user.id)
+
     if account:
         context['id'] = account.id
         context['username'] = account.username
+        context['first_name'] = account.first_name
+        context['last_name'] = account.last_name
+        context['phone'] = account.phone
+        context['address'] = account.address
+        context['number'] = account.number
+        context['city'] = account.city
+        context['zip'] = account.zip
         context['email'] = account.email
         context['profile_image'] = account.profile_image
 
@@ -209,21 +241,31 @@ def edit_account_view(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return redirect("accounts:login")
     user_id = kwargs.get("user_id")
-    account = Account.objects.get(pk=user_id)
+    account = get_object_or_404(Account, pk=user_id)
     if account.pk != request.user.pk:
-        return HttpResponse("You cannot edit someone elses profile.")
+        messages.warning(request, "You cannot edit someone else's profile.")
+        return redirect("accounts:account_profile", user_id=request.user.id)
     context = {}
     if request.POST:
         form = AccountUpdateForm(request.POST, request.FILES,
                                  instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect("accounts:account_view", user_id=account.pk)
+            messages.success(request,
+                             'Your account has be successfully updated.')
+            return redirect("accounts:account_profile", user_id=account.pk)
         else:
             form = AccountUpdateForm(request.POST, instance=request.user,
                                      initial={
                                          "id": account.pk,
                                          "email": account.email,
+                                         "first_name": account.first_name,
+                                         "last_name": account.last_name,
+                                         "address": account.address,
+                                         "phone": account.phone,
+                                         "city": account.city,
+                                         "zip": account.zip,
+                                         "number": account.number,
                                          "username": account.username,
                                          "profile_image": account.profile_image,
                                      }
@@ -234,6 +276,13 @@ def edit_account_view(request, *args, **kwargs):
             initial={
                 "id": account.pk,
                 "email": account.email,
+                "first_name": account.first_name,
+                "last_name": account.last_name,
+                "address": account.address,
+                "phone": account.phone,
+                "city": account.city,
+                "zip": account.zip,
+                "number": account.number,
                 "username": account.username,
                 "profile_image": account.profile_image,
             }
@@ -242,3 +291,17 @@ def edit_account_view(request, *args, **kwargs):
     context[
         'DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
     return render(request, "accounts/edit_account.html", context)
+
+
+class CustomPasswordChangeView(PasswordChangeView):
+    template_name = 'password_reset/password_change.html'
+
+    def get_success_url(self):
+        user_id = self.request.user.id
+        success_url = reverse_lazy('accounts:account_profile',
+                                   kwargs={'user_id': user_id})
+        return success_url
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Your password has been Updated.')
+        return super().form_valid(form)

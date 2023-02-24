@@ -1,0 +1,109 @@
+{% load static %}
+<nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-md-none">
+    <a class="navbar-brand mr-lg-5" href="/">
+        <img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="navbar-brand-dark" style="width: 100%; height: 60px">
+    </a>
+    <div class="d-flex align-items-center">
+        <button class="navbar-toggler d-md-none collapsed" type="button"
+                data-toggle="collapse" data-target="#sidebarMenu"
+                aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</nav>
+
+<div class="container-fluid bg-soft">
+    <div class="row">
+        <div class="col-12">
+            <nav id="sidebarMenu"
+                 class="sidebar d-md-block bg-primary text-white collapse px-4">
+                <div class="sidebar-sticky pt-3 mx-auto">
+                    <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+                        <div class="d-flex align-items-center">
+                            <div class="user-avatar lg-avatar mr-4">
+                                {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
+                                <img src="{{ user.avatar_url }}" class="user-avatar md-avatar rounded-circle" alt="Neil Portrait">
+                            {% else %}
+                                <img src="{% static 'dastore/default_user_icon.png' %}" class="border border-dark user-avatar md-avatar rounded-circle">
+                            {% endif %}
+                            </div>
+                            <div class="d-block">
+                                <h2 class="h6">
+                                    test
+                                </h2>
+                                <a href="/logout/"
+                                   class="btn btn-secondary text-dark btn-xs">
+                                    <span class="mr-2"><span
+                                            class="fas fa-sign-out-alt"></span></span>Sign
+                                    Out</a>
+                            </div>
+                        </div>
+                        <div class="collapse-close d-md-none">
+                            <a href="#sidebarMenu" class="fas fa-times"
+                               data-toggle="collapse"
+                               data-target="#sidebarMenu"
+                               aria-controls="sidebarMenu" aria-expanded="true"
+                               aria-label="Toggle navigation"></a>
+                        </div>
+                    </div>
+                            <div class="logo mr-auto">
+            <a href="{% url 'home' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid" style="max-height: 6.0625rem"></a>
+        </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item  ">
+                            <a href="{% url 'subscription_plan:subscription_plan_index' %}"
+                               class="nav-link">
+                                <span class="sidebar-icon"><span
+                                        class="fas fa-rocket text-danger"></span></span>
+                                <span>Plans and Prices</span>
+                            </a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a href="{% url 'extbackup:extension_list' %}"
+                               class="nav-link">
+                                <span class="sidebar-icon"><span
+                                        class="fas fa-file-alt"></span></span>
+                                <span>Extentions</span>
+                            </a>
+                        </li>
+                        <li class="nav-item" id="submenu-app-parent">
+                <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
+                      data-toggle="collapse" data-target="#submenu-app">
+                <span>
+                    <span class="sidebar-icon"><span
+                            class="fas fa-upload"></span></span>
+                    Backup
+                </span>
+                <span class="link-arrow"><span
+                        class="fas fa-chevron-right"></span></span>
+                </span>
+                            <div class="multi-level collapse " role="list"
+                                 id="submenu-app" aria-expanded="false" data-parent="#submenu-app-parent">
+                                <ul class="flex-column nav">
+                                    <li class="nav-item "><a class="nav-link"
+                                                             href="{% url 'extbackup:backup_dashboard' %}"><span><span
+                                            class="fas fa-table"></span> Backup Dashboard</span></a>
+                                    </li>
+                                    <li class="nav-item "><a class="nav-link"
+                                                             href="{% url 'extbackup:upload_files' %}"><span><span
+                                            class="fas fa-file-alt"></span> Backup files</span></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{% url 'accounts:logout' %}"
+                               class="nav-link">
+                                <span class="sidebar-icon"><span
+                                        class="fas fa-sign-out-alt text-danger"></span></span>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>

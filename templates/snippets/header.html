@@ -8,23 +8,28 @@
         <!-- NAVIGATION -->
         <nav class="nav-menu d-none d-lg-block">
             <ul>
-                <li><a href="#">Contact</a></li>
+            <li><a href="{% url 'subscription_plan:subscription_plan_index' %}">Plans and Prices</a></li>
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'subscription_plan:subscription_plan_index' %}">Subscription Plan</a></li>
                     <li><a href="{% url 'extbackup:extension_list' %}">Extentions</a></li>
                     <li><a href="{% url 'extbackup:upload_files' %}">Backup</a></li>
                     <li><a href="{% url 'extbackup:backup_dashboard' %}">Backup Dashboard</a></li>
                     <li class="drop-down">
-                        <a href="#">{{request.user.username }}
+                        <a href="#"><i class="material-symbols-outlined">account_circle</i> My account
                         </a>
                         <ul>
-								<img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" alt="profile user image" width="40" height="40">
-                            <p class="text-center">{{ request.user.username }}({{request.user.firstname }} {{ request.user.lastname }})</p>
-                            <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+                            <div class="user-info">
+                                <img src="{% if profile_image %}{{ profile_image.url }}{% else %}{% static 'dastore/default_user_icon.png' %}{% endif %}"
+                                     class="account-image rounded-circle" id="id_profile_links" data-toggle="dropdown"
+                                     aria-haspopup="true" aria-expanded="false" alt="profile user image" width="40" height="40">
+                                <p>{{ request.user.username }}</p>
+                            </div>
+                            <hr>
+
                             <li>
-
-                                <a href="{% url 'accounts:account_profile' user_id=request.user.id %}">Profil</a>
-
+                                <i class="material-symbols-outlined">person</i><a href="{% url 'accounts:account_profile' user_id=request.user.id %}">Profil</a>
+                            </li>
+                            <li>
+                                <i class="material-symbols-outlined">logout</i><a href="{% url 'accounts:logout' %}">Logout</a>
                             </li>
                         </ul>
                     </li>

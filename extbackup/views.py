@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Sum
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils import timezone
 from django.views import View
 
@@ -306,6 +306,12 @@ class SupportedExtensionCreateView(CreateView):
         # Add any additional processing here, such as sending an email or
         # logging the action.
         return response
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['breadcrumb'] = [{'url': reverse('extbackup:extension_list'), 'label': 'Extensions'},
+                                 {'url': '#', 'label': 'Create Extension'}]
+        return context
 
 
 class SupportedExtensionUpdateView(UpdateView):

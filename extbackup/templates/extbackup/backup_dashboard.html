@@ -2,92 +2,70 @@
 {% load file_size %}
 {% block title %} Backup {% endblock title %}
 
-{% block content %}
-    <section>
-        <div class="container p-5">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="card shadow mb-4">
-                        <div class="card-body text-center">
-                            <div style="margin-right: 20px">
-                                <a class="btn btn-primary mb-2 d-block" href="{% url 'extbackup:backup_refresh' %}">
-                                    Refresh
-                                </a>
-                            </div>
-                            <!-- upload your file form -->
-                            <br>
-                            <form action="{% url 'extbackup:delete_zip_file' %}" method="post">
-                                {% csrf_token %}
-                                <button class="btn btn-danger mb-2 d-flex" type="submit">Delete Selected Files</button>
-                                <table class="table">
+{% block breadcrumb %}
+    {% include "extbackup/exbackup_breadcrumb.html" %}
+{% endblock %}
 
-                                    <thead class="thead-dark">
-                                    <tr>
-                                        <th><input id="check_all" type="checkbox"></th>
-                                        <th scope="col">Backup</th>
-                                        <th scope="col">Description</th>
-                                        <th scope="col">Date upload</th>
-                                        <th scope="col">Size</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {% for file in zip_files %}
-                                        <tr>
-                                            <td><input type="checkbox" name="ids" value="{{ file.0 }}"></td>
-                                            <td scope="row"><i class="fa fa-check-circle checkicon"></i> {{file.1}}</td>
-                                            <td>{{file.2}}</td>
-                                            <td>{{file.3}}</td>
-                                            <td>{{ file.4|sizify }}</td>
-                                            <td>
-                                                {#                                            <a href="{% url 'extbackup:delete_zip_file' file.0  %}" class="badge badge-danger xl">🗙</a>#}
-                                                <a href="{% url 'extbackup:download_zip_file' file.0  %}" class="badge badge-primary">📥</a>
-                                                <a href="{% url 'extbackup:view_zip_content' file.0  %}" class="badge badge-primary">VOIR</a></td>
-                                        </tr>
-                                    {%endfor%}
-                                    </tbody>
-                                </table>
-                            </form>
-                        </div>
+{% block content %}
+    <div class="backup_dashboard">
+        <div class="row">
+            <div class="col-12 col-xl-12">
+                <div class="card card-body bg-white border-light shadow-sm mb-4 table-wrapper table-responsive">
+                    <h2 class="h5 mb-4">Backup Dashboard</h2>
+                    <div class="mt-3">
+                        <a href="{% url 'extbackup:backup_refresh' %}" class="btn btn-primary mb-2">Refresh</a>
                     </div>
+                    <form action="{% url 'extbackup:delete_zip_file' %}" method="post">
+                        {% csrf_token %}
+                        <button class="btn btn-danger mb-2" type="submit">Delete Selected Files</button>
+                        <table class="table table-hover">
+                            <thead class="thead-dark">
+                            <tr>
+                                <th><input id="check_all" type="checkbox"></th>
+                                <th scope="col">Backup</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Date upload</th>
+                                <th scope="col">Size</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for file in zip_files %}
+                                <tr>
+                                    <td><input type="checkbox" name="ids" value="{{ file.0 }}"></td>
+                                    <td scope="row"><i class="fa fa-check-circle checkicon"></i> {{file.1}}</td>
+                                    <td>{{file.2}}</td>
+                                    <td>{{file.3}}</td>
+                                    <td>{{ file.4|sizify }}</td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="icon icon-sm">
+                                            <span class="fas fa-ellipsis-h icon-dark"></span>
+                                        </span>
+                                                <span class="sr-only">Toggle Dropdown</span>
+                                            </button>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' file.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
+                                                <a class="dropdown-item text-info" href="{% url 'extbackup:view_zip_content' file.0  %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                            </div>
+                                        </div>
+                                </tr>
+                            {%endfor%}
+                            </tbody>
+                        </table>
+                    </form>
                 </div>
             </div>
         </div>
-    </section>
-
-    <style>
-        .file-upload input[type='file'] {
-            display: none;
-        }
-
-        body {
-            background: rgb(187,187,187);
-            background: linear-gradient(196deg, rgba(187,187,187,1) 0%, rgba(221,249,255,1) 100%);
-        }
-
-        .rounded-lg {
-            border-radius: 1rem;
-        }
-
-        .custom-file-label.rounded-pill {
-            border-radius: 50rem;
-        }
-
-        .custom-file-label.rounded-pill::after {
-            border-radius: 0 50rem 50rem 0;
-        }
-        .checkicon {
-            color: green;
-            font-size: 19px;
-        }
-    </style>
+    </div>
 
 {% endblock content %}
 
 {% block script %}
-
+    {% include "snippets/add_active_class.html" %}
     <script>
-       $(function() {
+        $(function() {
             //If check_all checked then check all table rows
             $("#check_all").on("click", function () {
                 if ($("input:checkbox").prop("checked")) {

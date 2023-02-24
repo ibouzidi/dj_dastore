@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block middlebar %}
-    {% include "accounts/account_middlebar.html" %}
+{% block breadcrumb %}
+    {% include "accounts/account_breadcrumb.html" %}
 {% endblock %}
 
 
@@ -11,7 +11,7 @@
 
     <style type="text/css">
         .image-container{
-            max-width: 250px;
+            {#max-width: 250px;#}
             height: auto;
             position: relative;
         }
@@ -37,57 +37,194 @@
             cursor: pointer;
         }
     </style>
-    <section class="user-profile">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="card profile-card">
-                    <div class="card-body">
-                        <div class="d-flex flex-column justify-content-center p-4">
-                            <div class="mb-2" id="id_image_crop_confirm">
-                                <span id="id_cancel" class="material-icons">cancel</span>
-                                <span id="id_confirm" class="material-icons">check</span>
-                            </div>
-                            <div class="image-container" id="id_image_container">
-	  				            <img class="border border-dark rounded-circle img-fluid mx-auto profile-image" id="id_profile_image_display" src="{% if form.initial.profile_image %}{{ form.initial.profile_image.url }}{% else %}{% static 'dastore/default_user_icon.png' %}{% endif %}" alt="codingwithmitch logo">
-                                <div class="middle" id="id_middle_container">
-                                    <div class="text" id="id_text">Edit</div>
+    <div class="profil_settings">
+        <form method="POST" enctype="multipart/form-data" class="form-signin">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-12 col-xl-8">
+                    <div class="card card-body bg-white border-light shadow-sm mb-4">
+                        <h2 class="h5 mb-4">Profile information</h2>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div>
+                                    <label for="first_name">First Name</label>
+                                    <input name="first_name" class="form-control" id="first_name" type="text"
+                                           placeholder="Enter your first name" value="{{ form.initial.first_name }}"
+                                           required>
                                 </div>
                             </div>
-                            <form class="form-signin" method="post">
-                                {% csrf_token %}
-                                <input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
-                                <h6 class="mt-4 field-heading">Email</h6>
-                                <input type="email" name="email" id="id_input_email" class="form-control" placeholder="Email address" required autofocus value={{form.initial.email}}>
-                                <h6 class="mt-4 field-heading">Username</h6>
-                                <input type="text" name="username" id="id_input_username" class="form-control" placeholder="Username" required
-                                       value="{{form.initial.username}}">
-
-                                {% for field in form %}
-                                    <p>
-                                        {% for error in field.errors %}
-                                            <p style="color: red">{{ error }}</p>
-                                        {% endfor %}
-                                    </p>
+                            <div class="col-md-6 mb-3">
+                                <div>
+                                    <label for="last_name">Last Name</label>
+                                    <input name="last_name" class="form-control" id="last_name" type="text"
+                                           placeholder="Also your last name" value="{{ form.initial.last_name }}"
+                                           required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input name="email" class="form-control" id="email" type="email"
+                                           placeholder="name@company.com" value="{{ form.initial.email }}" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input name="username" class="form-control" id="username" type="text"
+                                           placeholder="Username" value="{{ form.initial.username }}">
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="phone">Phone</label>
+                                    <input name="phone" class="form-control" id="phone" type="number"
+                                           placeholder="+12-345 678 910" value="{{ form.initial.phone }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <h2 class="h5 my-4">Address</h2>
+                        <div class="row">
+                            <div class="col-sm-9 mb-3">
+                                <div class="form-group">
+                                    <label for="address">Address</label>
+                                    <input name="address" class="form-control" id="address" type="text"
+                                           placeholder="Enter your home address" value="{{ form.initial.address|default:'' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 mb-3">
+                                <div class="form-group">
+                                    <label for="number">Number</label>
+                                    <input name="number" class="form-control" id="number" type="number"
+                                           placeholder="No." value="{{ form.initial.number|default:'' }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-4 mb-3">
+                                <div class="form-group">
+                                    <label for="city">City</label>
+                                    <input name="city" class="form-control" id="city" type="text" placeholder="City"
+                                           value="{{ form.initial.city|default:'' }}" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label for="zip">ZIP</label>
+                                    <input name="zip" class="form-control" id="zip" type="tel" placeholder="ZIP"
+                                           value="{{ form.initial.zip|default:'' }}" required>
+                                </div>
+                            </div>
+                        </div>
+                        {% for field in form %}
+                            <p>
+                                {% for error in field.errors %}
+                                    <p style="color: red">{{ field.label}}, {{ error }}</p>
                                 {% endfor %}
-                                {% if form.non_field_errors %}
-                                    <div style="color: red">
-                                        <p>{{form.non_field_errors}}</p>
+                            </p>
+                        {% endfor %}
+                        {% if form.non_field_errors %}
+                            <div style="color: red">
+                                <p>{{form.non_field_errors}}</p>
+                            </div>
+
+                        {% endif %}
+                        <div class="mt-3">
+                            <button type="submit" class="btn btn-primary">Save All</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-xl-4">
+                    <div class="row">
+                        <div class="col-12 mb-4">
+                            <div class="card border-light text-center p-0">
+
+                                <div class="mb-2" id="id_image_crop_confirm">
+                                    <span id="id_cancel" class="material-icons">cancel</span>
+                                    <span id="id_confirm" class="material-icons">check</span>
+                                </div>
+                                <div class="card-body py-5">
+                                    <div class="image-container" id="id_image_container">
+                                        {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
+                                            <img src="{{ user.avatar_url }}" id="id_profile_image_display" class="border border-dark user-avatar large-avatar rounded-circle mx-auto profile-image" alt="Neil Portrait">
+                                        {% else %}
+                                            <img src="{% static 'dastore/default_user_icon.png' %}" id="id_profile_image_display" class="border border-dark user-avatar large-avatar rounded-circle mx-auto profile-image">
+                                        {% endif %}
+                                        <div class="middle" id="id_middle_container">
+                                            <div class="text" id="id_text">Edit</div>
+                                        </div>
                                     </div>
-
-                                {% endif %}
-
-                                <div class="d-flex flex-column mt-4">
-                                    <button class="mt-4 btn btn-primary flex-grow-1" type="submit">Save</button>
                                 </div>
 
-                            </form>
+                                <input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
 
+                                <h4 class="h3">{{ form.initial.username }}</h4>
+                                <h4 class="font-weight-normal">{{ form.initial.first_name }} {{ form.initial.last_name }}</h4>
+                                <h5 class="font-weight-normal">
+                                    {{ email }}
+                                </h5>
+                                <p class="text-gray mb-4">{{ form.initial.city|default:'' }} | {{ form.initial.number }}, {{ form.initial.address|default:'' }}</p>
+                                <div class="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </form>
+    </div>
+    {#    <section class="user-profile">#}
+    {#        <div class="container-fluid">#}
+    {#            <div class="row justify-content-center">#}
+    {#                <div class="card profile-card">#}
+    {#                    <div class="card-body">#}
+    {#                        <div class="d-flex flex-column justify-content-center p-4">#}
+    {#                            <div class="mb-2" id="id_image_crop_confirm">#}
+    {#                                <span id="id_cancel" class="material-icons">cancel</span>#}
+    {#                                <span id="id_confirm" class="material-icons">check</span>#}
+    {#                            </div>#}
+    {#                            <div class="image-container" id="id_image_container">#}
+    {#                                <img class="border border-dark rounded-circle img-fluid mx-auto profile-image" id="id_profile_image_display" src="{% if form.initial.profile_image %}{{ form.initial.profile_image.url }}{% else %}{% static 'dastore/default_user_icon.png' %}{% endif %}" alt="codingwithmitch logo">#}
+    {#                                <div class="middle" id="id_middle_container">#}
+    {#                                    <div class="text" id="id_text">Edit</div>#}
+    {#                                </div>#}
+    {#                            </div>#}
+    {#                            <form class="form-signin" method="post">#}
+    {#                                {% csrf_token %}#}
+    {#                                <input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">#}
+    {#                                <h6 class="mt-4 field-heading">Email</h6>#}
+    {#                                <input type="email" name="email" id="id_input_email" class="form-control" placeholder="Email address" required autofocus value={{form.initial.email}}>#}
+    {#                                <h6 class="mt-4 field-heading">Username</h6>#}
+    {#                                <input type="text" name="username" id="id_input_username" class="form-control" placeholder="Username" required#}
+    {#                                       value="{{form.initial.username}}">#}
+    {##}
+    {#                                {% for field in form %}#}
+    {#                                    <p>#}
+    {#                                        {% for error in field.errors %}#}
+    {#                                            <p style="color: red">{{ error }}</p>#}
+    {#                                        {% endfor %}#}
+    {#                                    </p>#}
+    {#                                {% endfor %}#}
+    {#                                {% if form.non_field_errors %}#}
+    {#                                    <div style="color: red">#}
+    {#                                        <p>{{form.non_field_errors}}</p>#}
+    {#                                    </div>#}
+    {##}
+    {#                                {% endif %}#}
+    {##}
+    {#                                <div class="d-flex flex-column mt-4">#}
+    {#                                    <button class="mt-4 btn btn-primary flex-grow-1" type="submit">Save</button>#}
+    {#                                </div>#}
+    {##}
+    {#                            </form>#}
+    {##}
+    {#                        </div>#}
+    {#                    </div>#}
+    {#                </div>#}
+    {#            </div>#}
+    {#        </div>#}
+    {#    </section>#}
 
     <script type="text/javascript">
 

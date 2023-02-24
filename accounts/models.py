@@ -52,6 +52,13 @@ class Account(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=30, unique=True)
     date_joined = models.DateTimeField(verbose_name='date joined',
                                        auto_now_add=True)
+    first_name = models.CharField(max_length=20, blank=True)
+    last_name = models.CharField(max_length=20, blank=True)
+    phone = models.CharField(max_length=32, null=True, blank=True)
+    address = models.CharField(max_length=255, null=True, blank=True)
+    number = models.CharField(max_length=32, null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    zip = models.CharField(max_length=30, null=True, blank=True)
     last_login = models.DateTimeField(verbose_name='last login', auto_now=True)
     is_admin = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
@@ -77,10 +84,22 @@ class Account(AbstractBaseUser, PermissionsMixin):
         return str(self.profile_image)[str(self.profile_image).index(
             'profile_images/' + str(self.pk) + "/"):]
 
+    @property
+    def avatar_url(self):
+        if self.profile_image:
+            if settings.MEDIA_URL.startswith('/media/'):
+                return self.profile_image.url
+            else:
+                return settings.MEDIA_URL + self.get_profile_image_filename()
+        else:
+            return settings.STATIC_URL + 'dastore/default_user_icon.png'
+
     # @property
     # def profile_image_url(self):
-    #     if self.profile_image and hasattr(self.profile_image, 'url'):
+    #     if self.profile_image:
     #         return self.profile_image.url
+    #     else:
+    #         return 'dastore/default_user_icon.png'
 
     # For checking permissions. to keep it simple all admin have ALL permissons
     def has_perm(self, perm, obj=None):

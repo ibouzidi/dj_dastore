@@ -48,7 +48,17 @@ class AccountAuthenticationForm(forms.ModelForm):
 class AccountUpdateForm(forms.ModelForm):
 	class Meta:
 		model = Account
-		fields = ('username', 'email', 'profile_image')
+		fields = (
+			'email',
+			'username',
+			'first_name',
+			'last_name',
+			'city', 'phone',
+			'number',
+			'address',
+			'zip',
+			'profile_image',
+			)
 
 	def clean_email(self):
 		email = self.cleaned_data['email'].lower()
@@ -69,6 +79,13 @@ class AccountUpdateForm(forms.ModelForm):
 	def save(self, commit=True):
 		account = super(AccountUpdateForm, self).save(commit=False)
 		account.username = self.cleaned_data['username']
+		account.first_name = self.cleaned_data['first_name']
+		account.last_name = self.cleaned_data['last_name']
+		account.address = self.cleaned_data['address']
+		account.phone = self.cleaned_data['phone']
+		account.city = self.cleaned_data['city']
+		account.number = self.cleaned_data['number']
+		account.zip = self.cleaned_data['zip']
 		account.email = self.cleaned_data['email'].lower()
 		account.profile_image = self.cleaned_data['profile_image']
 		if commit:

@@ -1,0 +1,29 @@
+<script>
+    $(document).ready(function() {
+    // Get the current URL path and split it into an array of components
+    var pathComponents = window.location.pathname.split('/');
+
+    // Loop through each nav link and add the active class if it matches the current path
+    $('.nav-item a').each(function() {
+        var linkPathComponents = $(this).attr('href').split('/');
+        if (arraysEqual(pathComponents, linkPathComponents)) {
+            $(this).addClass('active');
+            $(this).parents('.nav-item').addClass('active');
+            $(this).parents('.collapse').addClass('show');
+        }
+    });
+});
+
+// Helper function to compare two arrays
+function arraysEqual(a, b) {
+    if (a === b) return true;
+    if (a == null || b == null) return false;
+    if (a.length != b.length) return false;
+
+    for (var i = 0; i < a.length; ++i) {
+        if (a[i] !== b[i]) return false;
+    }
+
+    return true;
+}
+</script>
