@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic");
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+/* Import Font Awesome */
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
 
 
 /*
@@ -167,7 +169,7 @@ Header
     list-style: none;
 }
 
-.nav-menu>ul>li {
+.nav-menu > ul > li {
     position: relative;
     white-space: nowrap;
     float: left;
@@ -183,13 +185,14 @@ Header
     color: var(--clr-dark-2);
 }
 
-.nav-menu a > i{
+.nav-menu a > i {
     margin-right: 5px;
 
 }
+
 .nav-menu a:hover,
-.nav-menu .active>a,
-.nav-menu li:hover>a {
+.nav-menu .active > a,
+.nav-menu li:hover > a {
     color: var(--clr-cod-grey);
     text-decoration: none;
 }
@@ -208,7 +211,7 @@ Header
     transition: ease all 0.3s;
 }
 
-.nav-menu .drop-down .user-info{
+.nav-menu .drop-down .user-info {
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -216,14 +219,14 @@ Header
 
 }
 
-.nav-menu .drop-down .user-info p{
+.nav-menu .drop-down .user-info p {
     margin-left: 10px;
     font-weight: 600;
     color: var(--clr-dark-2)
 
 }
 
-.nav-menu .drop-down hr{
+.nav-menu .drop-down hr {
     border: 0;
     height: 1px;
     width: 100%;
@@ -231,7 +234,7 @@ Header
     margin: 15px 0 10px;
 }
 
-.nav-menu .drop-down:hover>ul {
+.nav-menu .drop-down:hover > ul {
     opacity: 1;
     top: 100%;
     visibility: visible;
@@ -252,12 +255,12 @@ Header
 }
 
 .nav-menu .drop-down ul a:hover,
-.nav-menu .drop-down ul .active>a,
-.nav-menu .drop-down ul li:hover>a {
+.nav-menu .drop-down ul .active > a,
+.nav-menu .drop-down ul li:hover > a {
     color: var(--clr-shark);
 }
 
-.nav-menu .drop-down>a:after {
+.nav-menu .drop-down > a:after {
     content: "\ea99";
     font-family: IcoFont;
     padding-left: 0.3125rem;
@@ -268,17 +271,17 @@ Header
     left: calc(100% - 30px);
 }
 
-.nav-menu .drop-down .drop-down:hover>ul {
+.nav-menu .drop-down .drop-down:hover > ul {
     opacity: 1;
     top: 0;
     left: 100%;
 }
 
-.nav-menu .drop-down .drop-down>a {
+.nav-menu .drop-down .drop-down > a {
     padding-right: 2.1875rem;
 }
 
-.nav-menu .drop-down .drop-down>ul a:after {
+.nav-menu .drop-down .drop-down > ul a:after {
     content: "\eaa0";
     font-family: IcoFont;
     position: absolute;
@@ -290,11 +293,11 @@ Header
         left: -90%;
     }
 
-    .nav-menu .drop-down .drop-down:hover>ul {
+    .nav-menu .drop-down .drop-down:hover > ul {
         left: -100%;
     }
 
-    .nav-menu .drop-down .drop-down>a:after {
+    .nav-menu .drop-down .drop-down > a:after {
         content: "\ea9d";
     }
 }
@@ -350,19 +353,19 @@ Header
     outline: none;
 }
 
-.mobile-nav a > i{
+.mobile-nav a > i {
     margin-right: 5px;
 
 }
 
 .mobile-nav a:hover,
-.mobile-nav .active>a,
-.mobile-nav li:hover>a {
+.mobile-nav .active > a,
+.mobile-nav li:hover > a {
     color: var(--clr-dark-1);
     text-decoration: none;
 }
 
-.mobile-nav .drop-down>a:after {
+.mobile-nav .drop-down > a:after {
     content: "\ea99";
     font-family: IcoFont;
     padding-left: 0.625rem;
@@ -370,11 +373,11 @@ Header
     right: 0.9375rem;
 }
 
-.mobile-nav .active.drop-down>a:after {
+.mobile-nav .active.drop-down > a:after {
     content: "\eaa1";
 }
 
-.mobile-nav .drop-down>a {
+.mobile-nav .drop-down > a {
     padding-right: 2.1875rem;
 }
 
@@ -383,7 +386,7 @@ Header
     overflow: hidden;
 }
 
-.mobile-nav .drop-down .user-info{
+.mobile-nav .drop-down .user-info {
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -391,14 +394,14 @@ Header
 
 }
 
-.mobile-nav .drop-down .user-info p{
+.mobile-nav .drop-down .user-info p {
     margin-left: 10px;
     font-weight: 600;
     color: var(--clr-dark-2)
 
 }
 
-.mobile-nav .drop-down hr{
+.mobile-nav .drop-down hr {
     border: 0;
     height: 1px;
     width: 30%;
@@ -492,7 +495,8 @@ Header
 
 }
 
-#footer .footer-top .footer-links {}
+#footer .footer-top .footer-links {
+}
 
 #footer .footer-top .footer-links ul {
     list-style: none;
@@ -570,9 +574,7 @@ Header
 }
 
 #footer .footer-bottom {
-    border-top: 0.0625rem
-        /* 1px */
-    solid rgba(238, 238, 238, 0.16);
+    border-top: 0.0625rem /* 1px */ solid rgba(238, 238, 238, 0.16);
     color: var(--clr-white);
 }
 
@@ -628,9 +630,11 @@ Header
     height: 1px;
     background: #eee;
 }
+
 .h-custom {
     height: calc(100% - 73px);
 }
+
 @media (max-width: 450px) {
     .h-custom {
         height: 100%;
@@ -644,7 +648,7 @@ Header
 */
 
 .user-profile .card,
-.user-profile .card-body{
+.user-profile .card-body {
     background-color: var(--clr-white);
     box-shadow: 0 7px 10px 5px rgba(0, 0, 0, 0.15);
 }
@@ -658,7 +662,7 @@ Header
     color: var(--clr-shark);
     cursor: pointer;
     display: inline-block;
-    font-family: Circular,Helvetica,sans-serif;
+    font-family: Circular, Helvetica, sans-serif;
     font-size: 1.125rem;
     font-weight: 700;
     letter-spacing: -.01em;
@@ -689,10 +693,10 @@ Header
 
 .btn-dark-all:focus:before {
     content: "";
-    left: calc(-1*.375rem);
+    left: calc(-1 * .375rem);
     pointer-events: none;
     position: absolute;
-    top: calc(-1*.375rem);
+    top: calc(-1 * .375rem);
     transition: border-radius;
     user-select: none;
 }
@@ -712,7 +716,7 @@ Header
 
 .my-form select,
 .my-form input,
-.my-form textarea{
+.my-form textarea {
     border: 1px solid var(--clr-cod-grey);
     color: var(--white);
     background: var(--clr-swift);
@@ -729,16 +733,19 @@ Header
     background-color: #ffffff;
     padding: 3rem 4rem;
 }
+
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
     .single_price_plan {
         padding: 3rem;
     }
 }
+
 @media only screen and (max-width: 575px) {
     .single_price_plan {
         padding: 3rem;
     }
 }
+
 .single_price_plan::after {
     position: absolute;
     content: "";
@@ -750,12 +757,14 @@ Header
     z-index: 1;
     left: 0;
 }
+
 .single_price_plan .title {
     text-transform: capitalize;
     -webkit-transition-duration: 500ms;
     transition-duration: 500ms;
     margin-bottom: 2rem;
 }
+
 .single_price_plan .title span {
     color: #ffffff;
     padding: 0.2rem 0.6rem;
@@ -766,23 +775,28 @@ Header
     margin-bottom: 0.5rem;
     border-radius: 0.25rem;
 }
+
 .single_price_plan .title h3 {
     font-size: 1.25rem;
 }
+
 .single_price_plan .title p {
     font-weight: 300;
     line-height: 1;
     font-size: 14px;
 }
+
 .single_price_plan .title .line {
     width: 80px;
     height: 4px;
     border-radius: 10px;
     background-color: #3f43fd;
 }
+
 .single_price_plan .price {
     margin-bottom: 1.5rem;
 }
+
 .single_price_plan .price h4 {
     position: relative;
     z-index: 1;
@@ -797,10 +811,12 @@ Header
     background-image: -webkit-gradient(linear, left top, right top, from(#e24997), to(#2d2ed4));
     background-image: linear-gradient(90deg, #e24997, #2d2ed4);
 }
+
 .single_price_plan .description {
     position: relative;
     margin-bottom: 1.5rem;
 }
+
 .single_price_plan .description p {
     line-height: 16px;
     margin: 0;
@@ -813,19 +829,23 @@ Header
     -ms-grid-row-align: center;
     align-items: center;
 }
+
 .single_price_plan .description p i {
     color: #2ecc71;
     margin-right: 0.5rem;
 }
+
 .single_price_plan .description p .lni-close {
     color: #e74c3c;
 }
+
 .single_price_plan.active,
 .single_price_plan:hover,
 .single_price_plan:focus {
     -webkit-box-shadow: 0 6px 50px 8px rgba(21, 131, 233, 0.15);
     box-shadow: 0 6px 50px 8px rgba(21, 131, 233, 0.15);
 }
+
 .single_price_plan .side-shape img {
     position: absolute;
     width: auto;
@@ -879,3 +899,121 @@ Header
 /*    background-color: #fff!important;*/
 /*    color: #000!important;*/
 /*}*/
+
+/* Tree view styles */
+.main-tree {
+    list-style: none;
+    padding-left: 1em;
+}
+
+/* Folder and subfolder icon */
+.pure-tree li:has(> ul) > label:before {
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    display: inline-block;
+    font-family: "Font Awesome 5 Free", sans-serif;
+    font-weight: 900;
+    content: "\f07b";
+    padding-right: 1.25em;
+    transition: transform 0.2s ease-in-out;
+    color: var(--clr-shark);
+}
+
+/* Children (files) icon */
+.pure-tree li:not(:has(> ul)) > label:before {
+    width: 1em;
+    height: 1em;
+    line-height: 1em;
+    display: inline-block;
+    font-family: "Font Awesome 5 Free", sans-serif;
+    font-weight: 400;
+    content: "\f15b";
+    padding-right: 1.25em;
+    color: var(--clr-shark);
+}
+
+/* Children (files) icon on hover */
+.pure-tree li:not(:has(> ul)) > label:hover {
+    background-color: var(--clr-grey-1);
+}
+
+/* Folder and subfolder label */
+.pure-tree li > label {
+    display: block;
+    cursor: pointer;
+    color: var(--clr-shark);
+    padding: 0.525em 1.125em 1.125em 0;
+}
+
+/* Hide all subfolders by default */
+.pure-tree ul ul {
+    display: none;
+}
+
+/* Show subfolders when the parent folder is open */
+.pure-tree li:has(> ul) > label.open ~ ul {
+    display: block;
+}
+
+/* Style the folder and subfolder checkboxes */
+.pure-tree li input[type="checkbox"] {
+    display: none;
+}
+
+.pure-tree li > label:before {
+    content: "\f10c";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 400;
+    margin-right: 5px;
+    font-size: 16px;
+    color: var(--clr-shark);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+.pure-tree li > label.open:before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 400;
+    margin-right: 5px;
+    font-size: 16px;
+    color: var(--clr-shark);
+    cursor: pointer;
+}
+
+/* Style the folder and subfolder labels */
+.pure-tree li > label {
+    position: relative;
+    padding: 5px 10px;
+    margin: 2px 0;
+    display: block;
+    cursor: pointer;
+    color: var(--clr-shark);
+    font-weight: 600;
+    border-radius: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.pure-tree li > label:hover {
+    background-color: var(--clr-grey-1);
+}
+
+/* Style the child nodes */
+.pure-tree li ul li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Style the child nodes */
+.pure-tree li ul li {
+    margin: 0;
+    padding: 0;
+}
+
+/* Style the child node labels */
+.pure-tree li ul li > label {
+    padding: 5px 10px;
+    margin: 2px 0;
+    display: block;
+    cursor: pointer;
+}

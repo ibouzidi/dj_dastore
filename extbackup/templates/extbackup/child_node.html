@@ -1,0 +1,11 @@
+<li>
+    <input type="checkbox" id="trigger-{{ child.name }}" checked="checked">
+    <label for="trigger-{{ child.name }}">{{ child.name }}</label>
+    {% if child.children %}
+        <ul class="pure-tree dropdown-toggle">
+            {% for grandchild in child.children %}
+                {% include "extbackup/child_node.html" with child=grandchild %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

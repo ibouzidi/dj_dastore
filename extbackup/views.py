@@ -227,36 +227,6 @@ class DeleteZipFileView(View):
         return redirect('extbackup:backup_dashboard')
 
 
-# def build_tree(data, parent=None):
-#     data = json.loads(data)
-#     tree = defaultdict(list)
-#     print(data)
-#     for key, value in data.items():
-#         print("key")
-#         print(key)
-#         print("value")
-#         print(value)
-#         if parent == key:
-#             print("YES")
-#             tree[parent].append(value)
-#             print(tree)
-#             print(data)
-#             tree.update(build_tree(json.dumps(value), parent=key))
-#     return tree
-
-def build_tree(data, parent=None):
-    tree = []
-    for key, value in data.items():
-        if not parent:
-            node = {"name": key}
-        else:
-            node = {"name": key, "parent": parent}
-        if isinstance(value, dict):
-            node["children"] = build_tree(value, key)
-        tree.append(node)
-    return tree
-
-
 def view_zip_content(request, file_id):
     try:
         file = File.objects.get(pk=file_id)
@@ -264,8 +234,24 @@ def view_zip_content(request, file_id):
         messages.error(request, "File not found")
         return redirect('extbackup:backup_dashboard')
 
+    def build_tree(data, parent=None):
+        tree = []
+        for key, value in data.items():
+            if not key:
+                continue
+            if not parent:
+                node = {"name": key}
+            else:
+                node = {"name": key, "parent": parent}
+            if isinstance(value, dict):
+                node["children"] = build_tree(value, key)
+            tree.append(node)
+        return tree
+
     tree = build_tree(file.content)
+    print(tree)
     return render(request, 'extbackup/view_zip_content.html', {'tree': tree})
+
 
 
 def backup_refresh(request):
