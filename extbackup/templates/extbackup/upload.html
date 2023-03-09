@@ -7,133 +7,468 @@
 {% endblock %}
 
 {% block content %}
-     <div class="extension_dashboard">
+    <style>
+        /* Styling for the upload form */
+
+        .dragAndUploadManual {
+            display: none;
+        }
+
+        .dragAndUpload {
+            color: rgb(100,100,100);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font: 0/1em "Helvetica Neue", "Segoe UI", sans-serif;
+            font-weight: 400;
+            height: 200px;
+            line-height: 16px;
+            position: relative;
+            text-align: center;
+            -moz-transition: all .2s;
+            -webkit-transition: all .2s;
+            transition: all .05s;
+            width: 100%;
+            border: 2px dashed gray;
+            border-radius: 10px;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .dragAndUploadText{
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .dragAndUploadTextSmall{
+            display: block;
+            font-size: 20px;
+            margin-top: 20px;
+            font-weight: normal;
+        }
+        {#.dragAndUpload.dragAndUploadFailure .dragAndUploadIcon {#}
+        {#    background: rgb(100,0,0);#}
+        {#}#}
+        .dragAndUpload.dragAndUploadActive .dragAndUploadIcon .fas {
+            transform: rotate(180deg);
+        }
+        .dragAndUpload:hover {
+            border: 2px dashed #167bff;
+        }
+
+        .dragAndUploadIcon {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: #a5a5a5;
+            margin-bottom: 10px;
+        }
+
+        .dragAndUploadIconNeutral {
+            display: block;
+        }
+
+        .dragAndUploadIconUploading,
+        .dragAndUploadIconSuccess,
+        .dragAndUploadIconFailure {
+            display: none;
+        }
+
+        .dragAndUploadCounter {
+            display: none;
+            font-size: 18px;
+            font-weight: bold;
+            color: #a5a5a5;
+            margin-top: 5px;
+        }
+
+        /* Styling for the upload progress */
+        .dragAndUploadUploading .dragAndUploadIconNeutral,
+        .dragAndUploadUploading .dragAndUploadIconSuccess,
+        .dragAndUploadUploading .dragAndUploadIconFailure {
+            display: none;
+        }
+
+        .dragAndUploadUploading .dragAndUploadIconUploading {
+            display: block;
+        }
+
+        .dragAndUploadUploading .dragAndUploadTextLarge {
+            display: none;
+        }
+
+        .dragAndUploadUploading .dragAndUploadTextSmall {
+            display: block;
+        }
+
+        /* Styling for the upload success */
+        .dragAndUploadSuccess .dragAndUploadIconNeutral,
+        .dragAndUploadSuccess .dragAndUploadIconUploading,
+        .dragAndUploadSuccess .dragAndUploadIconFailure {
+            display: none;
+        }
+
+        .dragAndUploadSuccess .dragAndUploadIconSuccess {
+            display: block;
+            color: green;
+        }
+
+        .dragAndUploadSuccess .dragAndUploadCounter {
+            display: none;
+            color: green;
+        }
+
+        .dragAndUploadSuccess .dragAndUploadTextSmall {
+            display: block;
+        }
+
+        .dragAndUploadManual {
+            display: none;
+        }
+        /* Styling for the upload failure */
+        .dragAndUploadFailure .dragAndUploadIconNeutral,
+        .dragAndUploadFailure .dragAndUploadIconUploading,
+        .dragAndUploadFailure .dragAndUploadIconSuccess {
+            display: none;
+            color: green;
+        }
+
+        .dragAndUploadFailure .dragAndUploadIconFailure {
+            display: block;
+            color: red;
+        }
+
+        .dragAndUploadFailure .dragAndUploadCounter {
+            display: none;
+            color: red;
+        }
+
+        .dragAndUploadFailure .dragAndUploadTextSmall {
+            display: block;
+        }
+        .dragAndUpload.dragAndUploadUploading .dragAndUploadCounter,
+        .dragAndUpload.dragAndUploadSuccess .dragAndUploadCounter,
+        .dragAndUpload.dragAndUploadFailure .dragAndUploadCounter {
+            display: block;
+        }
+    </style>
+    <div class="upload_view">
         <div class="row">
             <div class="col-12 col-xl-12">
-                <div class="card card-body bg-white border-light shadow-sm mb-4 table-wrapper table-responsive">
+                <div class="card card-body bg-white border-light shadow-sm mb-4">
                     <h2 class="h5 mb-4">Upload Files</h2>
+                    <form enctype="multipart/form-data" method="post" action="">
+                        {% csrf_token %}
+                        <p>
+                            <label for="myDragElement" class="dragAndUpload" data-post-string="">
+                                        <span class="dragAndUploadIcon">
+                                            <i class="dragAndUploadIconNeutral fas fa-arrow-up"></i>
+                                            <i class="dragAndUploadIconUploading fas fa-cog fa-spin"></i>
+                                            <i class="dragAndUploadIconFailure fas fa-times"></i>
+                                            <i class="dragAndUploadIconSuccess fas fa-check-circle"></i>
+{#                                            <i class="dragAndUploadIconFailure fas fa-thumbs-down"></i>#}
+                                        </span>
+                                <span class="dragAndUploadIcon"></span><b class="dragAndUploadText"><span class="dragAndUploadTextLarge">Drag and drop</span> <span class="dragAndUploadTextSmall">or click to upload</span></b>
+                                <i class="dragAndUploadCounter">0%</i>
 
+                                <input type="file" multiple="multiple" class="dragAndUploadManual" name="file" id="myDragElement" />
+                            </label>
+                        </p>
+                    </form>
                 </div>
             </div>
         </div>
-     </div>
-    <section>
-        <div class="container p-5">
-
-            <div class="row">
-                <div class="col-lg-5 mx-auto">
-                    <div class="p-5 bg-white shadow rounded-lg">
-                        <img src="https://i.ibb.co/Zx10NQW/13748754681552302086-256.png"
-                             alt="" width="200" class="d-block mx-auto mb-4">
-                        <h6 class="text-center mb-4 text-muted">
-                            Upload your files.
-                        </h6>
-                        <form action="" method='post' id="upload_form" enctype="multipart/form-data">
-                            {% csrf_token %}
-                            <div class="custom-file text-center mb-5">
-                                {{ form.as_p }}
-                                <label class="custom-file-label" for="customFile" id="customFileLabel">
-                                    <span id="file-count">Select files</span>
-                                </label>
-
-                                <br>
-
-                                <br>
-                                <button type="submit" class="btn btn-primary">Upload</button>
-                                <button id="cancel_upload_button" class="btn btn-danger">Cancel</button>
-
-                            </div>
-                        </form>
-                        <div class="not-visible progress" id="progress">
-                        </div>
-                        <div id="messages"></div>
-
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    </div>
 
 {% endblock content %}
 
 {% block script %}
     <script>
 
-        const uploadForm = document.getElementById('upload_form');
-        const input_file = document.getElementById('customFile');
-        const progress_bar = document.getElementById('progress');
-        const messages = document.getElementById("messages")
-        let xhr = null;
-
-        $("#upload_form").submit(function(e){
-            e.preventDefault();
-            $form = $(this)
-            var formData = new FormData(this);
-            const media_data = input_file.files[0];
-            if(media_data != null){
-                console.log(media_data);
-                progress_bar.classList.remove("not-visible");
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
             }
-
-            xhr = $.ajax({
-                type: 'POST',
-                url:'{% url 'extbackup:upload_files' %}',
-                data: formData,
-                dataType: 'json',
-                xhr:function(){
-                    const xhr = new window.XMLHttpRequest();
-                    xhr.upload.addEventListener('progress', e=>{
-                        if(e.lengthComputable){
-                            const percentProgress = Math.round((e.loaded / e.total) * 100);
-                            console.log(percentProgress);
-                            progress_bar.innerHTML = `<div class="progress-bar progress-bar-striped bg-success"
-                                               role="progressbar" style="width: ${percentProgress}%" aria-valuenow="${percentProgress}" aria-valuemin="0"
-                                               aria-valuemax="100">${percentProgress}%</div>`
-                        }
-                    });
-                    return xhr
-                },
-                success: function(response){
-                    console.log(response)
-                    uploadForm.reset()
-                    progress_bar.classList.add('not-visible')
-                    displayJsonMessages(response);
-                     customFileLabel.innerText = "Select files"
-            updateFileCount();
-                },
-                error: function(err){
-                    displayJsonMessages(err);
-                },
-                cache: false,
-                contentType: false,
-                processData: false,
-            });
-        });
-
-        $("#cancel_upload_button").click(function(e) {
-            e.preventDefault();
-            if(xhr !== null){
-                xhr.abort();
-                console.log('Upload cancelled');
-                progress_bar.innerHTML = '';
-                progress_bar.classList.add('not-visible');
-                messages.innerHTML = '<div class="alert alert-warning">Upload cancelled by user</div>';
-            }
-        });
-
-
-        const file_count = document.getElementById('file-count');
-        input_file.addEventListener('change', updateFileCount);
-
-        function updateFileCount() {
-            const files = input_file.files;
-            if (files.length === 0) {
-                file_count.textContent = 'Select files';
-            } else {
-                const countText = files.length > 1 ? ' files are ' : ' file is ';
-                file_count.textContent = files.length + countText + 'selected';
-            }
+            return cookieValue;
         }
+        var
+            duConfig,
+            skeleton = {
+                // URL to post upload to.
+                url: '{% url 'extbackup:upload_files' %}',
+                // Max total size of uploads.
+                maxSize: 536870912,
+                // Max number of files to upload.
+                maxFiles: 5,
+                // Allowed MIME types. Set to [] to allow all file types. Otherwise: ['image/png', 'text/html']
+                allowedFileTypes: [],
+                // Base target CSS class.
+                staticClass: 'dragAndUpload',
+                // Mouse over CSS class.
+                hoverClass: 'dragAndUploadActive',
+                // Currently uploading CSS class.
+                uploadingClass: 'dragAndUploadUploading',
+                // Error CSS class.
+                errorClass: 'dragAndUploadFailure',
+                // Successful upload CSS class.
+                successClass: 'dragAndUploadSuccess',
+                // Class of counter element.
+                counterClass: 'dragAndUploadCounter',
+                // Class of manual upload element.
+                manualElement: 'dragAndUploadManual',
+
+                /**
+                 * Checks if the event is a child of the drop element. If it is,
+                 * it returns the parent element -- i.e. the one handling the dropped
+                 * files. This is the element where we set one of the aforementioned
+                 * CSS classes.
+                 * @t: HTML element.
+                 */
+                setElement: function ( t ) {
+                    if ( t ) {
+                        return ( t.nodeName === 'label' ? t : t.closest( 'label' ) );
+                    }
+                },
+
+                /**
+                 * Removes a CSS class from the received HTML element.
+                 * @t: HTML element.
+                 * @className: CSS class to remove.
+                 */
+                removeClass: function ( t, className ) {
+                    if ( t.className.indexOf( className ) > -1 ) {
+                        className = ' ' + className;
+                        var tempClass = t.className.replace( className, '' );
+                        t.className = tempClass;
+                    }
+                },
+
+                /**
+                 * Changes the CSS class of the drop element, and updates
+                 * the text of the status element.
+                 * @text: Status text.
+                 * @isError: 0 = Not an error message. 1 = Is an error message.
+                 * @dropElement: Drop element.
+                 * @response: HTTP response.
+                 * @s: This class, passed in because of JS's object odditites.
+                 */
+                message: function ( text, isError, dropElement, response, s ) {
+                    console.log( response );
+                    var changeToClass = isError === 1 ? this.errorClass : this.successClass,
+                        uploadingClass = this.uploadingClass,
+                        counterElement = dropElement.querySelector( '.' + s.counterClass );
+                    this.removeClass( dropElement, uploadingClass );
+                    dropElement.className += ' ' + changeToClass;
+                    counterElement.innerHTML = text;
+                },
+
+
+                /**
+                 * Checks that files are valid for upload.
+                 * @files: Files dropped onto element.
+                 * @s: This class, passed in because of JS's object odditites.
+                 * @dropElement: Drop element.
+                 */
+                validFiles: function ( files, s, dropElement ) {
+                    $('.dragAndUploadText').hide();
+                    $('.dragAndUploadTextSmall').hide();
+                    var data = new FormData();
+                    const csrf_token = getCookie('csrftoken');
+                    var filesTotalSize = 0,
+                        totalFiles = files.length,
+                        filePlural = totalFiles > 0 ? "files" : "file",
+                        allFilesAllowed = true;
+                    for ( var i = 0; i < files.length; i++ ) {
+                        if ( s.allowedFileTypes.indexOf( files[i].type ) === -1 && s.allowedFileTypes.length > 0 ) {
+                            allFilesAllowed = false;
+                            break;
+                        } else {
+                            data.append( 'file', files[i] );
+                            filesTotalSize += files[i].size;
+                        }
+                    }
+                    data.append('csrfmiddlewaretoken', csrf_token);
+                    if ( allFilesAllowed === false ) {
+                        s.message( 'Illegal file types in file list.', 1, dropElement, '', s );
+                        return 'failed';
+                    } else if ( filesTotalSize > s.maxSize ) {
+                        s.message( 'Total size of ' + filePlural + ' too big.', 1, dropElement, '', s );
+                        return 'failed';
+                    } else if ( totalFiles > s.maxFiles ) {
+                        s.message( 'Only ' + s.maxFiles + ' ' + filePlural + ' allowed.', 1, dropElement, '', s );
+                        return 'failed';
+                    } else {
+                        return data;
+                    }
+                },
+
+                /**
+                 * Where the actual HTTP upload happens.
+                 * @dropElement: Drop element.
+                 * @s: This class, passed in because of JS's object odditites.
+                 * @data: Form data.
+                 */
+                uploadFiles: function ( dropElement, s, data ) {
+                    $('.dragAndUploadIconUploading').show();
+// hide drag-and-drop elements
+
+
+                    // show uploading icon
+                    var xhr = new XMLHttpRequest(),
+                        counterElement = dropElement.querySelector( '.' + s.counterClass );
+                    dropElement.removeAttribute( 'data-response' );
+                    xhr.onreadystatechange = function ( e ) {
+                        if ( xhr.readyState === 4 && xhr.status === 200 ) {
+                            if ( xhr.responseText.substring( 0, 5 ) === "error" ) {
+                                counterElement.innerHTML = 'Error';
+                                s.message( 'Upload failed on server side.', 1, dropElement, xhr.responseText, s );
+                            } else {
+                                s.message( 'Upload complete!', 0, dropElement, xhr.responseText, s );
+                                dropElement.setAttribute( 'data-response', xhr.responseText );
+                            }
+                        } else if ( xhr.readyState === 4 && xhr.status !== 200 ) {
+                            counterElement.innerHTML = 'Error';
+                            s.message( 'Upload failed with status ' + xhr.status + '.', 1, dropElement, xhr.responseText, s );
+                        }
+                    };
+                    xhr.upload.onprogress = function ( e ) {
+                        var percent = ( parseInt( ( e.loaded / e.total ) * 100 ) );
+                        if ( isNaN( percent ) ) { percent = 0; }
+                        counterElement.innerHTML = percent + '%';
+                        if ( percent === 100 ) {
+                            counterElement.innerHTML = 'Working&#8230;';
+                        }
+                    };
+                    console.log("data")
+                    console.log(data)
+                    console.log("dropElement")
+                    console.log(dropElement)
+                    console.log("s")
+                    console.log(s)
+                    xhr.open( 'POST', s.url);
+                    xhr.send( data );
+                },
+
+                /**
+                 * Start the upload.
+                 * @files: Files dropped onto element.
+                 * @s: This class, passed in because of JS's object odditites.
+                 * @dropElement: Files dropped onto element.
+                 */
+                uploadSetup: function ( files, s, dropElement ) {
+                    var data = this.validFiles( files, s, dropElement );
+                    if ( data !== 'failed' ) {
+                        this.uploadFiles( dropElement, s, data );
+                    }
+                },
+            },
+
+            dragAndUpload = {
+                /**
+                 * Handles manually uploaded files.
+                 * @event: HTML element event.
+                 */
+                handleManualUpload: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    var s = duConfig,
+                        t = event.target,
+                        files = t.files,
+                        findId = t.getAttribute( 'id' ),
+                        dropElement = document.querySelector( '[for="' + findId + '"]' );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.errorClass );
+                    dropElement.className += ' ' + s.uploadingClass;
+                    s.uploadSetup( files, s, dropElement );
+                },
+
+                /**
+                 * Handles dropped files.
+                 * @event: HTML element event.
+                 */
+                handleDrop: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    var s = duConfig,
+                        t = event.target,
+                        files = event.dataTransfer.files,
+                        dropElement = skeleton.setElement( t );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.hoverClass );
+                    dropElement.className += ' ' + s.uploadingClass;
+                    s.uploadSetup( files, s, dropElement );
+                },
+
+                /**
+                 * Handles drag over and leave.
+                 * @event: HTML element event.
+                 */
+                handleDrag: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    var s = duConfig,
+                        dropElement = s.setElement( event.target );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.errorClass );
+                    if ( dropElement.className.indexOf( s.hoverClass ) === -1 ) {
+                        dropElement.className += ' ' + s.hoverClass;
+                    }
+                },
+
+                handleDragLeave: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    var s = duConfig,
+                        dropElement = s.setElement( event.target );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.errorClass );
+                    s.removeClass( dropElement, s.hoverClass );
+                },
+
+                /**
+                 * Kick off.
+                 */
+                setUp: function ( config ) {
+                    duConfig = Object.create( skeleton );
+                    for ( var c in config ) {
+                        duConfig[c] = config[c];
+                    }
+                    var dropZones = document.getElementsByClassName( duConfig.staticClass );
+                    if ( dropZones.length > 0 ) {
+                        for ( var i = 0; i < dropZones.length; i++ ) {
+                            if ( window.FormData ) {
+                                var manualElement = dropZones[i].querySelector( '.' + duConfig.manualElement );
+                                manualElement.addEventListener( 'change', this.handleManualUpload, false );
+                                dropZones[i].addEventListener( 'dragover', this.handleDrag, false );
+                                dropZones[i].addEventListener( 'dragleave', this.handleDragLeave, false );
+                                dropZones[i].addEventListener( 'drop', this.handleDrop, false );
+                            } else {
+                                dropZones[i].className += ' ' + duConfig.errorClass;
+                                dropZones[i].querySelector( '.' + duConfig.messageElement ).innerHTML = 'Sorry, browser in incompatible.';
+                            }
+                        }
+                    }
+                }
+            };
+
+        // Kick-off
+
+        window.onload = function () {
+            try {
+                var d = Object.create( dragAndUpload );
+                d.setUp();
+            } catch ( exception ) {
+                console.log( 'Error creating menus. In all likelihood your browser is out of date.\r\n', exception, '\r\n', navigator.userAgent );
+            }
+        };
     </script>
 {% endblock script %}

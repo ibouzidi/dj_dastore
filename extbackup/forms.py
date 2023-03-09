@@ -7,9 +7,9 @@ class FileForm(forms.ModelForm):
         model = File
         fields = ('file', 'description',)
         widgets = {
-            'file': forms.FileInput(attrs={'class': 'custom-file-input',
+            'file': forms.FileInput(attrs={'class': 'default-file-input',
                                            'id': 'customFile',
-                                           'onchange': 'previewFiles()',
+                                           # 'onchange': 'previewFiles()',
                                            'multiple': True}),
             'description': forms.TextInput(attrs={'cols': '30',
                                     'rows': '3',
