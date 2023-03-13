@@ -6,7 +6,7 @@ from accounts.models import Account
 
 
 class SupportedExtension(models.Model):
-    extension = models.CharField(max_length=10)
+    extension = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.extension

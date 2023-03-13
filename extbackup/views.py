@@ -1,4 +1,5 @@
 import ftplib
+import mimetypes
 
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
@@ -74,7 +75,11 @@ def extract_zip_contents(zip_file_path):
 class UploadFilesView(View):
     def get(self, request):
         form = FileForm()
-        return render(request, 'extbackup/upload.html', {'form': form})
+        supported_extensions = list(
+            SupportedExtension.objects.values_list('extension', flat=True))
+        context = {'form': form, 'supported_extensions': supported_extensions}
+
+        return render(request, 'extbackup/upload.html', context)
 
     def post(self, request):
         form = FileForm(request.POST, request.FILES)
@@ -82,20 +87,21 @@ class UploadFilesView(View):
             files = request.FILES.getlist('file')
             # Check if the file extension is supported
             for file in files:
-                file_extension = file.name.split(".")[-1].lower()
+                mime_type, encoding = mimetypes.guess_type(file.name)
+                print("mime_type")
+                print(mime_type)
+                print(SupportedExtension.objects.filter(
+                        extension=mime_type).exists())
                 if not SupportedExtension.objects.filter(
-                        extension=file_extension).exists():
+                        extension=mime_type).exists():
                     return JsonResponse(
                         {
-                            'data': f"File extension {file_extension} "
-                                    f"is not supported.",
+                            'data': f"File type is not supported.",
                             'messages': [
                                 {'level_tag': 'alert-danger',
-                                 'message': f"File extension {file_extension} "
-                                            f"is not supported."
+                                 'message': f"File type is not supported."
                                  }]
                         })
-
             # crypte files using Fernet encryption
             try:
                 zip_file = encrypt_files(files)

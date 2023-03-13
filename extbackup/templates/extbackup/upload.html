@@ -13,7 +13,6 @@
         .dragAndUploadManual {
             display: none;
         }
-
         .dragAndUpload {
             color: rgb(100,100,100);
             cursor: pointer;
@@ -32,9 +31,10 @@
             transition: all .05s;
             width: 100%;
             border: 2px dashed gray;
-            border-radius: 10px;
             margin: 0;
-            background-color: #f5f5f5;
+            background-color: var(--clr-white-2);
+            outline: 2px solid var(--clr-white-2);
+            outline-offset: 5px;
         }
         .dragAndUploadText{
             font-size: 28px;
@@ -46,12 +46,18 @@
             margin-top: 20px;
             font-weight: normal;
         }
-        {#.dragAndUpload.dragAndUploadFailure .dragAndUploadIcon {#}
-        {#    background: rgb(100,0,0);#}
-        {#}#}
+
         .dragAndUpload.dragAndUploadActive .dragAndUploadIcon .fas {
             transform: rotate(180deg);
         }
+        .dragAndUpload.dragAndUploadActive{
+            outline: 2px dashed var(--clr-white-2);
+            outline-offset: -10px;
+            background-color: var(--clr-white);
+            -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+            transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        }
+
         .dragAndUpload:hover {
             border: 2px dashed #167bff;
         }
@@ -157,7 +163,7 @@
         <div class="row">
             <div class="col-12 col-xl-12">
                 <div class="card card-body bg-white border-light shadow-sm mb-4">
-                    <h2 class="h5 mb-4">Upload Files</h2>
+                    <h2 class="h5 mb-4">Backup your Files</h2>
                     <form enctype="multipart/form-data" method="post" action="">
                         {% csrf_token %}
                         <p>
@@ -172,8 +178,8 @@
                                 <span class="dragAndUploadIcon"></span><b class="dragAndUploadText"><span class="dragAndUploadTextLarge">Drag and drop</span> <span class="dragAndUploadTextSmall">or click to upload</span></b>
                                 <i class="dragAndUploadCounter">0%</i>
 
-                                <input type="file" multiple="multiple" class="dragAndUploadManual" name="file" id="myDragElement" />
-                            </label>
+                        <input type="file" multiple="multiple" class="dragAndUploadManual" name="file" id="myDragElement" />
+                        </label>
                         </p>
                     </form>
                 </div>
@@ -210,7 +216,7 @@
                 // Max number of files to upload.
                 maxFiles: 5,
                 // Allowed MIME types. Set to [] to allow all file types. Otherwise: ['image/png', 'text/html']
-                allowedFileTypes: [],
+                allowedFileTypes: {{ supported_extensions|safe }},
                 // Base target CSS class.
                 staticClass: 'dragAndUpload',
                 // Mouse over CSS class.
@@ -319,9 +325,6 @@
                  */
                 uploadFiles: function ( dropElement, s, data ) {
                     $('.dragAndUploadIconUploading').show();
-// hide drag-and-drop elements
-
-
                     // show uploading icon
                     var xhr = new XMLHttpRequest(),
                         counterElement = dropElement.querySelector( '.' + s.counterClass );
@@ -348,12 +351,6 @@
                             counterElement.innerHTML = 'Working&#8230;';
                         }
                     };
-                    console.log("data")
-                    console.log(data)
-                    console.log("dropElement")
-                    console.log(dropElement)
-                    console.log("s")
-                    console.log(s)
                     xhr.open( 'POST', s.url);
                     xhr.send( data );
                 },
