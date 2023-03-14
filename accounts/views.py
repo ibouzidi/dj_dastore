@@ -82,6 +82,7 @@ def register_view(request, plan_name, *args, **kwargs):
 
 def logout_view(request):
     logout(request)
+    messages.success(request, "You are now logged out.")
     return redirect("home")
 
 
@@ -104,6 +105,7 @@ def login_view(request, *args, **kwargs):
 
             if user:
                 login(request, user)
+                messages.success(request, "You are now logged in.")
                 if destination:
                     return redirect(destination)
                 return redirect("home")

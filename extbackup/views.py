@@ -40,11 +40,14 @@ def encrypt_files(files):
                     for inner_file in folder_zip.infolist():
                         inner_file_data = folder_zip.read(inner_file)
                         encrypted = fernet_encrypt(inner_file_data)
-                        zf.writestr(inner_file.filename + '_encrypted', encrypted, compress_type=zipfile.ZIP_DEFLATED)
+                        zf.writestr(inner_file.filename + '_encrypted',
+                                    encrypted,
+                                    compress_type=zipfile.ZIP_DEFLATED)
             else:
                 original = file.read()
                 encrypted = fernet_encrypt(original)
-                zf.writestr(file.name + '_encrypted', encrypted, compress_type=zipfile.ZIP_DEFLATED)
+                zf.writestr(file.name + '_encrypted', encrypted,
+                            compress_type=zipfile.ZIP_DEFLATED)
     zip_file.seek(0)
     return zip_file
 
@@ -72,6 +75,16 @@ def extract_zip_contents(zip_file_path):
     return file_tree
 
 
+def calculate_storage_remaining(size, user_account, storage_limit):
+    if user_account.subscription_plan is not None:
+        storage_limit_gb = storage_limit * 1024 ** 3
+    else:
+        storage_limit_gb = 0
+    size_conversion = size * 1024 ** 3
+    remaining_storage = storage_limit_gb - (user_account.storage_usage + size_conversion)
+    return remaining_storage
+
+
 class UploadFilesView(View):
     def get(self, request):
         form = FileForm()
@@ -91,36 +104,31 @@ class UploadFilesView(View):
                 print("mime_type")
                 print(mime_type)
                 print(SupportedExtension.objects.filter(
-                        extension=mime_type).exists())
+                    extension=mime_type).exists())
                 if not SupportedExtension.objects.filter(
                         extension=mime_type).exists():
                     return JsonResponse(
                         {
-                            'data': f"File type is not supported.",
-                            'messages': [
-                                {'level_tag': 'alert-danger',
-                                 'message': f"File type is not supported."
-                                 }]
+                            'error': f"File type is not supported.",
+
                         })
             # crypte files using Fernet encryption
             try:
                 zip_file = encrypt_files(files)
                 size = zip_file.tell()
                 user_account = request.user
-                if user_account.subscription_plan is not None:
-                    storage_limit = user_account.subscription_plan.storage_limit
-                    storage_limit_gb = storage_limit * 1024 ** 3
-                else:
-                    storage_limit = 0
-                size_conversion = size * 1024 ** 3
-                if user_account.storage_usage + size_conversion > storage_limit_gb:
-
+                # check the storage limit
+                storage_limit = user_account.subscription_plan.storage_limit \
+                    if user_account.subscription_plan else 0
+                remaining_storage = calculate_storage_remaining(size,
+                                                                user_account,
+                                                                storage_limit)
+                if remaining_storage < 0:
                     return JsonResponse(
                         {
-                            'data': f"Storage limit of {storage_limit:.2f} GB has been reached.",
-                            'messages': [
-                                {'level_tag': 'alert-danger',
-                                 'message': f"Storage limit of {storage_limit:.2f} GB has been reached."}]})
+                            'message': f"Your plan storage limit of {storage_limit:.1f} GB has been reached."},
+                        status=400
+                    )
             except Exception as e:
                 return JsonResponse({'error': str(e)})
             now = datetime.now()
@@ -142,22 +150,23 @@ class UploadFilesView(View):
                 # save the file in database
                 saved_file_model = File(
                     user=request.user,
-                    file=saved_file.split("/")[-1],  # name of the file without the path
+                    file=saved_file.split("/")[-1],
+                    # name of the file without the path
                     description=form.cleaned_data['description'],
                     size=file_size,
                     content=extracted_content,
                 )
                 saved_file_model.save()
-                return JsonResponse({'data': 'Data uploaded', 'messages': [
-                    {'level_tag': 'alert-success', 'message': 'Data uploaded'}]})
+                return JsonResponse({'message': 'Data uploaded', }, status=200)
             except Exception as e:
-                return JsonResponse({'error': str(e)})
-        return JsonResponse({'error': 'Form is not valid'})
+                return JsonResponse({'message': str(e)}, status=400)
+        return JsonResponse({'message': 'Form is not valid'}, status=400)
 
 
 def backup_dashboard(request):
     files = File.objects.filter(user=request.user).order_by('-uploaded_at')
-    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at, file.size)
+    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at,
+                  file.size)
                  for file in files if file.file.name.endswith('.zip')]
     return render(request, 'extbackup/backup_dashboard.html',
                   {'zip_files': zip_files})
@@ -172,7 +181,8 @@ def decrypt_zip_file(file_data):
             for file in zf.infolist():
                 original = zf.read(file)
                 decrypted = fernet.decrypt(original)
-                new_zf.writestr(file.filename, decrypted, compress_type=zipfile.ZIP_DEFLATED)
+                new_zf.writestr(file.filename, decrypted,
+                                compress_type=zipfile.ZIP_DEFLATED)
     new_zip_file.seek(0)
     return new_zip_file
 
@@ -221,13 +231,15 @@ class DeleteZipFileView(View):
                     request.user.save()
                     deleted_files.append(file.file.name)
                 else:
-                    messages.error(request, "Cannot delete someone else's zip files")
+                    messages.error(request,
+                                   "Cannot delete someone else's zip files")
                     return redirect('extbackup:backup_dashboard')
             except File.DoesNotExist:
                 messages.error(request, "Zip file not found")
                 return redirect('extbackup:backup_dashboard')
             except PermissionError:
-                messages.error(request, "Cannot delete a zip file that is used or open by another processus")
+                messages.error(request,
+                               "Cannot delete a zip file that is used or open by another processus")
         if deleted_files:
             messages.success(request, "Zip files deleted successfully")
         return redirect('extbackup:backup_dashboard')
@@ -259,7 +271,6 @@ def view_zip_content(request, file_id):
     return render(request, 'extbackup/view_zip_content.html', {'tree': tree})
 
 
-
 def backup_refresh(request):
     ftp_storage = default_storage
     zip_files_folder = f'uploads/upload_{request.user.username}/'
@@ -268,14 +279,17 @@ def backup_refresh(request):
         file_path = os.path.join(zip_files_folder, zip_file)
         file_size = ftp_storage.size(file_path)
         File.objects.update_or_create(file=zip_file, user=request.user,
-                                      defaults={'file': zip_file, 'size': file_size})
+                                      defaults={'file': zip_file,
+                                                'size': file_size})
     # Check for files in model not in folder
     for file in File.objects.filter(user=request.user):
         if file.file not in actual_zip_files:
             file.delete()
     # Get updated zip files
-    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at, file.size)
-                 for file in File.objects.filter(user=request.user).order_by('-uploaded_at')
+    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at,
+                  file.size)
+                 for file in File.objects.filter(user=request.user).order_by(
+            '-uploaded_at')
                  if file.file.name.endswith('.zip')]
     return render(request, 'extbackup/backup_dashboard.html',
                   {'zip_files': zip_files})
@@ -301,7 +315,8 @@ class SupportedExtensionCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['breadcrumb'] = [{'url': reverse('extbackup:extension_list'), 'label': 'Extensions'},
+        context['breadcrumb'] = [{'url': reverse('extbackup:extension_list'),
+                                  'label': 'Extensions'},
                                  {'url': '#', 'label': 'Create Extension'}]
         return context
 
