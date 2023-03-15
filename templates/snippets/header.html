@@ -1,14 +1,19 @@
 {% load static %}
+<style>
+
+</style>
 <!-- ======= HEADER ======= -->
 <header id="nav-header">
     <div class="container d-flex">
         <div class="logo mr-auto">
             <a href="{% url 'home' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid"></a>
         </div>
+
         <!-- NAVIGATION -->
         <nav class="nav-menu d-none d-lg-block">
             <ul>
-            <li><a href="{% url 'subscription_plan:subscription_plan_index' %}">Plans and Prices</a></li>
+            <li><a href="{% url 'subscription_plan:subscription_plan_index' %}">GET STARTED</a></li>
+
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'extbackup:extension_list' %}">Extentions</a></li>
                     <li><a href="{% url 'extbackup:upload_files' %}">Backup</a></li>

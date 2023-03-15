@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .models import SupportedExtension
+
 
 app_name = 'extbackup'
 
@@ -16,6 +16,7 @@ urlpatterns = [
 
     path('extensions/', views.SupportedExtensionListView.as_view(), name='extension_list'),
     path('extensions/create/', views.SupportedExtensionCreateView.as_view(), name='extension_create'),
+    path('extensions/delete/', views.SupportedExtensionDeleteAllView.as_view(), name='delete_all_extension'),
     path('extensions/<int:pk>/update/', views.SupportedExtensionUpdateView.as_view(), name='extension_update'),
-    path('extensions/<int:pk>/delete/', views.SupportedExtensionDeleteView.as_view(), name='extension_delete'),
+    path('extensions/export/', views.SupportedExtensionExportView.as_view(), name='extension_export'),
 ]

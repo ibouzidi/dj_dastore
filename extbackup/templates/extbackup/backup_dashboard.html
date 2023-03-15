@@ -17,11 +17,11 @@
                     </div>
                     <form action="{% url 'extbackup:delete_zip_file' %}" method="post">
                         {% csrf_token %}
-                        <button class="btn btn-danger mb-2" type="submit">Delete Selected Files</button>
+                        <button class="btn btn-danger mb-2 delete-button" type="submit" data-confirm="Are you sure you want to delete selected files ?">Delete Selected Files</button>
                         <table class="table table-hover">
                             <thead class="thead-dark">
                             <tr>
-                                <th><input id="check_all" type="checkbox"></th>
+                                <th><input class="form-check-input" id="check_all" type="checkbox"></th>
                                 <th scope="col">Backup</th>
                                 <th scope="col">Description</th>
                                 <th scope="col">Date upload</th>
@@ -32,7 +32,7 @@
                             <tbody>
                             {% for file in zip_files %}
                                 <tr>
-                                    <td><input type="checkbox" name="ids" value="{{ file.0 }}"></td>
+                                    <td><input class="form-check-input" type="checkbox" name="ids" value="{{ file.0 }}"></td>
                                     <td scope="row"><i class="fa fa-check-circle checkicon"></i> {{file.1}}</td>
                                     <td>{{file.2}}</td>
                                     <td>{{file.3}}</td>
@@ -65,6 +65,18 @@
 {% block script %}
     {% include "snippets/add_active_class.html" %}
     <script>
+            $(document).ready(function() {
+            $('.delete-button').on('click', function(event) {
+                event.preventDefault();
+                var message = $(this).data('confirm');
+                $('#confirmMessage').text(message);
+                $('#confirmModal').modal('show');
+                $('#confirmButton').on('click', function() {
+                    $('#confirmModal').modal('hide');
+                    $(event.target).closest('form').submit();
+                });
+            });
+        });
         $(function() {
             //If check_all checked then check all table rows
             $("#check_all").on("click", function () {

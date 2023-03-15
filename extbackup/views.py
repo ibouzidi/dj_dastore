@@ -1,3 +1,4 @@
+import csv
 import ftplib
 import mimetypes
 
@@ -334,9 +335,39 @@ class SupportedExtensionUpdateView(UpdateView):
         return response
 
 
-class SupportedExtensionDeleteView(DeleteView):
-    model = SupportedExtension
-    success_url = reverse_lazy('extbackup:extension_list')
+class SupportedExtensionDeleteAllView(View):
+    def post(self, request):
+        ids = request.POST.getlist('ids')
+        deleted_files = []
+        for extension_id in ids:
+            try:
+                extension = SupportedExtension.objects.get(id=extension_id)
+                deleted_files.append(extension.extension)
+                extension.delete()
+            except SupportedExtension.DoesNotExist:
+                messages.error(request, "Extension not found")
+                return redirect('extbackup:extension_list')
+        if deleted_files:
+            message = "Extension deleted successfully"
+            messages.success(request, message)
+        return redirect('extbackup:extension_list')
 
+
+class SupportedExtensionExportView(View):
     def get(self, request, *args, **kwargs):
-        return self.post(request, *args, **kwargs)
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; ' \
+                                          'filename="supported_extensions.csv"'
+
+        # Get all the extensions
+        supported_extension = SupportedExtension.objects.order_by('extension')
+
+        # Write CSV headers
+        writer = csv.writer(response)
+        writer.writerow(['extension'])
+        # Write CSV data
+        for i in supported_extension:
+            writer.writerow([i.extension])
+        messages.success(request, "Extension exported with success.")
+        return response
+

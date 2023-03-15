@@ -1,0 +1,233 @@
+[
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 1,
+    "fields": {
+      "extension": "application/msword"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 2,
+    "fields": {
+      "extension": "application/octet-stream"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 3,
+    "fields": {
+      "extension": "application/vnd.ms-access"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 4,
+    "fields": {
+      "extension": "application/vnd.ms-excel"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 5,
+    "fields": {
+      "extension": "application/vnd.ms-powerpoint"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 6,
+    "fields": {
+      "extension": "application/vnd.ms-project"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 7,
+    "fields": {
+      "extension": "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 8,
+    "fields": {
+      "extension": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 9,
+    "fields": {
+      "extension": "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 10,
+    "fields": {
+      "extension": "application/x-executable"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 11,
+    "fields": {
+      "extension": "application/x-gzip"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 12,
+    "fields": {
+      "extension": "application/x-msdownload"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 13,
+    "fields": {
+      "extension": "application/x-rar-compressed"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 14,
+    "fields": {
+      "extension": "application/x-shockwave-flash"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 15,
+    "fields": {
+      "extension": "application/x-tar"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 16,
+    "fields": {
+      "extension": "application/zip"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 17,
+    "fields": {
+      "extension": "audio/mpeg"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 18,
+    "fields": {
+      "extension": "audio/ogg"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 19,
+    "fields": {
+      "extension": "audio/wav"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 20,
+    "fields": {
+      "extension": "image/bmp"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 21,
+    "fields": {
+      "extension": "image/gif"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 22,
+    "fields": {
+      "extension": "image/jpeg"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 23,
+    "fields": {
+      "extension": "image/svg+xml"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 24,
+    "fields": {
+      "extension": "image/tiff"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 25,
+    "fields": {
+      "extension": "image/x-icon"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 26,
+    "fields": {
+      "extension": "application/pdf"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 27,
+    "fields": {
+      "extension": "video/avi"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 28,
+    "fields": {
+      "extension": "video/mp4"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 29,
+    "fields": {
+      "extension": "text/csv"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 30,
+    "fields": {
+      "extension": "video/quicktime"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 31,
+    "fields": {
+      "extension": "video/webm"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 32,
+    "fields": {
+      "extension": "video/x-flv"
+    }
+  },
+  {
+    "model": "extbackup.supportedextension",
+    "pk": 33,
+    "fields": {
+      "extension": "video/x-msvideo"
+    }
+  }
+]
