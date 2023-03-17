@@ -22,6 +22,7 @@ ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="127.0.0.1,localhost",
 # =====================================================================
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -181,3 +182,14 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb = 10 * 1024 *1024
 # DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 # FTP_STORAGE_LOCATION = 'ftp://test:test@localhost:21/'
+
+
+JAZZMIN_SETTINGS = {
+    "welcome_sign": "Welcome to Admin Panel.",
+    "site_title": "Admin Panel",
+    "site_header": "Panel",
+    "site_logo": "dastore/logo_dastore.png-60",
+    "site_logo_classes": ".logo-panel",
+    "copyright": "Idris BOUZIDI",
+
+}
