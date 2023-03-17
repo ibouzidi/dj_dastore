@@ -1,91 +1,29 @@
 import csv
-import ftplib
 import mimetypes
-
 from django.contrib import messages
+from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Sum
-from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, HttpResponse
+# from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
-from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.views import View
-
+from dj_dastore.decorator import dev
 from extbackup.forms import FileForm, ExtensionForm
 from extbackup.models import File, SupportedExtension
-from django.conf import settings
 from django.core.files.storage import default_storage
-from io import BytesIO
 from datetime import datetime
 import os
-from storages.backends.ftp import FTPStorage
-from django.http import FileResponse, JsonResponse, HttpResponseRedirect, \
-    Http404, HttpResponseForbidden
-import io
-from urllib.request import urlopen
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-# import wget
-import tempfile
 import zipfile
-from .key import key
-from cryptography.fernet import Fernet
+from django.http import FileResponse, JsonResponse
+import io
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from .tools import extract_zip_contents, decrypt_zip_file, encrypt_files, \
+    calculate_storage_remaining
+from django.contrib.auth.decorators import login_required
 
 
-def encrypt_files(files):
-    zip_file = BytesIO()
-    with zipfile.ZipFile(zip_file, mode='w') as zf:
-        for file in files:
-            if file.content_type == "application/x-zip-compressed":
-                folder_file = BytesIO(file.read())
-                with zipfile.ZipFile(folder_file) as folder_zip:
-                    for inner_file in folder_zip.infolist():
-                        inner_file_data = folder_zip.read(inner_file)
-                        encrypted = fernet_encrypt(inner_file_data)
-                        zf.writestr(inner_file.filename + '_encrypted',
-                                    encrypted,
-                                    compress_type=zipfile.ZIP_DEFLATED)
-            else:
-                original = file.read()
-                encrypted = fernet_encrypt(original)
-                zf.writestr(file.name + '_encrypted', encrypted,
-                            compress_type=zipfile.ZIP_DEFLATED)
-    zip_file.seek(0)
-    return zip_file
-
-
-def fernet_encrypt(data):
-    fernet = Fernet(key)
-    encrypted = fernet.encrypt(data)
-    return encrypted
-
-
-def extract_zip_contents(zip_file_path):
-    file_tree = {}
-    with zipfile.ZipFile(zip_file_path) as zip_file:
-        for inner_file in zip_file.infolist():
-            path = inner_file.filename
-            parts = path.split('/')
-            parent = file_tree
-            for part in parts[:-1]:
-                if part not in parent:
-                    parent[part.replace("_encrypted", "")] = {}
-                parent = parent[part.replace("_encrypted", "")]
-            if parts[-1] == '':
-                continue
-            parent[parts[-1].replace("_encrypted", "")] = None
-    return file_tree
-
-
-def calculate_storage_remaining(total_size, user_account, storage_limit):
-    if user_account.subscription_plan is not None:
-        storage_limit_gb = storage_limit * 1024 ** 3
-    else:
-        storage_limit_gb = 0
-    size_conversion = total_size
-    remaining_storage = storage_limit_gb - (user_account.storage_usage + size_conversion)
-    return remaining_storage
-
-
+@method_decorator(login_required, name='dispatch')
 class UploadFilesView(View):
     def get(self, request):
         form = FileForm()
@@ -160,16 +98,19 @@ class UploadFilesView(View):
                     content=extracted_content,
                 )
                 saved_file_model.save()
-                return JsonResponse({'message': 'Data uploaded !', }, status=200)
+                return JsonResponse({'message': 'Data uploaded !', },
+                                    status=200)
             except Exception as e:
                 return JsonResponse({'message': str(e)}, status=400)
         return JsonResponse({'message': 'Form is not valid'}, status=400)
 
 
+@login_required
 def backup_dashboard(request):
     try:
-        zip_files = File.objects.filter(user=request.user, file__endswith='.zip')\
-            .order_by('-uploaded_at')\
+        zip_files = File.objects.filter(user=request.user,
+                                        file__endswith='.zip') \
+            .order_by('-uploaded_at') \
             .values_list('id', 'file', 'description', 'uploaded_at', 'size')
     except Exception as e:
         messages.error("An error occurred: {}".format(str(e)))
@@ -179,21 +120,7 @@ def backup_dashboard(request):
                   {'zip_files': zip_files})
 
 
-def decrypt_zip_file(file_data):
-    fernet = Fernet(key)
-    zip_file = BytesIO(file_data)
-    with zipfile.ZipFile(zip_file, mode='r') as zf:
-        new_zip_file = BytesIO()
-        with zipfile.ZipFile(new_zip_file, mode='w') as new_zf:
-            for file in zf.infolist():
-                original = zf.read(file)
-                decrypted = fernet.decrypt(original)
-                new_zf.writestr(file.filename, decrypted,
-                                compress_type=zipfile.ZIP_DEFLATED)
-    new_zip_file.seek(0)
-    return new_zip_file
-
-
+@login_required
 def download_zip_file(request, file_id):
     ftp_storage = default_storage
     zip_files = f'uploads/upload_{request.user.username}/'
@@ -221,6 +148,7 @@ def download_zip_file(request, file_id):
         return HttpResponse("file not found")
 
 
+@method_decorator(login_required, name='dispatch')
 class DeleteZipFileView(View):
     def post(self, request):
         ids = request.POST.getlist('ids')
@@ -252,6 +180,7 @@ class DeleteZipFileView(View):
         return redirect('extbackup:backup_dashboard')
 
 
+@login_required
 def view_zip_content(request, file_id):
     try:
         file = File.objects.get(pk=file_id)
@@ -278,6 +207,7 @@ def view_zip_content(request, file_id):
     return render(request, 'extbackup/view_zip_content.html', {'tree': tree})
 
 
+@user_passes_test(dev)
 def backup_refresh(request):
     sys_storage = default_storage
     zip_files_folder = f'uploads/upload_{request.user.username}/'
@@ -290,7 +220,7 @@ def backup_refresh(request):
         File.objects.update_or_create(file=zip_file, user=request.user,
                                       defaults={'file': zip_file,
                                                 'size': file_size,
-                                                'content':extracted_content})
+                                                'content': extracted_content})
     # Check for files in model not in folder
     for file in File.objects.filter(user=request.user):
         if file.file not in actual_zip_files:
@@ -305,12 +235,14 @@ def backup_refresh(request):
                   {'zip_files': zip_files})
 
 
+@method_decorator(user_passes_test(dev), name='dispatch')
 class SupportedExtensionListView(ListView):
     model = SupportedExtension
     ordering = ['-id']
     template_name = 'extension/extension_list.html'
 
 
+@method_decorator(user_passes_test(dev), name='dispatch')
 class SupportedExtensionCreateView(CreateView):
     model = SupportedExtension
     template_name = 'extension/extension_form.html'
@@ -331,6 +263,7 @@ class SupportedExtensionCreateView(CreateView):
         return context
 
 
+@method_decorator(user_passes_test(dev), name='dispatch')
 class SupportedExtensionUpdateView(UpdateView):
     model = SupportedExtension
     template_name = 'extension/extension_form.html'
@@ -344,6 +277,7 @@ class SupportedExtensionUpdateView(UpdateView):
         return response
 
 
+@method_decorator(user_passes_test(dev), name='dispatch')
 class SupportedExtensionDeleteAllView(View):
     def post(self, request):
         ids = request.POST.getlist('ids')
@@ -362,7 +296,9 @@ class SupportedExtensionDeleteAllView(View):
         return redirect('extbackup:extension_list')
 
 
+@method_decorator(user_passes_test(dev), name='dispatch')
 class SupportedExtensionExportView(View):
+    @user_passes_test(dev)
     def get(self, request, *args, **kwargs):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; ' \
@@ -379,4 +315,3 @@ class SupportedExtensionExportView(View):
             writer.writerow([i.extension])
         messages.success(request, "Extension exported with success.")
         return response
-

@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from accounts.forms import RegistrationForm, AccountAuthenticationForm, \
@@ -80,6 +81,7 @@ def register_view(request, plan_name, *args, **kwargs):
     return render(request, 'accounts/register.html', context)
 
 
+@login_required
 def logout_view(request):
     logout(request)
     messages.success(request, "You are now logged out.")
@@ -125,7 +127,7 @@ def get_redirect_if_exists(request):
             redirect = str(request.GET.get("next"))
     return redirect
 
-
+@login_required
 def account_view(request, *args, **kwargs):
     context = {}
     user_id = kwargs.get("user_id")
@@ -239,7 +241,7 @@ def crop_image(request, *args, **kwargs):
             payload['exception'] = str(e)
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
-
+@login_required
 def edit_account_view(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return redirect("accounts:login")
@@ -296,6 +298,7 @@ def edit_account_view(request, *args, **kwargs):
     return render(request, "accounts/edit_account.html", context)
 
 
+@method_decorator(login_required, name='dispatch')
 class CustomPasswordChangeView(PasswordChangeView):
     template_name = 'password_reset/password_change.html'
 

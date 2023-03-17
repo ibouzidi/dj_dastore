@@ -100,7 +100,8 @@ DATABASES = {
 AUTH_USER_MODEL = 'accounts.Account' #
 
 AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.AllowAllUsersModelBackend', 
+    # 'django.contrib.auth.backends.AllowAllUsersModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
     'accounts.backends.CaseInsensitiveModelBackend',
 ]
 
