@@ -167,18 +167,20 @@
                     <form enctype="multipart/form-data" method="post" action="">
                         {% csrf_token %}
                         <p>
+                            {{ form.description.label  }}
+                            {{ form.description }}
+                        </p>
+                        <p>
                             <label for="myDragElement" class="dragAndUpload" data-post-string="">
                                         <span class="dragAndUploadIcon">
                                             <i class="dragAndUploadIconNeutral fas fa-arrow-up"></i>
                                             <i class="dragAndUploadIconUploading fas fa-cog fa-spin"></i>
                                             <i class="dragAndUploadIconFailure fas fa-times"></i>
                                             <i class="dragAndUploadIconSuccess fas fa-check-circle"></i>
-{#                                            <i class="dragAndUploadIconFailure fas fa-thumbs-down"></i>#}
                                         </span>
                                 <span class="dragAndUploadIcon"></span><b class="dragAndUploadText"><span class="dragAndUploadTextLarge">Drag and drop</span> <span class="dragAndUploadTextSmall">or click to upload</span></b>
                                 <i class="dragAndUploadCounter">0%</i>
-
-                                <input type="file" multiple="multiple" class="dragAndUploadManual" name="file" id="myDragElement" />
+                                {{ form.file }}
                             </label>
                         </p>
                     </form>
@@ -206,6 +208,7 @@
             }
             return cookieValue;
         }
+        var isUploadComplete = false;
         var
             duConfig,
             skeleton = {
@@ -289,7 +292,6 @@
                     $('.dragAndUploadText').hide();
                     $('.dragAndUploadTextSmall').hide();
                     var data = new FormData();
-                    {#const csrf_token = getCookie('csrftoken');#}
                     var filesTotalSize = 0,
                         totalFiles = files.length,
                         filePlural = totalFiles > 0 ? "files" : "file",
@@ -300,176 +302,197 @@
                             break;
                         } else {
                             data.append( 'file', files[i] );
+                            var fileDescription = $('#file-description').val();
+                            if (fileDescription.trim() !== '') {
+                                data.append('description', fileDescription.trim());
+                            }
                             filesTotalSize += files[i].size;
                         }
                     }
-                    {#data.append('csrfmiddlewaretoken', csrf_token);#}
                     if ( allFilesAllowed === false ) {
                         s.message( 'File types not allow.', 1, dropElement, '', s );
                         return 'failed';
-                        {#} else if ( filesTotalSize > s.maxSize ) {#}
-                            {#    s.message( 'Total size of ' + filePlural + ' too big.', 1, dropElement, '', s );#}
-                            {#    return 'failed';#}
-                            {#} else if ( totalFiles > s.maxFiles ) {#}
-                                {#    s.message( 'Only ' + s.maxFiles + ' ' + filePlural + ' allowed.', 1, dropElement, '', s );#}
-                                {#    return 'failed';#}
+                    } else if ( filesTotalSize > s.maxSize ) {
+                        s.message( 'Total size of ' + filePlural + ' too big.', 1, dropElement, '', s );
+                        return 'failed';
+                    } else if ( totalFiles > s.maxFiles ) {
+                        s.message( 'Only ' + s.maxFiles + ' ' + filePlural + ' allowed.', 1, dropElement, '', s );
+                        return 'failed';
+                    } else {
+
+                        return data;
+                    }
+                },
+
+                /**
+                 * Where the actual HTTP upload happens.
+                 * @dropElement: Drop element.
+                 * @s: This class, passed in because of JS's object odditites.
+                 * @data: Form data.
+                 */
+                uploadFiles: function ( dropElement, s, data ) {
+                    $('.dragAndUploadIconUploading').show();
+                    // show uploading icon
+                    var xhr = new XMLHttpRequest(),
+                        counterElement = dropElement.querySelector( '.' + s.counterClass );
+                    dropElement.removeAttribute( 'data-response' );
+
+                    xhr.onreadystatechange = function ( e ) {
+                        if ( xhr.readyState === 4 ) {
+                            var response = JSON.parse( xhr.responseText );
+                            if ( xhr.status === 200 ) {
+                                isUploadComplete = true
+                                s.message( response.message + ' <a href="' + window.location.href + '">Click here to upload again</a>.', 0, dropElement, xhr.responseText, s );
+                                dropElement.setAttribute( 'data-response', xhr.responseText );
+                                dropElement.querySelector('input[type="file"]').setAttribute('disabled', 'disabled');
+                                $(".dragAndUpload ").css("cursor", "default");
+                                $(".dragAndUploadTextSmall a").css("cursor", "pointer");
+                            } else if ( xhr.status === 400 ) {
+                                s.message( response.message, 1, dropElement, xhr.responseText, s );
                             } else {
-                                return data;
+                                s.message( 'Upload failed with status ' + xhr.status + '.', 1, dropElement, xhr.responseText, s );
                             }
-                            },
+                        }
+                    };
+                    xhr.upload.onprogress = function ( e ) {
+                        var percent = ( parseInt( ( e.loaded / e.total ) * 100 ) );
+                        if ( isNaN( percent ) ) { percent = 0; }
+                        counterElement.innerHTML = percent + '%';
+                        if ( percent === 100 ) {
+                            counterElement.innerHTML = 'Working&#8230;';
+                        }
+                    };
+                    xhr.open( 'POST', s.url);
+                    {#xhr.setRequestHeader('Content-Type', 'application/json');#}
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                    xhr.send( data );
+                },
 
-                            /**
-                             * Where the actual HTTP upload happens.
-                             * @dropElement: Drop element.
-                             * @s: This class, passed in because of JS's object odditites.
-                             * @data: Form data.
-                             */
-                            uploadFiles: function ( dropElement, s, data ) {
-                                $('.dragAndUploadIconUploading').show();
-                                // show uploading icon
-                                var xhr = new XMLHttpRequest(),
-                                    counterElement = dropElement.querySelector( '.' + s.counterClass );
-                                dropElement.removeAttribute( 'data-response' );
+                /**
+                 * Start the upload.
+                 * @files: Files dropped onto element.
+                 * @s: This class, passed in because of JS's object odditites.
+                 * @dropElement: Files dropped onto element.
+                 */
+                uploadSetup: function ( files, s, dropElement ) {
+                    var data = this.validFiles( files, s, dropElement );
+                    console.log("data")
+                    console.log(data)
+                    if ( data !== 'failed' ) {
+                        this.uploadFiles( dropElement, s, data );
+                    }
+                },
+            },
 
-                                xhr.onreadystatechange = function ( e ) {
-                                    if ( xhr.readyState === 4 ) {
-                                        var response = JSON.parse( xhr.responseText );
-                                        if ( xhr.status === 200 ) {
-                                            s.message( response.message, 0, dropElement, xhr.responseText, s );
-                                            dropElement.setAttribute( 'data-response', xhr.responseText );
-                                        } else if ( xhr.status === 400 ) {
+            dragAndUpload = {
+                /**
+                 * Handles manually uploaded files.
+                 * @event: HTML element event.
+                 */
+                handleManualUpload: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    var s = duConfig,
+                        t = event.target,
+                        files = t.files,
+                        findId = t.getAttribute( 'id' ),
+                        dropElement = document.querySelector( '[for="' + findId + '"]' );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.errorClass );
+                    dropElement.className += ' ' + s.uploadingClass;
+                    s.uploadSetup( files, s, dropElement );
+                },
 
-                                            s.message( response.message, 1, dropElement, xhr.responseText, s );
-                                        } else {
-                                            s.message( 'Upload failed with status ' + xhr.status + '.', 1, dropElement, xhr.responseText, s );
-                                        }
-                                    }
-                                };
-                                xhr.upload.onprogress = function ( e ) {
-                                    var percent = ( parseInt( ( e.loaded / e.total ) * 100 ) );
-                                    if ( isNaN( percent ) ) { percent = 0; }
-                                    counterElement.innerHTML = percent + '%';
-                                    if ( percent === 100 ) {
-                                        counterElement.innerHTML = 'Working&#8230;';
-                                    }
-                                };
-                                xhr.open( 'POST', s.url);
-                                {#xhr.setRequestHeader('Content-Type', 'application/json');#}
-                                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-                                xhr.send( data );
-                            },
+                /**
+                 * Handles dropped files.
+                 * @event: HTML element event.
+                 */
+                handleDrop: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    // Check if upload is complete
+                    if (isUploadComplete) {
+                        return;
+                    }
+                    var s = duConfig,
+                        t = event.target,
+                        files = event.dataTransfer.files,
+                        dropElement = skeleton.setElement( t );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.hoverClass );
+                    dropElement.className += ' ' + s.uploadingClass;
+                    s.uploadSetup( files, s, dropElement );
+                },
 
-                            /**
-                             * Start the upload.
-                             * @files: Files dropped onto element.
-                             * @s: This class, passed in because of JS's object odditites.
-                             * @dropElement: Files dropped onto element.
-                             */
-                            uploadSetup: function ( files, s, dropElement ) {
-                                var data = this.validFiles( files, s, dropElement );
-                                if ( data !== 'failed' ) {
-                                    this.uploadFiles( dropElement, s, data );
-                                }
-                            },
-                        },
+                /**
+                 * Handles drag over and leave.
+                 * @event: HTML element event.
+                 */
+                handleDrag: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    // Check if upload is complete
+                    if (isUploadComplete) {
+                        return;
+                    }
+                    var s = duConfig,
+                        dropElement = s.setElement( event.target );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.errorClass );
+                    if ( dropElement.className.indexOf( s.hoverClass ) === -1 ) {
+                        dropElement.className += ' ' + s.hoverClass;
+                    }
+                },
 
-                            dragAndUpload = {
-                                /**
-                                 * Handles manually uploaded files.
-                                 * @event: HTML element event.
-                                 */
-                                handleManualUpload: function ( event ) {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    var s = duConfig,
-                                        t = event.target,
-                                        files = t.files,
-                                        findId = t.getAttribute( 'id' ),
-                                        dropElement = document.querySelector( '[for="' + findId + '"]' );
-                                    s.removeClass( dropElement, s.successClass );
-                                    s.removeClass( dropElement, s.errorClass );
-                                    dropElement.className += ' ' + s.uploadingClass;
-                                    s.uploadSetup( files, s, dropElement );
-                                },
+                handleDragLeave: function ( event ) {
+                    event.stopPropagation();
+                    event.preventDefault();
+                    // Check if upload is complete
+                    if (isUploadComplete) {
+                        return;
+                    }
+                    var s = duConfig,
+                        dropElement = s.setElement( event.target );
+                    s.removeClass( dropElement, s.successClass );
+                    s.removeClass( dropElement, s.errorClass );
+                    s.removeClass( dropElement, s.hoverClass );
+                },
 
-                                /**
-                                 * Handles dropped files.
-                                 * @event: HTML element event.
-                                 */
-                                handleDrop: function ( event ) {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    var s = duConfig,
-                                        t = event.target,
-                                        files = event.dataTransfer.files,
-                                        dropElement = skeleton.setElement( t );
-                                    s.removeClass( dropElement, s.successClass );
-                                    s.removeClass( dropElement, s.hoverClass );
-                                    dropElement.className += ' ' + s.uploadingClass;
-                                    s.uploadSetup( files, s, dropElement );
-                                },
+                /**
+                 * Kick off.
+                 */
+                setUp: function ( config ) {
+                    duConfig = Object.create( skeleton );
+                    for ( var c in config ) {
+                        duConfig[c] = config[c];
+                    }
+                    var dropZones = document.getElementsByClassName( duConfig.staticClass );
+                    if ( dropZones.length > 0 ) {
+                        for ( var i = 0; i < dropZones.length; i++ ) {
+                            if ( window.FormData ) {
+                                var manualElement = dropZones[i].querySelector( '.' + duConfig.manualElement );
+                                manualElement.addEventListener( 'change', this.handleManualUpload, false );
+                                dropZones[i].addEventListener( 'dragover', this.handleDrag, false );
+                                dropZones[i].addEventListener( 'dragleave', this.handleDragLeave, false );
+                                dropZones[i].addEventListener( 'drop', this.handleDrop, false );
+                            } else {
+                                dropZones[i].className += ' ' + duConfig.errorClass;
+                                dropZones[i].querySelector( '.' + duConfig.messageElement ).innerHTML = 'Sorry, browser in incompatible.';
+                            }
+                        }
+                    }
+                }
+            };
 
-                                /**
-                                 * Handles drag over and leave.
-                                 * @event: HTML element event.
-                                 */
-                                handleDrag: function ( event ) {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    var s = duConfig,
-                                        dropElement = s.setElement( event.target );
-                                    s.removeClass( dropElement, s.successClass );
-                                    s.removeClass( dropElement, s.errorClass );
-                                    if ( dropElement.className.indexOf( s.hoverClass ) === -1 ) {
-                                        dropElement.className += ' ' + s.hoverClass;
-                                    }
-                                },
+        // Kick-off
 
-                                handleDragLeave: function ( event ) {
-                                    event.stopPropagation();
-                                    event.preventDefault();
-                                    var s = duConfig,
-                                        dropElement = s.setElement( event.target );
-                                    s.removeClass( dropElement, s.successClass );
-                                    s.removeClass( dropElement, s.errorClass );
-                                    s.removeClass( dropElement, s.hoverClass );
-                                },
-
-                                /**
-                                 * Kick off.
-                                 */
-                                setUp: function ( config ) {
-                                    duConfig = Object.create( skeleton );
-                                    for ( var c in config ) {
-                                        duConfig[c] = config[c];
-                                    }
-                                    var dropZones = document.getElementsByClassName( duConfig.staticClass );
-                                    if ( dropZones.length > 0 ) {
-                                        for ( var i = 0; i < dropZones.length; i++ ) {
-                                            if ( window.FormData ) {
-                                                var manualElement = dropZones[i].querySelector( '.' + duConfig.manualElement );
-                                                manualElement.addEventListener( 'change', this.handleManualUpload, false );
-                                                dropZones[i].addEventListener( 'dragover', this.handleDrag, false );
-                                                dropZones[i].addEventListener( 'dragleave', this.handleDragLeave, false );
-                                                dropZones[i].addEventListener( 'drop', this.handleDrop, false );
-                                            } else {
-                                                dropZones[i].className += ' ' + duConfig.errorClass;
-                                                dropZones[i].querySelector( '.' + duConfig.messageElement ).innerHTML = 'Sorry, browser in incompatible.';
-                                            }
-                                        }
-                                    }
-                                }
-                            };
-
-                            // Kick-off
-
-                            window.onload = function () {
-                                try {
-                                    var d = Object.create( dragAndUpload );
-                                    d.setUp();
-                                } catch ( exception ) {
-                                    console.log( 'Error creating menus. In all likelihood your browser is out of date.\r\n', exception, '\r\n', navigator.userAgent );
-                                }
-                            };
+        window.onload = function () {
+            try {
+                var d = Object.create( dragAndUpload );
+                d.setUp();
+            } catch ( exception ) {
+                console.log( 'Error creating menus. In all likelihood your browser is out of date.\r\n', exception, '\r\n', navigator.userAgent );
+            }
+        };
     </script>
 {% endblock script %}

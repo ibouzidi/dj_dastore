@@ -76,12 +76,12 @@ def extract_zip_contents(zip_file_path):
     return file_tree
 
 
-def calculate_storage_remaining(size, user_account, storage_limit):
+def calculate_storage_remaining(total_size, user_account, storage_limit):
     if user_account.subscription_plan is not None:
         storage_limit_gb = storage_limit * 1024 ** 3
     else:
         storage_limit_gb = 0
-    size_conversion = size * 1024 ** 3
+    size_conversion = total_size
     remaining_storage = storage_limit_gb - (user_account.storage_usage + size_conversion)
     return remaining_storage
 
@@ -99,37 +99,39 @@ class UploadFilesView(View):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             files = request.FILES.getlist('file')
-            # Check if the file extension is supported
+            # Check if any file extension is not supported
+            unsupported_files = []
             for file in files:
                 mime_type, encoding = mimetypes.guess_type(file.name)
-                print("mime_type")
-                print(mime_type)
-                print(SupportedExtension.objects.filter(
-                    extension=mime_type).exists())
                 if not SupportedExtension.objects.filter(
                         extension=mime_type).exists():
-                    return JsonResponse(
-                        {
-                            'error': f"File type is not supported.",
+                    unsupported_files.append(file.name)
 
-                        })
+            # Return error if any file extension is not supported
+            if unsupported_files:
+                return JsonResponse({
+                    'error': f"File type is not supported for files: "
+                             f"{', '.join(unsupported_files)}",
+                })
+
+            # Check remaining storage limit for all files combined
+            user_account = request.user
+            storage_limit = user_account.subscription_plan.storage_limit \
+                if user_account.subscription_plan else 0
+            total_size = sum(file.size for file in files)
+            remaining_storage = calculate_storage_remaining(total_size,
+                                                            user_account,
+                                                            storage_limit)
+            # Return error if storage limit is exceeded
+            if remaining_storage < 0:
+                return JsonResponse({
+                    'message': f"Your plan storage limit of {storage_limit:.1f}"
+                               f" GB has been reached.",
+                }, status=400)
             # crypte files using Fernet encryption
+            # and compress files to one zip file
             try:
                 zip_file = encrypt_files(files)
-                size = zip_file.tell()
-                user_account = request.user
-                # check the storage limit
-                storage_limit = user_account.subscription_plan.storage_limit \
-                    if user_account.subscription_plan else 0
-                remaining_storage = calculate_storage_remaining(size,
-                                                                user_account,
-                                                                storage_limit)
-                if remaining_storage < 0:
-                    return JsonResponse(
-                        {
-                            'message': f"Your plan storage limit of {storage_limit:.1f} GB has been reached."},
-                        status=400
-                    )
             except Exception as e:
                 return JsonResponse({'error': str(e)})
             now = datetime.now()
@@ -151,24 +153,28 @@ class UploadFilesView(View):
                 # save the file in database
                 saved_file_model = File(
                     user=request.user,
-                    file=saved_file.split("/")[-1],
                     # name of the file without the path
+                    file=saved_file.split("/")[-1],
                     description=form.cleaned_data['description'],
                     size=file_size,
                     content=extracted_content,
                 )
                 saved_file_model.save()
-                return JsonResponse({'message': 'Data uploaded', }, status=200)
+                return JsonResponse({'message': 'Data uploaded !', }, status=200)
             except Exception as e:
                 return JsonResponse({'message': str(e)}, status=400)
         return JsonResponse({'message': 'Form is not valid'}, status=400)
 
 
 def backup_dashboard(request):
-    files = File.objects.filter(user=request.user).order_by('-uploaded_at')
-    zip_files = [(file.id, file.file.name, file.description, file.uploaded_at,
-                  file.size)
-                 for file in files if file.file.name.endswith('.zip')]
+    try:
+        zip_files = File.objects.filter(user=request.user, file__endswith='.zip')\
+            .order_by('-uploaded_at')\
+            .values_list('id', 'file', 'description', 'uploaded_at', 'size')
+    except Exception as e:
+        messages.error("An error occurred: {}".format(str(e)))
+        return render(request, 'extbackup/backup_dashboard.html',
+                      {'zip_files': zip_files})
     return render(request, 'extbackup/backup_dashboard.html',
                   {'zip_files': zip_files})
 
@@ -273,22 +279,25 @@ def view_zip_content(request, file_id):
 
 
 def backup_refresh(request):
-    ftp_storage = default_storage
+    sys_storage = default_storage
     zip_files_folder = f'uploads/upload_{request.user.username}/'
-    actual_zip_files = ftp_storage.listdir(zip_files_folder)[1]
+    print(os.path.abspath(zip_files_folder))
+    actual_zip_files = sys_storage.listdir(zip_files_folder)[1]
     for zip_file in actual_zip_files:
-        file_path = os.path.join(zip_files_folder, zip_file)
-        file_size = ftp_storage.size(file_path)
+        file_path = sys_storage.path(os.path.join(zip_files_folder, zip_file))
+        file_size = sys_storage.size(file_path)
+        extracted_content = extract_zip_contents(file_path)
         File.objects.update_or_create(file=zip_file, user=request.user,
                                       defaults={'file': zip_file,
-                                                'size': file_size})
+                                                'size': file_size,
+                                                'content':extracted_content})
     # Check for files in model not in folder
     for file in File.objects.filter(user=request.user):
         if file.file not in actual_zip_files:
             file.delete()
     # Get updated zip files
     zip_files = [(file.id, file.file.name, file.description, file.uploaded_at,
-                  file.size)
+                  file.size, file.content)
                  for file in File.objects.filter(user=request.user).order_by(
             '-uploaded_at')
                  if file.file.name.endswith('.zip')]

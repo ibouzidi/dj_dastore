@@ -7,15 +7,15 @@ class FileForm(forms.ModelForm):
         model = File
         fields = ('file', 'description',)
         widgets = {
-            'file': forms.FileInput(attrs={'class': 'default-file-input',
-                                           'id': 'customFile',
-                                           # 'onchange': 'previewFiles()',
+            'file': forms.FileInput(attrs={'class': 'dragAndUploadManual',
+                                           'id': 'myDragElement',
                                            'multiple': True}),
             'description': forms.TextInput(attrs={'cols': '30',
                                     'rows': '3',
-                                    'placeholder': 'Description',
+                                    'placeholder': 'Describe your bakcup files.',
                                     'class': 'form-control '
-                                             'form-form shadow-none'}),
+                                             'form-form shadow-none',
+                                                  'id': 'file-description'}),
         }
 
 

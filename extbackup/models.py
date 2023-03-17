@@ -14,7 +14,7 @@ class SupportedExtension(models.Model):
 
 class File(models.Model):
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    description = models.CharField(max_length=255, null=True, blank=True)
+    description = models.CharField(max_length=100, null=True, blank=True)
     size = models.PositiveIntegerField(default=0)
     file = models.FileField(upload_to='uploads/')
     content = models.JSONField()
