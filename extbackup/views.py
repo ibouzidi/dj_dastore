@@ -1,5 +1,5 @@
 import csv
-import mimetypes
+import magic
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
@@ -39,18 +39,21 @@ class UploadFilesView(View):
             files = request.FILES.getlist('file')
             # Check if any file extension is not supported
             unsupported_files = []
+            mime = magic.Magic(mime=True)
             for file in files:
-                mime_type, encoding = mimetypes.guess_type(file.name)
-                if not SupportedExtension.objects.filter(
-                        extension=mime_type).exists():
-                    unsupported_files.append(file.name)
-
+                if os.path.exists(file.name):
+                    mime_type = mime.from_file(file.name)
+                    if not SupportedExtension.objects.filter(
+                            extension=mime_type).exists():
+                        unsupported_files.append(file.name)
+                else:
+                    print(f"{file.name} path does not exist")
             # Return error if any file extension is not supported
             if unsupported_files:
                 return JsonResponse({
-                    'error': f"File type is not supported for files: "
+                    'message': f"File type is not supported for files: "
                              f"{', '.join(unsupported_files)}",
-                })
+                }, status=400)
 
             # Check remaining storage limit for all files combined
             user_account = request.user
@@ -174,7 +177,8 @@ class DeleteZipFileView(View):
                 return redirect('extbackup:backup_dashboard')
             except PermissionError:
                 messages.error(request,
-                               "Cannot delete a zip file that is used or open by another processus")
+                               "Cannot delete a zip file that is used "
+                               "or open by another processus")
         if deleted_files:
             messages.success(request, "Zip files deleted successfully")
         return redirect('extbackup:backup_dashboard')
@@ -298,7 +302,6 @@ class SupportedExtensionDeleteAllView(View):
 
 @method_decorator(user_passes_test(dev), name='dispatch')
 class SupportedExtensionExportView(View):
-    @user_passes_test(dev)
     def get(self, request, *args, **kwargs):
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; ' \
