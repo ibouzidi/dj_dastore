@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 import os
+from django.utils import timezone
+import datetime
 
 from subscription_plan.models import SubscriptionPlan
 
@@ -71,6 +73,8 @@ class Account(AbstractBaseUser, PermissionsMixin):
     storage_usage = models.BigIntegerField(default=0)
     subscription_plan = models.ForeignKey(SubscriptionPlan,
                                           on_delete=models.SET_NULL, null=True)
+    request_counts = models.PositiveIntegerField(default=0)
+    last_request_timestamp = models.DateTimeField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -108,5 +112,20 @@ class Account(AbstractBaseUser, PermissionsMixin):
     # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
     def has_module_perms(self, app_label):
         return True
+
+    def update_rate_limit(self):
+        if self.last_request_timestamp is None or self.last_request_timestamp < timezone.now() - datetime.timedelta(
+                seconds=30):
+            self.request_counts = 1
+            self.last_request_timestamp = timezone.now()
+            self.save()
+            return True
+        elif self.request_counts < 2:
+            self.request_counts += 1
+            self.last_request_timestamp = timezone.now()
+            self.save()
+            return True
+        else:
+            return False
 
 

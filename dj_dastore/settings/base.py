@@ -193,3 +193,5 @@ JAZZMIN_SETTINGS = {
     "copyright": "Idris BOUZIDI",
 
 }
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
