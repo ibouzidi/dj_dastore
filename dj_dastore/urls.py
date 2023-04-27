@@ -3,18 +3,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
 from django.contrib.auth import views as auth_view
+from app.views import HomeView
 
-import app.views
 from accounts import views
 
-from app.views import (
-    home_screen_view
-)
-
 urlpatterns = [
+    path('', HomeView.as_view(), name='HomeView'),
+    path("stripe/", include("djstripe.urls", namespace="djstripe")),
     path('subscription/price/', include('subscription_plan.urls')),
+    path("subscriptions/", include("subscriptions.urls")),
     path('backup/', include('extbackup.urls')),
-    path('', home_screen_view, name='home'),
     path('admin_panel/', admin.site.urls),
     path('accounts/', include('accounts.urls')),
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)

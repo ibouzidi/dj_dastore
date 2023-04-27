@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+     <section class="py-5">
+        <div class="container">
+    <h2>Cancel Subscription</h2>
+    <p>Are you sure you want to cancel your subscription?</p>
+    <form method="post" action="{% url 'subscriptions:CancelConfirmView' %}">
+        {% csrf_token %}
+        <button type="submit" name="cancel" class="btn btn-danger">Yes, cancel subscription</button>
+        <button type="submit" name="free_plan" class="btn btn-secondary">Switch to free plan</button>
+    </form>
+        </div>
+     </section>
+{% endblock %}

@@ -5,7 +5,7 @@
     <!-- Section -->
     <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <div class="container">
-            <p class="text-center"><a href="{% url 'subscription_plan:subscription_plan_index' %}" class="text-gray-700"><i class="fas fa-angle-left mr-2"></i> Back to plan and prices</a></p>
+            <p class="text-center"><a href="{% url 'HomeView' %}" class="text-gray-700"><i class="fas fa-angle-left mr-2"></i> Back to plan and prices</a></p>
             <div class="row justify-content-center form-bg-image" style="background-image: url({% static 'illustrations/signin.svg' %})">
                 <div class="col-12 col-xl-4">
                     <div class="card card-body bg-white border-light shadow-sm mb-4">
@@ -14,19 +14,15 @@
                             <h2 class="h5 mb-4">Plan choosen</h2>
                             <!-- Side Shape-->
                             <div class="title">
-                                <h3>{{ plan.name }}</h3>
-                                <p>{{ plan.sub_title }}</p>
+                                <h3>{{ plan.product.name }}</h3>
+                                <p>{{ plan.product.metadata.subtitle }}</p>
                                 <div class="line"></div>
                             </div>
                             <div class="price">
-                                <h4>${{ plan.price }}</h4>
+                                <h4 style="font-size: 28px">{{ plan.amount }}$/{{ plan.interval }}</h4>
                             </div>
                             <div class="description">
-                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.storage_limit }} GB of storage</p>
-                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.description }}</p>
-                                <p><i style="color:red" class="material-symbols-outlined">close</i>No Hidden Fees</p>
-                                <p><i style="color:red"class="material-symbols-outlined">close</i>100+ Video Tuts</p>
-                                <p><i style="color:red"class="material-symbols-outlined">close</i>No Tools</p>
+                                <p>{{ plan.product.description }}</p>
                             </div>
                         </div>
                     </div>

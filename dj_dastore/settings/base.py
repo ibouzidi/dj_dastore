@@ -33,7 +33,9 @@ INSTALLED_APPS = [
     'app.apps.AppConfig',
     'extbackup.apps.ExtbackupConfig',
     'subscription_plan.apps.SubscriptionPlanConfig',
+    'subscriptions.apps.SubscriptionsConfig',
     'storages',
+    'djstripe',
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -101,7 +103,6 @@ DATABASES = {
 AUTH_USER_MODEL = 'accounts.Account' #
 
 AUTHENTICATION_BACKENDS = [
-    # 'django.contrib.auth.backends.AllowAllUsersModelBackend',
     'django.contrib.auth.backends.ModelBackend',
     'accounts.backends.CaseInsensitiveModelBackend',
 ]
@@ -195,3 +196,13 @@ JAZZMIN_SETTINGS = {
 }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
+# stripe config
+STRIPE_TEST_PUBLIC_KEY = 'pk_test_51Han4nJWztZpQABxysTVGo4JzUVAofIK57O8wrZgN0vvjBsbQYja5RdeMdOKyGaaZUK9OdbmjJF9xUp6RVyrTYz200ofLajlDL'
+STRIPE_TEST_SECRET_KEY = 'sk_test_51Han4nJWztZpQABxCCz5MlmSTiTzZIVFuFjgsSAfy0iLWQ1TQ2rNi5yYtdtQuiM0DfaxIYeXNJL2ZmmQAwaOHXzs0017w3y1IW'
+STRIPE_LIVE_MODE = False
+
+# Dj-stripe config
+DJSTRIPE_WEBHOOK_SECRET = 'whsec_56d7c095da9b777a89840d2b4ec445f19c4a5c42e51d73566a857b545d87b4c4'
+DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
+DJSTRIPE_USE_NATIVE_JSONFIELD = True

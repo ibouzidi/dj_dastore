@@ -8,6 +8,7 @@ from django.utils import timezone
 import datetime
 
 from subscription_plan.models import SubscriptionPlan
+from djstripe.models import Customer
 
 
 class MyAccountManager(BaseUserManager):
@@ -73,6 +74,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     storage_usage = models.BigIntegerField(default=0)
     subscription_plan = models.ForeignKey(SubscriptionPlan,
                                           on_delete=models.SET_NULL, null=True)
+    plan_id = models.CharField(max_length=255, null=True, blank=True)
     request_counts = models.PositiveIntegerField(default=0)
     last_request_timestamp = models.DateTimeField(null=True, blank=True)
 
@@ -127,5 +129,33 @@ class Account(AbstractBaseUser, PermissionsMixin):
             return True
         else:
             return False
+
+    @property
+    def customer(self):
+        try:
+            customer = Customer.objects.get(subscriber=self)
+            return customer
+        except:
+            return None
+
+    @property
+    def get_active_subscriptions(self):
+        try:
+            customer = Customer.objects.get(subscriber=self)
+            return customer.active_subscriptions
+        except:
+            return []
+
+    @property
+    def get_active_plan(self):
+        try:
+            customer = Customer.objects.get(subscriber=self)
+            return customer.active_subscriptions[0].plan
+        except:
+            return None
+
+    @property
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
 

@@ -25,7 +25,7 @@ def breadcrumb(context):
     # Add home breadcrumb
     breadcrumbs.insert(0, {
         'label': '<i class="fas fa-home"></i>',
-        'url': reverse('home'),
+        'url': reverse('HomeView'),
     })
 
     # Generate breadcrumb HTML

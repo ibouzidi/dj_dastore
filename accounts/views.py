@@ -14,6 +14,8 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.views import View
+
 from accounts.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
 from accounts.models import Account
@@ -26,77 +28,67 @@ import json
 import base64
 import requests
 from django.core import files
+from djstripe.models import Plan
+from djstripe.models import Product, Price
 
 from subscription_plan.models import SubscriptionPlan
 
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
 
-def register_view(request, plan_name, *args, **kwargs):
-    user = request.user
-    if user.is_authenticated:
-        messages.info(request,
-                      "You are already authenticated as " + str(user.email))
-        return redirect('subscription_plan:subscription_plan_index')
+class RegisterView(View):
+    def get(self, request):
+        form = RegistrationForm()
+        request.session["plan_id"] = request.COOKIES.get("selectedPlan")
+        plan_id = request.session.get('plan_id')
 
-    try:
-        # Retrieve the selected plan
-        plan = SubscriptionPlan.objects.get(name__iexact=plan_name)
-    except SubscriptionPlan.DoesNotExist:
-        messages.error(request, f'The plan with {plan_name} does not exit.')
-        return redirect('subscription_plan:subscription_plan_index')
-    if not plan_name:
-        return redirect('subscription_plan:subscription_plan_index')
-    context = {}
-    if request.POST:
+        if not plan_id:
+            messages.info(request, 'Please select a plan before registering.')
+            return redirect("HomeView")
+
+        plan = get_object_or_404(Plan, id=plan_id)
+
+        return render(request, 'accounts/register.html',
+                      {'form': form, 'plan': plan})
+
+    def post(self, request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            # Create a new Account instance
             account = Account.objects.create_user(
                 email=form.cleaned_data.get('email').lower(),
                 password=form.cleaned_data.get('password1'),
-                subscription_plan=plan,
                 username=form.cleaned_data.get('username'),
             )
+            account.is_active = False
+            account.plan_id = request.session.get("plan_id")
+            print(f"Plan ID: {account.plan_id}")
             account.save()
+            request.session["user_id"] = account.id
+            request.session["plan_id"] = request.COOKIES.get("selectedPlan")
+            # if the plan is a trial
+            if account.plan_id == "price_1N1TMcJWztZpQABxdveM1RvB":
+                print('YES TRIAL')
+                return redirect('subscriptions:TrialPlanView')
+            return redirect('subscriptions:CreateCheckoutSession')
+        return render(request, 'accounts/register.html', {'form': form})
 
-            # Authenticate and log in the new user
-            user = authenticate(email=account.email,
-                                password=form.cleaned_data.get('password1'))
-            login(request, user)
-
-            # Redirect to the desired page
-            destination = kwargs.get("next")
-            if destination:
-                return redirect(destination)
-            return redirect('home')
-        else:
-            context['registration_form'] = form
-            context['plan'] = plan
-
-    else:
-        form = RegistrationForm()
-        context['plan'] = plan
-        context['registration_form'] = form
-    return render(request, 'accounts/register.html', context)
 
 
 @login_required
 def logout_view(request):
     logout(request)
     messages.success(request, "You are now logged out.")
-    return redirect("home")
+    return redirect("HomeView")
 
 
 def login_view(request, *args, **kwargs):
     context = {}
 
     user = request.user
-    if user.is_authenticated:
-        return redirect("home")
+    if request.user.is_authenticated and request.user.get_active_subscriptions:
+        return redirect("HomeView")
 
     destination = get_redirect_if_exists(request)
-    print("destination: " + str(destination))
 
     if request.POST:
         form = AccountAuthenticationForm(request.POST)
@@ -110,8 +102,11 @@ def login_view(request, *args, **kwargs):
                 messages.success(request, "You are now logged in.")
                 if destination:
                     return redirect(destination)
-                return redirect("home")
-
+                return redirect("HomeView")
+            else:
+                messages.error(request, "Invalid email or password.")
+        else:
+            messages.error(request, "Invalid email or password.")
     else:
         form = AccountAuthenticationForm()
 

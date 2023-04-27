@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <section class="price_plan_area section_padding_130_80 py-5" id="pricing">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-12 col-sm-8 col-lg-6">
+                    <!-- Section Heading-->
+                    <div class="section-heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                        <h6>Pricing Plans</h6>
+                        <h3>Let's find a way together</h3>
+                        <p>Choose you plan, take what you need for you.</p>
+                        <div class="line"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                {% for plan in plans %}
+                    <!-- Single Price Plan Area-->
+                    <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+                        <div class="single_price_plan wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                            <!-- Plan Title -->
+                            <div class="title">
+                                {% if plan.metadata.popular == "true" %}
+                                    <!-- Side Shape-->
+                                    <div class="side-shape"><img src="https://bootdey.com/img/popular-pricing.png" alt=""></div>
+                                    <span>Popular</span>
+                                {% endif %}
+                                <h3>{{ plan.product.name }}</h3>
+                                <p>{{ plan.metadata.subtitle }}</p>
+                                <div class="line"></div>
+                            </div>
+                            <!-- Plan Price -->
+                            <div class="price">
+                                <h4>{{ plan.amount }}$/{{ plan.interval }}</h4>
+                            </div>
+                            <!-- Plan Description -->
+                            <div class="description">
+                                {% for key, value in plan.description.items %}
+                                    <p>{{ value }}</p>
+                                {% endfor %}
+                            </div>
+                            <button class="btn btn-primary" data-id="{{ plan.id }}" onclick="handleSelectPlan(this)">Choose</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+{% endblock content %}
+
+{% block script %}
+    <script>
+        const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";
+
+        function handleSelectPlan(button) {
+            const planId = button.getAttribute("data-id");
+            localStorage.setItem("selectedPlan", planId);
+            setCookie("selectedPlan", planId);
+            if (isAuthenticated) {
+                window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}"
+            }else {
+                window.location.href = "{% url 'accounts:RegisterView' %}"
+            }
+        }
+
+        function setCookie(name,value,days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days*24*60*60*1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0;i < ca.length;i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
+    </script>
+{% endblock script %}
