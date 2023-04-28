@@ -8,8 +8,12 @@
     <form method="post" action="{% url 'subscriptions:CancelConfirmView' %}">
         {% csrf_token %}
         <button type="submit" name="cancel" class="btn btn-danger">Yes, cancel subscription</button>
-        <button type="submit" name="free_plan" class="btn btn-secondary">Switch to free plan</button>
+        <button type="submit" name="free_plan" class="btn btn-secondary">Try the free plan.</button>
     </form>
         </div>
      </section>
+    {% if free_plan %}
+  <!-- Display the free trial plan here -->
+        {{ plan.product.name }}
+{% endif %}
 {% endblock %}

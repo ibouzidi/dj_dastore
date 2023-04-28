@@ -66,9 +66,9 @@ class RegisterView(View):
             request.session["user_id"] = account.id
             request.session["plan_id"] = request.COOKIES.get("selectedPlan")
             # if the plan is a trial
-            if account.plan_id == "price_1N1TMcJWztZpQABxdveM1RvB":
-                print('YES TRIAL')
-                return redirect('subscriptions:TrialPlanView')
+            # if account.plan_id == "price_1N1TMcJWztZpQABxdveM1RvB":
+            #     print('YES TRIAL')
+            #     return redirect('subscriptions:TrialPlanView')
             return redirect('subscriptions:CreateCheckoutSession')
         return render(request, 'accounts/register.html', {'form': form})
 

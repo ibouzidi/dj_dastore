@@ -68,19 +68,36 @@ class CreateCheckoutSession(View):
             customer.subscriber = user
             customer.save()
 
+        # Retrieve the plan and get the trial period
+        plan = stripe.Plan.retrieve(plan_id)
+        trial_period_days = plan['trial_period_days']
+
+        subscription_data = {
+            "items": [
+                {
+                    "plan": plan_id,
+                }
+            ],
+            "metadata": {
+                "user_id": user.id,
+            }
+        }
+
+        if trial_period_days:
+            subscription_data.update({
+                "trial_period_days": trial_period_days,
+                "trial_settings": {
+                    "end_behavior": {
+                        "missing_payment_method": "cancel"
+                    }
+                }
+            })
+
         session = stripe.checkout.Session.create(
             customer=customer.id,
             payment_method_types=["card"],
-            subscription_data={
-                "items": [
-                    {
-                        "plan": plan_id,
-                    }
-                ],
-                "metadata": {
-                    "user_id": user.id,
-                },
-            },
+            payment_method_collection="if_required",
+            subscription_data=subscription_data,
             success_url="http://localhost:8000/subscriptions/success/",
             cancel_url="http://localhost:8000/subscriptions/cancelled/",
         )
@@ -112,74 +129,12 @@ class CancelConfirmView(View):
             messages.error(request, "Subscription canceled!")
             user.delete()  # Delete the user or disable the account as needed
             return redirect("HomeView")
-        elif 'free_plan' in request.POST:
-            # Switch to trial plan
-            trial_plan_id = 'price_1N1TMcJWztZpQABxdveM1RvB'
-            user.plan_id = trial_plan_id
-            user.save()
-
-            # Create a subscription with the free plan
-            stripe_subscription = stripe.Subscription.create(
-                customer=customer.id,
-                items=[
-                    {
-                        "plan": trial_plan_id,
-                    }
-                ],
-            )
-            # Save the subscription in your database
-            subscription = Subscription.sync_from_stripe_data(
-                stripe_subscription)
-            subscription.customer = customer
-            subscription.save()
-            user.is_active = True
-            user.save()
-
-            messages.success(request, "You have successfully switched to the "
-                                      "trial plan.")
-            return redirect("HomeView")
-
-
-class TrialPlanView(View):
-    def get(self, request):
-        user_id = request.session.get("user_id")
-        print("user_id")
-        print(user_id)
-        user = Account.objects.get(id=user_id)
-        print("customer before")
-
-        # Create a Stripe customer if it doesn't exist
-        customer = Customer.objects.filter(subscriber=user).first()
-        print("customer")
-        print(customer)
-        if not customer:
-            customer_data = stripe.Customer.create(email=user.email)
-            customer = Customer.sync_from_stripe_data(customer_data)
-            customer.subscriber = user
-            customer.save()
-
-        print("customer after")
-        print(customer)
-        # Create a subscription with the free plan
-        stripe_subscription = stripe.Subscription.create(
-            customer=customer.id,
-            items=[
-                {
-                    "plan": user.plan_id,
-                }
-            ],
-        )
-
-        # Save the subscription in your database
-        subscription = Subscription.sync_from_stripe_data(stripe_subscription)
-        subscription.customer = customer
-        subscription.save()
-        user.is_active = True
-        user.save()
-        messages.success(request, "You have successfully subscribed to "
-                                  "the trial plan.")
-
-        return redirect("HomeView")
+        else:
+            # Update the session with the free plan ID and
+            # redirect to the CreateCheckoutSession view
+            free_plan_id = 'price_1N1TMcJWztZpQABxdveM1RvB'
+            request.session['plan_id'] = free_plan_id
+            return redirect('subscriptions:CreateCheckoutSession')
 
 
 @webhooks.handler("payment_intent.succeeded")
