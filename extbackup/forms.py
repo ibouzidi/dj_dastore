@@ -1,5 +1,5 @@
 from django import forms
-from .models import File, SupportedExtension
+from .models import File, SupportedExtension, Folder
 
 
 class FileForm(forms.ModelForm):

@@ -906,7 +906,7 @@ Header
     padding-left: 1em;
 }
 
-/* Folder and subfolder icon */
+/* folder and subfolder icon */
 .pure-tree li:has(> ul) > label:before {
     width: 1em;
     height: 1em;
@@ -938,7 +938,7 @@ Header
     background-color: var(--clr-grey-1);
 }
 
-/* Folder and subfolder label */
+/* folder and subfolder label */
 .pure-tree li > label {
     display: block;
     cursor: pointer;

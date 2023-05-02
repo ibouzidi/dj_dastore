@@ -5,7 +5,7 @@ from cryptography.fernet import Fernet
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 # from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
@@ -203,7 +203,7 @@ def check_file_hashes(request, file_id):
             return JsonResponse({'message': 'Integrity: Mismatch'},
                                 status=400)
     else:
-        return HttpResponse("Folder not found")
+        return HttpResponse("folder not found")
 
 
 @login_required
@@ -244,7 +244,7 @@ def download_zip_file(request, file_id):
             'Content-Disposition'] = f'attachment; filename={folder_name}.zip'
         return response
     else:
-        return HttpResponse("Folder not found")
+        return HttpResponse("folder not found")
 
 
 # def traverse_content_tree(content, parent_path=""):
@@ -291,7 +291,7 @@ class DeleteBackupsView(View):
                                    "Cannot delete someone else's folders")
                     return redirect('extbackup:backup_dashboard')
             except File.DoesNotExist:
-                messages.error(request, "Folder not found")
+                messages.error(request, "folder not found")
                 return redirect('extbackup:backup_dashboard')
             except PermissionError:
                 messages.error(request,
@@ -439,3 +439,48 @@ class SupportedExtensionExportView(View):
             writer.writerow([i.extension])
         messages.success(request, "Extension exported with success.")
         return response
+
+
+# Create folder
+# class FolderCreateView(View):
+#     def get(self, request):
+#         form = FolderCreateForm()
+#         form.fields['parent'].queryset = folder.objects.filter(
+#             user=request.user)
+#         return render(request, 'extbackup/folder_create.html', {'form': form})
+#
+#     def post(self, request):
+#         form = FolderCreateForm(request.POST)
+#         form.fields['parent'].queryset = folder.objects.filter(
+#             user=request.user)
+#         if form.is_valid():
+#             folder = form.save(commit=False)
+#             folder.user = request.user
+#             folder.save()
+#             messages.success(request, 'folder created successfully.')
+#             return redirect('extbackup:extension_list')
+#         else:
+#             messages.error(request, 'Error creating folder.')
+#             return render(request, 'extbackup/folder_create.html', {'form': form})
+#
+#
+# class FolderListView(View):
+#     template_name = 'extbackup/folder_list.html'
+#
+#     def get(self, request, folder_id=None):
+#         if folder_id:
+#             current_folder = get_object_or_404(folder, id=folder_id, user=request.user)
+#             folders = folder.objects.filter(user=request.user, parent=current_folder)
+#             files = File.objects.filter(user=request.user, folder=current_folder)
+#         else:
+#             current_folder = None
+#             folders = folder.objects.filter(user=request.user, parent=None)
+#             files = File.objects.filter(user=request.user, folder=None)
+#
+#         context = {
+#             'current_folder': current_folder,
+#             'folders': folders,
+#             'files': files,
+#         }
+#         return render(request, self.template_name, context)
+

@@ -14,6 +14,7 @@ from app.views import (
 urlpatterns = [
     path('subscription/price/', include('subscription_plan.urls')),
     path('backup/', include('extbackup.urls')),
+    path('folder/', include('folder.urls')),
     path('', home_screen_view, name='home'),
     path('admin_panel/', admin.site.urls),
     path('accounts/', include('accounts.urls')),

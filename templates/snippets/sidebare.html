@@ -23,10 +23,10 @@
                         <div class="d-flex align-items-center">
                             <div class="user-avatar lg-avatar mr-4">
                                 {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
-                                <img src="{{ user.avatar_url }}" class="user-avatar md-avatar rounded-circle" alt="Neil Portrait">
-                            {% else %}
-                                <img src="{% static 'dastore/default_user_icon.png' %}" class="border border-dark user-avatar md-avatar rounded-circle">
-                            {% endif %}
+                                    <img src="{{ user.avatar_url }}" class="user-avatar md-avatar rounded-circle" alt="Neil Portrait">
+                                {% else %}
+                                    <img src="{% static 'dastore/default_user_icon.png' %}" class="border border-dark user-avatar md-avatar rounded-circle">
+                                {% endif %}
                             </div>
                             <div class="d-block">
                                 <h2 class="h6">
@@ -47,9 +47,9 @@
                                aria-label="Toggle navigation"></a>
                         </div>
                     </div>
-                            <div class="logo mr-auto">
-            <a href="{% url 'home' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid" style="max-height: 6.0625rem"></a>
-        </div>
+                    <div class="logo mr-auto">
+                        <a href="{% url 'home' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid" style="max-height: 6.0625rem"></a>
+                    </div>
                     <ul class="nav flex-column">
                         <li class="nav-item  ">
                             <a href="{% url 'subscription_plan:subscription_plan_index' %}"
@@ -81,6 +81,14 @@
                             <div class="multi-level collapse " role="list"
                                  id="submenu-app" aria-expanded="false" data-parent="#submenu-app-parent">
                                 <ul class="flex-column nav">
+                                    <li class="nav-item "><a class="nav-link"
+                                                             href="{% url 'folder:folder_create' %}"><span><span
+                                            class="fas fa-table"></span> Create folder</span></a>
+                                    </li>
+{#                                    <li class="nav-item "><a class="nav-link"#}
+{#                                                             href="{% url 'extbackup:folder_contents' %}"><span><span#}
+{#                                            class="fas fa-table"></span> folder List</span></a>#}
+{#                                    </li>#}
                                     <li class="nav-item "><a class="nav-link"
                                                              href="{% url 'extbackup:backup_dashboard' %}"><span><span
                                             class="fas fa-table"></span> Backup Dashboard</span></a>
