@@ -40,38 +40,6 @@ class BackupUploadView(View):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             files = request.FILES.getlist('file')
-            # Check if any file extension is not supported
-            unsupported_files = []
-            mime = magic.Magic(mime=True)
-            for file in files:
-                if os.path.exists(file.name):
-                    mime_type = mime.from_file(file.name)
-                    if not SupportedExtension.objects.filter(
-                            extension=mime_type).exists():
-                        unsupported_files.append(file.name)
-                else:
-                    print(f"{file.name} path does not exist")
-            # Return error if any file extension is not supported
-            if unsupported_files:
-                return JsonResponse({
-                    'message': f"File type is not supported for files: "
-                               f"{', '.join(unsupported_files)}",
-                }, status=400)
-
-            # Check remaining storage limit for all files combined
-            user_account = request.user
-            storage_limit = user_account.subscription_plan.storage_limit \
-                if user_account.subscription_plan else 0
-            total_size = sum(file.size for file in files)
-            remaining_storage = calculate_storage_remaining(total_size,
-                                                            user_account,
-                                                            storage_limit)
-            # Return error if storage limit is exceeded
-            if remaining_storage < 0:
-                return JsonResponse({
-                    'message': f"Your plan storage limit of {storage_limit:.1f}"
-                               f" GB has been reached.",
-                }, status=400)
             try:
                 file_contents = extract_file_contents(files)
             except Exception as e:
@@ -98,10 +66,14 @@ class BackupUploadView(View):
 
             request.user.storage_usage += total_size
             request.user.save()
-
+            selected_folder = form.cleaned_data.get('folder')
+            print("selected_folder")
+            print(selected_folder)
             new_file = File(
                 user=request.user,
+                name=folder_name.split("/")[-1],
                 file=folder_name.split("/")[-1],
+                folder=selected_folder,
                 description=form.cleaned_data['description'],
                 size=total_size,
                 content=file_contents,

@@ -26,6 +26,7 @@ class File(models.Model):
     content = models.JSONField()
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
+
     def __str__(self):
         return self.name
 

@@ -3,9 +3,11 @@ from .models import File, SupportedExtension, Folder
 
 
 class FileForm(forms.ModelForm):
+    folder = forms.ModelChoiceField(queryset=Folder.objects.all(),
+                                    required=False)
     class Meta:
         model = File
-        fields = ('file', 'description',)
+        fields = ('file', 'description', 'folder')
         widgets = {
             'file': forms.FileInput(attrs={'class': 'dragAndUploadManual',
                                            'id': 'myDragElement',
@@ -16,6 +18,7 @@ class FileForm(forms.ModelForm):
                                     'class': 'form-control '
                                              'form-form shadow-none',
                                                   'id': 'file-description'}),
+
         }
 
 

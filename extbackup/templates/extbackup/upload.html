@@ -167,6 +167,9 @@
                     <form enctype="multipart/form-data" method="post" action="">
                         {% csrf_token %}
                         <p>
+                           {{ form.folder.label_tag }} {{ form.folder }}
+                        </p>
+                        <p>
                             {{ form.description.label  }}
                             {{ form.description }}
                         </p>
@@ -303,8 +306,13 @@
                         } else {
                             data.append( 'file', files[i] );
                             var fileDescription = $('#file-description').val();
+                            var folder = $('#id_folder').val();
+                            console.log(folder)
                             if (fileDescription.trim() !== '') {
                                 data.append('description', fileDescription.trim());
+                            }
+                            if (folder.trim() !== '') {
+                                data.append('folder', folder);
                             }
                             filesTotalSize += files[i].size;
                         }
@@ -319,7 +327,6 @@
                         s.message( 'Only ' + s.maxFiles + ' ' + filePlural + ' allowed.', 1, dropElement, '', s );
                         return 'failed';
                     } else {
-
                         return data;
                     }
                 },
