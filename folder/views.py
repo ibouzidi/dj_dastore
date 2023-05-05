@@ -1,5 +1,6 @@
+from django.views import View
+from django.shortcuts import render, redirect
 from django.urls import reverse
-
 from .forms import FolderCreateForm
 from .models import Folder
 from extbackup.models import File
@@ -7,72 +8,66 @@ from extbackup.models import File
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 
-class FolderCreateView(CreateView):
-    form_class = FolderCreateForm
+class FolderCreateView(View):
     template_name = 'folder/folder_create.html'
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super().form_valid(form)
+    def get(self, request, *args, **kwargs):
+        form = FolderCreateForm()
+        context = {
+            'form': form,
+            'submit_url': reverse('folder:folder_create'),
+            'add_folder': reverse('folder:folder_create'),
+        }
+        return render(request, self.template_name, context)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['submit_url'] = reverse('folder:folder_create')
-        context['add_folder'] = reverse('folder:folder_create')
-        # context['add_file'] = reverse('folder:add')
-        return context
+    def post(self, request, *args, **kwargs):
+        form = FolderCreateForm(request.POST)
+        if form.is_valid():
+            new_folder = form.save(commit=False)
+            new_folder.user = request.user
+            parent_folder_id = kwargs.get('parent_folder_id')
+            if parent_folder_id:
+                new_folder.parent = Folder.objects.get(pk=parent_folder_id)
+            new_folder.save()
+            return redirect(reverse('folder:folder_list'))
+        else:
+            context = {
+                'form': form,
+                'submit_url': reverse('folder:folder_create'),
+                'add_folder': reverse('folder:folder_create'),
+            }
+            return render(request, self.template_name, context)
 
-    def get_success_url(self):
-        return reverse('folder:folder_list')
 
-
-class FolderListView(ListView):
-    context_object_name = 'folder_list'
+class FolderListView(View):
     template_name = 'folder/folder_list.html'
 
-    def get_queryset(self):
-        pk = self.request.GET.get('id')
-        queryset = Folder.objects.filter(user=self.request.user)
+    def get(self, request, *args, **kwargs):
+        pk = request.GET.get('id')
+        queryset = Folder.objects.filter(user=request.user)
+
         if pk:
             queryset = queryset.filter(parent__pk=pk)
         else:
             queryset = queryset.filter(parent=None)
 
-        order_by = self.request.GET.get('sort')
+        order_by = request.GET.get('sort')
         if order_by == 'time':
             queryset = queryset.order_by('-created_at')
         elif order_by == 'name':
             queryset = queryset.order_by('name')
 
-        return queryset
-
-    def get_context_data(self, *, object_list=None, **kwargs):
-        context = super().get_context_data(object_list=object_list, **kwargs)
-
-        pk = self.request.GET.get('id')
-
-        context['file_list'] = self.get_file_query(pk)
-        context['add_folder'] = reverse('folder:folder_create')
-        # context['add_file'] = reverse('file:add')
-        context['parent_folder'] = self.get_parent_folder_link(pk)
-
-        return context
-
-    def get_file_query(self, pk):
         file_query = File.objects.all()
         if pk:
             file_query = file_query.filter(folder__pk=pk)
         else:
             file_query = file_query.filter(folder=None)
-        order_by = self.request.GET.get('sort')
+
         if order_by == 'time':
             file_query = file_query.order_by('-created_at')
         elif order_by == 'name':
             file_query = file_query.order_by('name')
-        return file_query
 
-    @staticmethod
-    def get_parent_folder_link(pk):
         parent_folder = []
         if pk:
             folder = Folder.objects.get(pk=pk)
@@ -87,4 +82,14 @@ class FolderListView(ListView):
                 })
                 folder = folder.parent
             parent_folder.reverse()
-        return parent_folder
+
+        context = {
+            'folder_list': queryset,
+            'file_list': file_query,
+            'add_folder': reverse('folder:folder_create_with_parent', kwargs={
+                'parent_folder_id': pk}) if pk else reverse(
+                'folder:folder_create'),
+            'parent_folder': parent_folder,
+        }
+
+        return render(request, self.template_name, context)

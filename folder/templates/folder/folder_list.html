@@ -6,7 +6,13 @@
 {% endblock %}
 
 {% block content %}
+    {#    <button class="btn btn-info mb-2 add-button" data-confirm="Create a new Folder" type="submit">Create folder</button>#}
+    <button type="button" class="btn btn-primary" id="addFolderButton">
+        Add Folder
+    </button>
+    {# <input type="hidden" id="parentFolderId" value="{{ parent_folder_id }}">#}
 
+    <!-- Add Folder Modal -->
     <div class="container ml20 mt-3">
         <p class="text-muted">Folders</p>
         <div class="row">
@@ -40,7 +46,7 @@
                         </small></p>
                         <h6 class="card-title"><i class="fas fa-file{{ file.icon }}"></i>
                             <span class="ml5 mr15">{{ file.name }}</span>
-{#                            <span class="float-right"><a href="{{ file.get_download_url }}"><i class="fas fa-download"></i></a></span>#}
+                            {#                            <span class="float-right"><a href="{{ file.get_download_url }}"><i class="fas fa-download"></i></a></span>#}
                         </h6>
                     </div>
                 </div>
@@ -52,4 +58,50 @@
         </div>
     </div>
 
+{% endblock %}
+{% block script %}
+    <script>
+        document.getElementById("addFolderButton").addEventListener("click", function() {
+            // Set the modal title and message
+            document.getElementById("confirmModalLabel").innerText = "Add New Folder";
+            document.getElementById("confirmMessage").innerHTML = 'Enter folder name: <input type="text" id="folderName" name="folder_name" required>';
+
+            // Show the modal
+            $("#confirmModal").modal("show");
+                });
+
+            document.getElementById("confirmForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            // Get the folder name and parent folder ID from the URL query parameter
+            const folderName = document.getElementById("folderName").value;
+            const urlParams = new URLSearchParams(window.location.search);
+            const parentFolderId = urlParams.get("id");
+
+            // Create form data for the POST request
+            const formData = new FormData();
+            formData.append("name", folderName);
+            formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
+
+            // Set the POST URL depending on the parent folder ID
+            const postUrl = parentFolderId ? `{% url 'folder:folder_create_with_parent' 0 %}`.replace('0', parentFolderId) : "{% url 'folder:folder_create' %}";
+
+            // Send the POST request
+            fetch(postUrl, {
+                method: "POST",
+                body: formData
+            }).then(response => {
+                if (response.ok) {
+                    // Reload the page on successful folder creation
+                    window.location.reload();
+                } else {
+                    // Handle errors
+                    console.error("Failed to create a new folder.");
+                }
+            });
+
+            // Close the modal
+            $("#confirmModal").modal("hide");
+        });
+    </script>
 {% endblock %}
