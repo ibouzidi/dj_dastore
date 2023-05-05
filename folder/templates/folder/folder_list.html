@@ -6,13 +6,10 @@
 {% endblock %}
 
 {% block content %}
-    {#    <button class="btn btn-info mb-2 add-button" data-confirm="Create a new Folder" type="submit">Create folder</button>#}
     <button type="button" class="btn btn-primary" id="addFolderButton">
         Add Folder
     </button>
-    {# <input type="hidden" id="parentFolderId" value="{{ parent_folder_id }}">#}
 
-    <!-- Add Folder Modal -->
     <div class="container ml20 mt-3">
         <p class="text-muted">Folders</p>
         <div class="row">
@@ -64,13 +61,19 @@
         document.getElementById("addFolderButton").addEventListener("click", function() {
             // Set the modal title and message
             document.getElementById("confirmModalLabel").innerText = "Add New Folder";
-            document.getElementById("confirmMessage").innerHTML = 'Enter folder name: <input type="text" id="folderName" name="folder_name" required>';
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const parentFolderId = urlParams.get("id");
+
+            document.getElementById("confirmMessage").innerHTML = `
+        Enter folder name: {{form.name }}
+      `;
 
             // Show the modal
             $("#confirmModal").modal("show");
-                });
+        });
 
-            document.getElementById("confirmForm").addEventListener("submit", function(event) {
+        document.getElementById("confirmForm").addEventListener("submit", function(event) {
             event.preventDefault();
 
             // Get the folder name and parent folder ID from the URL query parameter
@@ -83,8 +86,12 @@
             formData.append("name", folderName);
             formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
 
-            // Set the POST URL depending on the parent folder ID
-            const postUrl = parentFolderId ? `{% url 'folder:folder_create_with_parent' 0 %}`.replace('0', parentFolderId) : "{% url 'folder:folder_create' %}";
+            if (parentFolderId) {
+                formData.append("parent_folder_id", parentFolderId);
+            }
+
+            // Set the POST URL
+            const postUrl = "{% url 'folder:folder_create' %}";
 
             // Send the POST request
             fetch(postUrl, {

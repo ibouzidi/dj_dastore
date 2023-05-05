@@ -5,8 +5,6 @@ from .forms import FolderCreateForm
 from .models import Folder
 from extbackup.models import File
 
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-
 
 class FolderCreateView(View):
     template_name = 'folder/folder_create.html'
@@ -25,7 +23,7 @@ class FolderCreateView(View):
         if form.is_valid():
             new_folder = form.save(commit=False)
             new_folder.user = request.user
-            parent_folder_id = kwargs.get('parent_folder_id')
+            parent_folder_id = form.cleaned_data.get('parent_folder_id')
             if parent_folder_id:
                 new_folder.parent = Folder.objects.get(pk=parent_folder_id)
             new_folder.save()
@@ -44,6 +42,7 @@ class FolderListView(View):
 
     def get(self, request, *args, **kwargs):
         pk = request.GET.get('id')
+        form = FolderCreateForm()
         queryset = Folder.objects.filter(user=request.user)
 
         if pk:
@@ -84,6 +83,7 @@ class FolderListView(View):
             parent_folder.reverse()
 
         context = {
+            'form': form,
             'folder_list': queryset,
             'file_list': file_query,
             'add_folder': reverse('folder:folder_create_with_parent', kwargs={
