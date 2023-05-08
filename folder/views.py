@@ -4,10 +4,11 @@ from django.urls import reverse
 from .forms import FolderCreateForm
 from .models import Folder
 from extbackup.models import File
+from extbackup.forms import FileForm
 
 
 class FolderCreateView(View):
-    template_name = 'folder/folder_create.html'
+    template_name = 'folder/folder_list.html'
 
     def get(self, request, *args, **kwargs):
         form = FolderCreateForm()
@@ -42,7 +43,8 @@ class FolderListView(View):
 
     def get(self, request, *args, **kwargs):
         pk = request.GET.get('id')
-        form = FolderCreateForm()
+        form_folder = FolderCreateForm()
+        form_upload = FileForm()
         queryset = Folder.objects.filter(user=request.user)
 
         if pk:
@@ -56,7 +58,10 @@ class FolderListView(View):
         elif order_by == 'name':
             queryset = queryset.order_by('name')
 
-        file_query = File.objects.all()
+        # file_query = File.objects.all()
+        file_query = File.objects.filter(user=request.user) \
+            .order_by('-uploaded_at') \
+            .values_list('id', 'file', 'description', 'uploaded_at', 'size')
         if pk:
             file_query = file_query.filter(folder__pk=pk)
         else:
@@ -83,7 +88,8 @@ class FolderListView(View):
             parent_folder.reverse()
 
         context = {
-            'form': form,
+            'form_upload': form_upload,
+            'form_folder': form_folder,
             'folder_list': queryset,
             'file_list': file_query,
             'add_folder': reverse('folder:folder_create_with_parent', kwargs={

@@ -1,3 +1,4 @@
+import ast
 import csv
 import random
 import magic
@@ -19,6 +20,8 @@ import os
 import zipfile
 from django.http import FileResponse, JsonResponse
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+from folder.models import Folder
 from .tools import extract_file_contents, calculate_storage_remaining, \
     fernet_encrypt, calculate_file_hash
 from django.contrib.auth.decorators import login_required
@@ -66,14 +69,18 @@ class BackupUploadView(View):
 
             request.user.storage_usage += total_size
             request.user.save()
-            selected_folder = form.cleaned_data.get('folder')
-            print("selected_folder")
-            print(selected_folder)
+            parent_folder_id = request.POST.get('parent_folder_id')
+            folder_instance = None
+            if parent_folder_id:
+                folder_instance = get_object_or_404(Folder,
+                                                    pk=parent_folder_id)
+            print("parent_folder_id")
+            print(parent_folder_id)
             new_file = File(
                 user=request.user,
                 name=folder_name.split("/")[-1],
                 file=folder_name.split("/")[-1],
-                folder=selected_folder,
+                folder=folder_instance,
                 description=form.cleaned_data['description'],
                 size=total_size,
                 content=file_contents,

@@ -11,7 +11,7 @@ class FolderCreateForm(forms.ModelForm):
         fields = ('name',)
         widgets = {
             'name': forms.TextInput(attrs={
-                                    'placeholder': 'Name of folder',
+                                    'placeholder': 'New Folder Name',
                                     'id': 'folderName',
                                     'class': 'form-control '
                                              'form-form shadow-none'}),
