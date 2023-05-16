@@ -1,5 +1,5 @@
 from django import forms
-from .models import File, SupportedExtension, Folder
+from .models import File
 
 
 class FileForm(forms.ModelForm):
@@ -13,23 +13,12 @@ class FileForm(forms.ModelForm):
             'file': forms.FileInput(attrs={'class': 'dragAndUploadManual',
                                            'id': 'myDragElement',
                                            'multiple': True}),
-            'description': forms.TextInput(attrs={'cols': '30',
-                                    'rows': '3',
-                                    'placeholder': 'Describe Your Backup',
-                                    'class': 'form-control '
-                                             'form-form shadow-none',
-                                                  'id': 'file-description'}),
+            'description': forms.TextInput(
+                attrs={'cols': '30',
+                       'rows': '3',
+                       'placeholder': 'Describe Your Backup',
+                       'class': 'form-control '
+                                'form-form shadow-none',
+                       'id': 'file-description'}),
 
-        }
-
-
-class ExtensionForm(forms.ModelForm):
-    class Meta:
-        model = SupportedExtension
-        fields = ('extension',)
-        widgets = {
-            'extension': forms.TextInput(attrs={
-                                    'placeholder': 'Name of extension',
-                                    'class': 'form-control '
-                                             'form-form shadow-none'}),
         }

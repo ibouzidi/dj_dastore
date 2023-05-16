@@ -10,24 +10,15 @@
             border: 1px solid blue;
         }
     </style>
-        <!-- Flexbox: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ -->
-        <div class="container">
-            <div class="my-grid d-flex flex-row justify-content-between">
-                <!-- <div class="my-grid d-flex flex-row justify-content-end"> -->
-                <p class="my-grid-item m-auto">Item</p>
-                <p class="my-grid-item m-auto">Item</p>
-                <p class="my-grid-item m-auto">Item</p>
-                <p class="my-grid-item m-auto">Item</p>
-                <p class="my-grid-item m-auto">Item</p>
-            </div>
+       <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+    <div class="col-md-5 p-lg-5 mx-auto my-5">
+      <h1 class="display-4 fw-normal">Welcome !</h1>
+      <p class="lead fw-normal">This page will be soon available to you.</p>
+      <a class="btn btn-outline-secondary" href="#">Coming soon</a>
+    </div>
+    <div class="product-device shadow-sm d-none d-md-block"></div>
+    <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+  </div>
 
-            <div class="my-grid d-flex flex-column mt-4">
-                <p class="my-grid-item mx-auto my-1 p-1">Item</p>
-                <p class="my-grid-item mx-auto my-1 p-1">Item</p>
-                <p class="my-grid-item mx-auto my-1 p-1">Item</p>
-                <p class="my-grid-item mx-auto my-1 p-1">Item</p>
-                <p class="my-grid-item mx-auto my-1 p-1">Item</p>
-            </div>
 
-        </div>
 {% endblock content %}

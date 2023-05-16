@@ -15,7 +15,6 @@
             <li><a href="{% url 'subscription_plan:subscription_plan_index' %}">GET STARTED</a></li>
 
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'extbackup:extension_list' %}">Extentions</a></li>
                     <li><a href="{% url 'extbackup:upload_files' %}">Backup</a></li>
                     <li><a href="{% url 'extbackup:backup_dashboard' %}">Backup Dashboard</a></li>
                     <li class="drop-down">

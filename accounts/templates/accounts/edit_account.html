@@ -1,14 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block breadcrumb %}
-    {% include "accounts/account_breadcrumb.html" %}
-{% endblock %}
-
 
 {% block content %}
-
-
     <style type="text/css">
         .image-container{
             height: auto;
@@ -16,7 +10,7 @@
         }
 
     </style>
-    <div class="profil_settings">
+    <div class="profil_settings py-5">
         <form method="POST" enctype="multipart/form-data" class="form-signin">
             {% csrf_token %}
             <div class="row">

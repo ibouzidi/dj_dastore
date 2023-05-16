@@ -12,8 +12,8 @@ from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from dj_dastore.decorator import dev
-from extbackup.forms import FileForm, ExtensionForm
-from extbackup.models import File, SupportedExtension
+from extbackup.forms import FileForm
+from extbackup.models import File
 from django.core.files.storage import default_storage
 from datetime import datetime, timedelta
 import os
@@ -31,14 +31,6 @@ from .key import key
 
 @method_decorator(login_required, name='dispatch')
 class BackupUploadView(View):
-    def get(self, request):
-        form = FileForm()
-        supported_extensions = list(
-            SupportedExtension.objects.values_list('extension', flat=True))
-        context = {'form': form, 'supported_extensions': supported_extensions}
-
-        return render(request, 'extbackup/upload.html', context)
-
     def post(self, request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
@@ -237,49 +229,68 @@ def download_zip_file(request, file_id):
 
 @method_decorator(login_required, name='dispatch')
 class DeleteBackupsView(View):
-    def post(self, request):
-        ids = request.POST.getlist('ids')
+    def post(self, request, *args, **kwargs):
+        file_id = request.POST.get('file_id')
+        custom_folder_id = request.POST.get('custom_folder_id')
         ftp_storage = default_storage
         deleted_folders = []
 
-        for file_id in ids:
-            try:
+        try:
+            if file_id:
                 file = File.objects.get(id=file_id)
                 if file.user == request.user:
-                    folder_path = f'uploads/upload_{request.user.username}/{file.file.name}/'
-
-                    # List all files in the folder
-                    folder_files = ftp_storage.listdir(folder_path)[1]
-
-                    # Delete each file inside the folder
-                    for folder_file in folder_files:
-                        ftp_storage.delete(f'{folder_path}{folder_file}')
-
-                    # Delete the folder itself
-                    ftp_storage.delete(folder_path)
-
-                    # Update user storage usage and delete the File object
-                    file_size = file.size
-                    request.user.storage_usage -= file_size
-                    request.user.save()
-                    file.delete()
-
-                    deleted_folders.append(file.file.name)
+                    # If we're deleting a file, delete it from storage and database
+                    self.delete_file(file, ftp_storage)
+                    deleted_folders.append(file.name)
                 else:
-                    messages.error(request,
-                                   "Cannot delete someone else's folders")
-                    return redirect('extbackup:backup_dashboard')
-            except File.DoesNotExist:
-                messages.error(request, "folder not found")
-                return redirect('extbackup:backup_dashboard')
-            except PermissionError:
-                messages.error(request,
-                               "Cannot delete a folder that is used "
-                               "or open by another processus")
-
+                    messages.error(request, "Cannot delete someone else's files")
+                    return redirect('folder:folder_list')
+            elif custom_folder_id:
+                folder = Folder.objects.get(id=custom_folder_id)
+                if folder.user == request.user:
+                    # If we're deleting a custom folder, recursively delete all child folders and files
+                    self.delete_folder(folder, ftp_storage, deleted_folders)
+                else:
+                    messages.error(request, "Cannot delete someone else's folders")
+                    return redirect('folder:folder_list')
+            else:
+                messages.error(request, "File or Folder ID is missing")
+                return redirect('folder:folder_list')
+        except (File.DoesNotExist, Folder.DoesNotExist):
+            messages.error(request, "File or Folder not found")
+            return redirect('folder:folder_list')
+        except PermissionError:
+            messages.error(request, "Cannot delete a file or folder that is used or open by another process")
+            return redirect('folder:folder_list')
         if deleted_folders:
-            messages.success(request, "Folders deleted successfully")
-        return redirect('extbackup:backup_dashboard')
+            messages.success(request, f"Folders {', '.join(deleted_folders)} deleted successfully")
+        return redirect('folder:folder_list')
+
+    def delete_folder(self, folder, storage, deleted_folders):
+        # Delete all child folders recursively
+        for child_folder in folder.children.all():
+            self.delete_folder(child_folder, storage, deleted_folders)
+
+        # Delete all files in this folder
+        for file in folder.files.all():
+            self.delete_file(file, storage)
+
+        # Delete the folder from the database
+        deleted_folders.append(folder.name)
+        folder.delete()
+
+    def delete_file(self, file, storage):
+        # Delete the file from storage
+        folder_path = f'uploads/upload_{file.user.username}/{file.file.name}/'
+        folder_files = storage.listdir(folder_path)[1]
+        for folder_file in folder_files:
+            storage.delete(f'{folder_path}{folder_file}')
+        storage.delete(folder_path)
+
+        # Update user storage usage and delete the File object
+        file.user.storage_usage -= file.size
+        file.user.save()
+        file.delete()
 
 
 @login_required
@@ -338,128 +349,4 @@ def backup_refresh(request):
     return render(request, 'extbackup/backup_dashboard.html',
                   {'zip_files': zip_files})
 
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionListView(ListView):
-    model = SupportedExtension
-    ordering = ['-id']
-    template_name = 'extension/extension_list.html'
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionCreateView(CreateView):
-    model = SupportedExtension
-    template_name = 'extension/extension_form.html'
-    form_class = ExtensionForm
-    success_url = reverse_lazy('extbackup:extension_list')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        # Add any additional processing here, such as sending an email or
-        # logging the action.
-        return response
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['breadcrumb'] = [{'url': reverse('extbackup:extension_list'),
-                                  'label': 'Extensions'},
-                                 {'url': '#', 'label': 'Create Extension'}]
-        return context
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionUpdateView(UpdateView):
-    model = SupportedExtension
-    template_name = 'extension/extension_form.html'
-    form_class = ExtensionForm
-    success_url = reverse_lazy('extbackup:extension_list')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        # Add any additional processing here, such as sending an email or
-        # logging the action.
-        return response
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionDeleteAllView(View):
-    def post(self, request):
-        ids = request.POST.getlist('ids')
-        deleted_files = []
-        for extension_id in ids:
-            try:
-                extension = SupportedExtension.objects.get(id=extension_id)
-                deleted_files.append(extension.extension)
-                extension.delete()
-            except SupportedExtension.DoesNotExist:
-                messages.error(request, "Extension not found")
-                return redirect('extbackup:extension_list')
-        if deleted_files:
-            message = "Extension deleted successfully"
-            messages.success(request, message)
-        return redirect('extbackup:extension_list')
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionExportView(View):
-    def get(self, request, *args, **kwargs):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; ' \
-                                          'filename="supported_extensions.csv"'
-
-        # Get all the extensions
-        supported_extension = SupportedExtension.objects.order_by('extension')
-
-        # Write CSV headers
-        writer = csv.writer(response)
-        writer.writerow(['extension'])
-        # Write CSV data
-        for i in supported_extension:
-            writer.writerow([i.extension])
-        messages.success(request, "Extension exported with success.")
-        return response
-
-
-# Create folder
-# class FolderCreateView(View):
-#     def get(self, request):
-#         form = FolderCreateForm()
-#         form.fields['parent'].queryset = folder.objects.filter(
-#             user=request.user)
-#         return render(request, 'extbackup/folder_create.html', {'form': form})
-#
-#     def post(self, request):
-#         form = FolderCreateForm(request.POST)
-#         form.fields['parent'].queryset = folder.objects.filter(
-#             user=request.user)
-#         if form.is_valid():
-#             folder = form.save(commit=False)
-#             folder.user = request.user
-#             folder.save()
-#             messages.success(request, 'folder created successfully.')
-#             return redirect('extbackup:extension_list')
-#         else:
-#             messages.error(request, 'Error creating folder.')
-#             return render(request, 'extbackup/folder_create.html', {'form': form})
-#
-#
-# class FolderListView(View):
-#     template_name = 'extbackup/folder_list.html'
-#
-#     def get(self, request, folder_id=None):
-#         if folder_id:
-#             current_folder = get_object_or_404(folder, id=folder_id, user=request.user)
-#             folders = folder.objects.filter(user=request.user, parent=current_folder)
-#             files = File.objects.filter(user=request.user, folder=current_folder)
-#         else:
-#             current_folder = None
-#             folders = folder.objects.filter(user=request.user, parent=None)
-#             files = File.objects.filter(user=request.user, folder=None)
-#
-#         context = {
-#             'current_folder': current_folder,
-#             'folders': folders,
-#             'files': files,
-#         }
-#         return render(request, self.template_name, context)
 

@@ -1,3 +1,7 @@
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.core.files.storage import default_storage
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -90,8 +94,8 @@ class FolderListView(View):
         context = {
             'form_upload': form_upload,
             'form_folder': form_folder,
-            'folder_list': queryset,
-            'file_list': file_query,
+            'custom_folder_list': queryset,
+            'backup_list': file_query,
             'add_folder': reverse('folder:folder_create_with_parent', kwargs={
                 'parent_folder_id': pk}) if pk else reverse(
                 'folder:folder_create'),
@@ -99,3 +103,7 @@ class FolderListView(View):
         }
 
         return render(request, self.template_name, context)
+
+
+# @method_decorator(login_required, name='dispatch')
+# class DeleteCustomFolderView(View):

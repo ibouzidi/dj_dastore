@@ -1,0 +1,191 @@
+<!-- Upload Form -->
+<div id="hiddenForm" class="upload_form d-none">
+    <div class="row">
+        <div class="col-12 col-xl-12">
+            <div class="card card-body bg-white border-light shadow-sm mb-4">
+                <form enctype="multipart/form-data" method="post" action="" id="fileUploadForm">
+                    {% csrf_token %}
+                    <p>
+                        {{ form_upload.folder.label_tag }} {{ form_upload.folder }}
+                    </p>
+                    <p>
+                        {{ form_upload.description.label  }}
+                        {{ form_upload.description }}
+                    </p>
+                    <p>
+                        {{ form_upload.current_folder_id }}
+                    </p>
+                    <p>
+                        <label for="myDragElement" class="dragAndUpload" data-post-string="">
+                            <span class="dragAndUploadIcon">
+                                <i class="dragAndUploadIconNeutral fas fa-arrow-up"></i>
+                                <i class="dragAndUploadIconUploading fas fa-cog fa-spin"></i>
+                                <i class="dragAndUploadIconFailure fas fa-times"></i>
+                                <i class="dragAndUploadIconSuccess fas fa-check-circle"></i>
+                            </span>
+                            <span class="dragAndUploadIcon"></span><b class="dragAndUploadText"><span class="dragAndUploadTextLarge">Drag and drop</span> <span class="dragAndUploadTextSmall">or click to upload</span></b>
+                            <i class="dragAndUploadCounter">0%</i>
+                            {{ form_upload.file }}
+                        </label>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Styling for the upload form */
+    .dragAndUploadManual {
+        display: none;
+    }
+    .dragAndUpload {
+        color: rgb(100,100,100);
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font: 0/1em "Helvetica Neue", "Segoe UI", sans-serif;
+        font-weight: 400;
+        height: 200px;
+        line-height: 16px;
+        position: relative;
+        text-align: center;
+        -moz-transition: all .2s;
+        -webkit-transition: all .2s;
+        transition: all .05s;
+        width: 100%;
+        border: 2px dashed gray;
+        margin: 0;
+        background-color: var(--clr-white-2);
+        outline: 2px solid var(--clr-white-2);
+        outline-offset: 5px;
+    }
+    .dragAndUploadText{
+        font-size: 28px;
+        font-weight: bold;
+    }
+    .dragAndUploadTextSmall{
+        display: block;
+        font-size: 20px;
+        margin-top: 20px;
+        font-weight: normal;
+    }
+
+    .dragAndUpload.dragAndUploadActive .dragAndUploadIcon .fas {
+        transform: rotate(180deg);
+    }
+    .dragAndUpload.dragAndUploadActive{
+        outline: 2px dashed var(--clr-white-2);
+        outline-offset: -10px;
+        background-color: var(--clr-white);
+        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    }
+
+    .dragAndUpload:hover {
+        border: 2px dashed #167bff;
+    }
+
+    .dragAndUploadIcon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 40px;
+        color: #a5a5a5;
+        margin-bottom: 10px;
+    }
+
+    .dragAndUploadIconNeutral {
+        display: block;
+    }
+
+    .dragAndUploadIconUploading,
+    .dragAndUploadIconSuccess,
+    .dragAndUploadIconFailure {
+        display: none;
+    }
+
+    .dragAndUploadCounter {
+        display: none;
+        font-size: 18px;
+        font-weight: bold;
+        color: #a5a5a5;
+        margin-top: 5px;
+    }
+
+    /* Styling for the upload progress */
+    .dragAndUploadUploading .dragAndUploadIconNeutral,
+    .dragAndUploadUploading .dragAndUploadIconSuccess,
+    .dragAndUploadUploading .dragAndUploadIconFailure {
+        display: none;
+    }
+
+    .dragAndUploadUploading .dragAndUploadIconUploading {
+        display: block;
+    }
+
+    .dragAndUploadUploading .dragAndUploadTextLarge {
+        display: none;
+    }
+
+    .dragAndUploadUploading .dragAndUploadTextSmall {
+        display: block;
+    }
+
+    /* Styling for the upload success */
+    .dragAndUploadSuccess .dragAndUploadIconNeutral,
+    .dragAndUploadSuccess .dragAndUploadIconUploading,
+    .dragAndUploadSuccess .dragAndUploadIconFailure {
+        display: none;
+    }
+
+    .dragAndUploadSuccess .dragAndUploadIconSuccess {
+        display: block;
+        color: green;
+    }
+
+    .dragAndUploadSuccess .dragAndUploadCounter {
+        display: none;
+        color: green;
+    }
+
+    .dragAndUploadSuccess .dragAndUploadTextSmall {
+        display: block;
+    }
+
+    .dragAndUploadManual {
+        display: none;
+    }
+    /* Styling for the upload failure */
+    .dragAndUploadFailure .dragAndUploadIconNeutral,
+    .dragAndUploadFailure .dragAndUploadIconUploading,
+    .dragAndUploadFailure .dragAndUploadIconSuccess {
+        display: none;
+        color: green;
+    }
+
+    .dragAndUploadFailure .dragAndUploadIconFailure {
+        display: block;
+        color: red;
+    }
+
+    .dragAndUploadFailure .dragAndUploadCounter {
+        display: none;
+        color: red;
+    }
+
+    .dragAndUploadFailure .dragAndUploadTextSmall {
+        display: block;
+    }
+    .dragAndUpload.dragAndUploadUploading .dragAndUploadCounter,
+    .dragAndUpload.dragAndUploadSuccess .dragAndUploadCounter,
+    .dragAndUpload.dragAndUploadFailure .dragAndUploadCounter {
+        display: block;
+    }
+    .action_btn button:hover {
+        transform: translateY(-5px);
+        transition: transform 0.5s;
+    }
+</style>

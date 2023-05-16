@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block breadcrumb %}
-    {% include "accounts/account_breadcrumb.html" %}
-{% endblock %}
-
-
 {% block content %}
-    <div class="profil_settings">
+    <div class="profil_settings py-5">
         <div class="row">
             <div class="col-12 col-xl-8">
                 <div class="card card-body bg-white border-light shadow-sm mb-4">
@@ -123,13 +118,13 @@
                             </div>
                         </div>
                     </div>
-                            <div class="col-12 mb-4">
-                    <div class="card card-body bg-white border-light shadow-sm mb-4">
-                        <h2 class="h5 mb-4">Storage information</h2>
-                        <!-- Create a canvas element to display the chart -->
-                        <canvas id="storageUsageChart"></canvas>
+                    <div class="col-12 mb-4">
+                        <div class="card card-body bg-white border-light shadow-sm mb-4">
+                            <h2 class="h5 mb-4">Storage information</h2>
+                            <!-- Create a canvas element to display the chart -->
+                            <canvas id="storageUsageChart"></canvas>
+                        </div>
                     </div>
-            </div>
                 </div>
             </div>
 
@@ -213,5 +208,6 @@
     </script>
 
 {% endblock script %}
+
 
 

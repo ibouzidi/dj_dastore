@@ -13,6 +13,36 @@
     </div>
 </nav>
 
+<style>
+    .nav-link {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .nav-item {
+        width: 100%;
+    }
+
+    .sidebar-icon {
+        font-size: 50px;
+        display: block;
+    }
+
+    {#.nav-link:hover {#}
+    {#     width: 100%;#}
+    {#    background-color: rgba(255, 193, 7, 0.1);#}
+    {#}#}
+
+    .nav-link:hover .sidebar-icon {
+        color: #FFC107;
+    }
+</style>
+
+
+
 <div class="container-fluid bg-soft">
     <div class="row">
         <div class="col-12">
@@ -30,9 +60,9 @@
                             </div>
                             <div class="d-block">
                                 <h2 class="h6">
-                                    test
+                                    {{ user.username }}
                                 </h2>
-                                <a href="/logout/"
+                                <a href="{% url 'accounts:logout' %}"
                                    class="btn btn-secondary text-dark btn-xs">
                                     <span class="mr-2"><span
                                             class="fas fa-sign-out-alt"></span></span>Sign
@@ -59,48 +89,22 @@
                                 <span>Plans and Prices</span>
                             </a>
                         </li>
-                        <li class="nav-item  ">
-                            <a href="{% url 'extbackup:extension_list' %}"
+                        <li class="nav-item">
+                            <a href="{% url 'folder:folder_list' %}"
                                class="nav-link">
-                                <span class="sidebar-icon"><span
-                                        class="fas fa-file-alt"></span></span>
-                                <span>Extentions</span>
+                                <span class="sidebar-icon" ><span
+                                        class="fas fa-upload"></span></span>
+                                <span>Backup</span>
                             </a>
                         </li>
-                        <li class="nav-item" id="submenu-app-parent">
-                <span class="nav-link  collapsed  d-flex justify-content-between align-items-center"
-                      data-toggle="collapse" data-target="#submenu-app">
-                <span>
-                    <span class="sidebar-icon"><span
-                            class="fas fa-upload"></span></span>
-                    Backup
-                </span>
-                <span class="link-arrow"><span
-                        class="fas fa-chevron-right"></span></span>
-                </span>
-                            <div class="multi-level collapse " role="list"
-                                 id="submenu-app" aria-expanded="false" data-parent="#submenu-app-parent">
-                                <ul class="flex-column nav">
-                                    <li class="nav-item "><a class="nav-link"
-                                                             href="{% url 'folder:folder_create' %}"><span><span
-                                            class="fas fa-table"></span> Create folder</span></a>
-                                    </li>
-                                    <li class="nav-item "><a class="nav-link"
-                                                             href="{% url 'folder:folder_list' %}"><span><span
-                                            class="fas fa-table"></span> folder List</span></a>
-                                    </li>
-                                    <li class="nav-item "><a class="nav-link"
-                                                             href="{% url 'extbackup:backup_dashboard' %}"><span><span
-                                            class="fas fa-table"></span> Backup Dashboard</span></a>
-                                    </li>
-                                    <li class="nav-item "><a class="nav-link"
-                                                             href="{% url 'extbackup:upload_files' %}"><span><span
-                                            class="fas fa-file-alt"></span> Backup files</span></a>
-                                    </li>
-                                </ul>
-                            </div>
+                        <li class="nav-item">
+                            <a href="{% url 'accounts:account_profile' user_id=request.user.id %}"
+                               class="nav-link">
+                                <span class="sidebar-icon" ><span
+                                        class="fas fa-user-cog"></span></span>
+                                <span>Settings</span>
+                            </a>
                         </li>
-
                         <li class="nav-item">
                             <a href="{% url 'accounts:logout' %}"
                                class="nav-link">
