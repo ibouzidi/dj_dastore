@@ -1,11 +1,14 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
+from django.http import JsonResponse, HttpResponseBadRequest, \
+    HttpResponseRedirect
+from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from .forms import FolderCreateForm
+from .forms import FolderCreateForm, FolderEditForm
 from .models import Folder
 from extbackup.models import File
 from extbackup.forms import FileForm
@@ -48,6 +51,7 @@ class FolderListView(View):
     def get(self, request, *args, **kwargs):
         pk = request.GET.get('id')
         form_folder = FolderCreateForm()
+        # form_edit_folder = FolderEditForm()
         form_upload = FileForm()
         queryset = Folder.objects.filter(user=request.user)
 
@@ -94,6 +98,7 @@ class FolderListView(View):
         context = {
             'form_upload': form_upload,
             'form_folder': form_folder,
+            # 'form_edit_folder': form_edit_folder,
             'custom_folder_list': queryset,
             'backup_list': file_query,
             'add_folder': reverse('folder:folder_create_with_parent', kwargs={
@@ -105,5 +110,42 @@ class FolderListView(View):
         return render(request, self.template_name, context)
 
 
-# @method_decorator(login_required, name='dispatch')
-# class DeleteCustomFolderView(View):
+def get_folder_edit_form(request):
+    if request.is_ajax():
+        folder_id = request.GET.get('folder_id')
+        folder = get_object_or_404(Folder, id=folder_id)
+        form = FolderEditForm(instance=folder, initial={'folder_id': folder_id})
+        form_html = render_to_string('folder/folder_edit.html', {'form': form}, request=request)
+        return JsonResponse({'form_html': form_html})
+    else:
+        return HttpResponseBadRequest()
+
+
+class RenameFolderView(View):
+    def post(self, request, *args, **kwargs):
+        print("on passe !")
+        form = FolderEditForm(request.POST)
+        if form.is_valid():
+            folder_id = form.cleaned_data.get('folder_id')
+            new_name = form.cleaned_data.get('name')
+            folder = get_object_or_404(Folder, id=folder_id)
+            if folder.user == request.user:
+                folder.name = new_name
+                folder.save()
+                messages.success(request, "Folder name change successfully")
+                # Get the parent folder id
+                parent_folder_id = folder.parent.id if folder.parent else None
+
+                # Redirect to the parent folder if it exists,
+                # otherwise to the folder list
+                if parent_folder_id is not None:
+                    return HttpResponseRedirect(reverse('folder:folder_list') +
+                                                f'?id={parent_folder_id}')
+                else:
+                    return redirect('folder:folder_list')
+            else:
+                messages.success(request, "Permission denied")
+                return redirect('folder:folder_list')
+        else:
+            messages.success(request, "Invalid data")
+            return redirect('folder:folder_list')

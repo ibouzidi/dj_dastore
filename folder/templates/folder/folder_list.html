@@ -28,7 +28,7 @@
                     <div class="col-6 col-md-4 col-lg-2 mb-3">
                         <div class="card border-0 rounded-0 shadow position-relative">
                             <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
-{#                                <input class="folder-checkbox form-check-input position-absolute" id="check_all" data-id="{{ custom_folder.pk }}" type="checkbox" style="top: 10px; right: 10px;">#}
+                                {#                                <input class="folder-checkbox form-check-input position-absolute" id="check_all" data-id="{{ custom_folder.pk }}" type="checkbox" style="top: 10px; right: 10px;">#}
 
                                 <div class="card-body text-center">
 
@@ -42,8 +42,10 @@
                                    data-folder-id="{{ custom_folder.pk }}">
                                     <span class="fas fa-trash-alt mr-2"></span>Delete
                                 </a>
-                                <a class="dropdown-item" href="#">Option 2</a>
-                                <a class="dropdown-item" href="#">Option 3</a>
+                                <a href="#" class="dropdown-item rename-custom-folder"
+                                   data-folder-id="{{ custom_folder.pk }}">
+                                    <span class="fas fa-edit mr-2"></span>Rename
+                                </a>
                             </div>
                             <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
@@ -132,12 +134,31 @@
         const urlParams = new URLSearchParams(window.location.search);
         const parentFolderId = urlParams.get("id") == undefined ? '' : urlParams.get("id").trim();
 
+        $('.rename-custom-folder').on('click', function(e) {
+            e.preventDefault();
+            var folderId = $(this).data('folder-id');
 
-         $('.delete-custom-folder').on('click', function(e) {
+            // AJAX request to fetch the form
+            $.ajax({
+                url: "{% url 'folder:get_folder_edit_form' %}", // make sure this is the correct URL
+                data: {'folder_id': folderId},
+                method: 'GET',
+                success: function(response) {
+                    $("#confirmModalLabel").text("Rename Folder");
+                    $("#confirmMessage").html(response.form_html);
+                    $("#confirmForm").attr('action', "{% url 'folder:folder_rename' %}");
+                    $("#confirmButton").text("Save");
+                    $("#dismissButton").text("Discard");
+                    $('#confirmModal').modal('show');
+                }
+            });
+        });
+
+        $('.delete-custom-folder').on('click', function(e) {
             e.preventDefault(); // Prevent the default behavior of the link click
             var CustomFolderId = $(this).data('folder-id'); // Get the file id from data attribute
-             console.log("custom_folder_id")
-             console.log(CustomFolderId)
+            console.log("custom_folder_id")
+            console.log(CustomFolderId)
             // Create a hidden input for file_id
             var hiddenInput = $('<input/>', {
                 type: 'hidden',
