@@ -3,7 +3,10 @@
 
 
 {% block content %}
+    {% include "folder/_modal.html" %}
+
     <div class="folder_section py-5">
+
 
         <!-- Menu Backup Action  -->
         <div class="d-flex justify-content-end action_btn">
@@ -17,10 +20,12 @@
                 <i class="fas fa-cloud-download-alt fa-lg d-block"></i>
             </button>
         </div>
-
+        <div id="modal" class="modal fade">
+            <div id="dialog" class="modal-dialog" hx-target="this"></div>
+        </div>
         <!-- Custom Folder List -->
         <div class="mt-3">
-            <div class="row">
+            <div class="row" id="folderContainer">
                 {% if folder_list|length > 0 %}
                     <p>Custom Folder</p>
                 {% endif %}
@@ -58,7 +63,7 @@
 
         <!-- File List -->
         <div class="mt-3">
-            <div class="row">
+            <div class="row" id="folderContainer">
                 {% if file_list|length > 0 %}
                     <p>Your Backup</p>
                 {% endif %}
@@ -124,252 +129,106 @@
             </div>
         </div>
         {% include 'extbackup/upload_from.html' %}
+        {#        {% include 'folder/folder_create.html' %}#}
     </div>
 {% endblock content%}
+
 {% block script %}
-    <script>
-        $('#confirmModal').on('hidden.bs.modal', function (e) {
-            location.reload();
-        });
-        const urlParams = new URLSearchParams(window.location.search);
-        const parentFolderId = urlParams.get("id") == undefined ? '' : urlParams.get("id").trim();
 
-        $('.rename-custom-folder').on('click', function(e) {
-            e.preventDefault();
-            var folderId = $(this).data('folder-id');
-
-            // AJAX request to fetch the form
-            $.ajax({
-                url: "{% url 'folder:get_folder_edit_form' %}", // make sure this is the correct URL
-                data: {'folder_id': folderId},
-                method: 'GET',
-                success: function(response) {
-                    $("#confirmModalLabel").text("Rename Folder");
-                    $("#confirmMessage").html(response.form_html);
-                    $("#confirmForm").attr('action', "{% url 'folder:folder_rename' %}");
-                    $("#confirmButton").text("Save");
-                    $("#dismissButton").text("Discard");
-                    $('#confirmModal').modal('show');
-                }
-            });
-        });
-
-        $('.delete-custom-folder').on('click', function(e) {
-            e.preventDefault(); // Prevent the default behavior of the link click
-            var CustomFolderId = $(this).data('folder-id'); // Get the file id from data attribute
-            console.log("custom_folder_id")
-            console.log(CustomFolderId)
-            // Create a hidden input for file_id
-            var hiddenInput = $('<input/>', {
-                type: 'hidden',
-                id: 'confirmFileId',
-                name: 'custom_folder_id',
-                value: CustomFolderId
-            });
-            $("#confirmButton").show();
-            $("#confirmModalLabel").text("Deletion confirmation");
-            // Append the hidden input to the form
-            $('#confirmForm').append(hiddenInput);
-            // Set the message and file id in the modal
-            $('#confirmMessage').html("<p>Are you sure, you want to delete the selected folder ?" +
-                "<br><span style='color:red'>Proceed with caution, as this action cannot be undone.</span></p>");
-            // Show the modal
-            $('#confirmModal').modal('show');
-            $('#confirmButton').on('click', function(e) {
-                e.preventDefault();
-                $('#confirmForm').attr('action', "{% url 'extbackup:delete_backup_view' %}");
-                $('#confirmForm').submit();
-            });
-        });
-
-        /**
-         * This code allow to delete backup folders using a modal window
-         * delete confirmation.
-         */
-        $('.delete-backup-folder').on('click', function(e) {
-            e.preventDefault(); // Prevent the default behavior of the link click
-            var fileId = $(this).data('file-id'); // Get the file id from data attribute
-            // Create a hidden input for file_id
-            var hiddenInput = $('<input/>', {
-                type: 'hidden',
-                id: 'confirmFileId',
-                name: 'file_id',
-                value: fileId
-            });
-            $("#confirmButton").show();
-            $("#confirmModalLabel").text("Deletion confirmation");
-            // Append the hidden input to the form
-            $('#confirmForm').append(hiddenInput);
-            // Set the message and file id in the modal
-            $('#confirmMessage').html("<p>Are you sure, you want to delete the selected folder ?" +
-                "<br><span style='color:red'>Proceed with caution, as this action cannot be undone.</span></p>");
-            // Show the modal
-            $('#confirmModal').modal('show');
-            $('#confirmButton').on('click', function(e) {
-                e.preventDefault();
-                $('#confirmForm').attr('action', "{% url 'extbackup:delete_backup_view' %}");
-                $('#confirmForm').submit();
-            });
-        });
-
-        /**
-         * This code allow to files based on the current folder
-         * using a modal window.
-         */
-        $("#addFilesButton").on("click", function() {
-
-            // Set the modal title and message
-            $("#confirmModalLabel").text("Backup Your Files");
-            $("#confirmButton").hide();
-            $("#dismissButton").text("Discard");
-            $("#confirmMessage").html($("#hiddenForm").html());
-            // Kick-off
-            // Re-initialize the event listeners for the form elements
-            try {
-                var d = Object.create(dragAndUpload);
-                d.setUp();
-            } catch (exception) {
-                console.log('Error creating menus. ' +
-                    'In all likelihood your browser is out ' +
-                    'of date.\r\n', exception, '\r\n', navigator.userAgent);
-            }
-            // Show the modal
-            $("#confirmModal").modal("show");
-        });
-
-        /**
-         * This code allow to add folder based on the current folder
-         * using a modal window.
-         */
-        $("#addFolderButton").on("click", function() {
-            // Set the modal title and message
-            $("#confirmModalLabel").text("Create New Folder");
-            $("#confirmButton").text("Save").show();
-            $("#dismissButton").text("Discard");
-            $("#confirmMessage").html(
-                `{{form_folder.name }}{{form_folder.parent_folder_id }}`);
-
-            // Show the modal
-            $("#confirmModal").modal("show");
-
-            $("#confirmForm").on("submit", function(event) {
-                event.preventDefault();
-
-                // Get the folder name
-                const folderName = $("#folderName").val();
-                // Create form data for the POST request
-                const formData = new FormData();
-                formData.append("name", folderName);
-                formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");
-                //  and parent folder ID from the URL query parameter
-                if (parentFolderId) {
-                    formData.append("parent_folder_id", parentFolderId);
-                }
-
-                // Set the POST URL
-                const postUrl = "{% url 'folder:folder_create' %}";
-
-                // Send the POST request
-                $.ajax({
-                    url: postUrl,
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function() {
-                        // Reload the page on successful folder creation
-                        window.location.reload();
-                    },
-                    error: function() {
-                        // Handle errors
-                        console.error("Failed to create a new folder.");
-                    }
+    <script type="text/javascript">
+        $(function () {
+            $("#addFolderButton").click(function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                var parentFolderId = urlParams.get("id") == undefined ? '' : urlParams.get("id").trim();
+                $(this).modalForm({
+                    formURL: `{% url 'folder:folder_create' %}?id=${parentFolderId}`
                 });
-
-                // Close the modal
-                $("#confirmModal").modal("hide");
             });
         });
+        {#var modal;#}
+        {##}
+        {#htmx.on("htmx:afterSwap", (e) => {#}
+        {#    // Response targeting #dialog => show the modal#}
+        {#    if (e.detail.target.id == "dialog") {#}
+        {#        var modal = new bootstrap.Modal(document.getElementById("modal"));#}
+        {#        modal.show();#}
+        {##}
+        {#        // Bind a click event to the cancel button#}
+        {#        document.querySelector('button[data-bs-dismiss="modal"]').addEventListener('click', function() {#}
+        {#            modal.hide();#}
+        {#        });#}
+        {#    }#}
+        {#});#}
+            {##}
+            {#htmx.on("htmx:beforeSwap", (e) => {#}
+            {#    if (e.detail.target.id == "dialog") {#}
+            {#        modal.hide();#}
+            {#    }#}
+            {#});#}
+                {##}
+                {#htmx.on("hidden.bs.modal", () => {#}
+                {#    document.getElementById("dialog").innerHTML = "";#}
+                {#});#}
 
-        /**
-         * This code allow to show a modal window containing information
-         * about folder such as the name, description and size.
-         */
-        $('.show-file-info').on('click', function() {
-            var detailBackup = $(this).closest('.card').find('#detail-backup');
-            $('#confirmModalLabel').text('Detail Information');
+                    {#/**#}
+                    {# * This code allow to add folder based on the current folder#}
+                    {# * using a modal window.#}
+                    {# */#}
+                    {#$("#addFolderButton").on("click", function() {#}
+                    {#    // Set the modal title and message#}
+                    {#    $("#confirmModalLabel").text("Create New Folder");#}
+                    {#    $("#confirmButton").text("Add").show();#}
+                    {#    $("#dismissButton").text("Discard");#}
+                    {##}
+                    {#    // Move the form HTML from the hidden form to the modal#}
+                    {#    $("#confirmMessage").html($("#add-folder-form").html());#}
+                    {##}
+                    {#    // Show the modal#}
+                    {#    $("#confirmModal").modal("show");#}
+                    {##}
+                    {#    // Bind form submission to the Confirm button click event#}
+                    {#    $("#confirmButton").on("click", function(event) {#}
+                    {#        event.preventDefault();#}
+                    {#        // Get the folder name#}
+                    {#        const folderName = $("#folderName").val();#}
+                    {#        // Create form data for the POST request#}
+                    {#        const formData = new FormData();#}
+                    {#        formData.append("name", folderName);#}
+                    {#        formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");#}
+                    {#        // and parent folder ID from the URL query parameter#}
+                    {#        if (parentFolderId) {#}
+                    {#            formData.append("parent_folder_id", parentFolderId);#}
+                    {#        }#}
+                    {#        // Send the POST request#}
+                    {#        $.ajax({#}
+                    {#            url: '{% url 'folder:folder_create' %}',#}
+                    {#            method: "POST",#}
+                    {#            data: formData,#}
+                    {#            processData: false,#}
+                    {#            contentType: false,#}
+                    {#            success: function(response) {#}
+                    {#                console.log("response")#}
+                    {#                console.log(response)#}
+                    {#                // Close the modal after success#}
+                    {#                $("#confirmModal").modal("hide");#}
+                    {#                notyf.success(response.message);#}
+                    {#                #}
+                    {#            },#}
+                    {#            error: function(response) {#}
+                    {#                // Display error message using Notyf#}
+                    {#                notyf.error(response.message);#}
+                    {##}
+                    {#            }#}
+                    {#        });#}
+                    {#    });#}
+                    {#});#}
+                        {##}
+                        {#// Clear form data and close the modal when it's dismissed#}
+                        {#$("#confirmModal").on("hidden.bs.modal", function() {#}
+                        {#    $("#add-folder-form")[0].reset();#}
+                        {#});#}
 
-            $('#confirmButton').hide();
-            $('#dismissButton').text('Close');
-            // Set the new modal content
-            $('#confirmMessage').html(detailBackup.html());
-            // Show the modal
-            $('#confirmModal').modal('show');
-        });
 
-        /**
-         * This code updates an icon's CSS class based on an AJAX response
-         * and displays a tooltip with the response message.
-         */
-        $('.integrity-tooltip').tooltip();
-        $('.check-hash').click(function(event) {
-            event.preventDefault();
-            const url = $(this).data('url');
-            const file_id = $(this).data('file-id');
-            console.log(file_id)
-            const icon = $('#hash-check-icon-' + file_id);
-            const spinner = $('#hash-check-spinner-' + file_id);
-
-            // Show the icon
-            icon.show();
-
-            // Show the spinner
-            spinner.removeClass('d-none');
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'json',
-                success: function(response, textStatus, xhr) {
-                    const status = response.message;
-                    const statusCode = xhr.status;
-                    const icon = $('#hash-check-icon-' + file_id);
-                    if (statusCode === 200) {
-                        icon.removeClass('fa-question-circle text-warning').addClass(
-                            'fa-check-circle text-success');
-                    } else {
-                        icon.removeClass('fa-question-circle text-warning').addClass(
-                            'fa-exclamation-circle text-danger');
-                    }
-                    icon.tooltip('dispose').tooltip();
-                    icon.attr('data-original-title', status).tooltip('show');
-                    // Automatically hide the tooltip after 3 seconds (3000 ms)
-                    setTimeout(function() {
-                        icon.tooltip('hide');
-                    }, 3000);
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                    const message = xhr.responseJSON.message;
-                    const icon = $('#hash-check-icon-' + file_id);
-                    icon.removeClass('fa-check-circle text-success').addClass(
-                        'fa-exclamation-circle text-danger');
-
-                    if (xhr.status === 429) {
-                        // Display the rate limit message to the user
-                        // You can use an alert, a tooltip, or any other preferred method
-                        icon.tooltip('dispose').tooltip();
-                        icon.attr('data-original-title', message).tooltip('show');
-                    } else {
-                        icon.tooltip('dispose').tooltip();
-                        console.error('Error:', errorThrown);
-                        icon.attr('data-original-title', message).tooltip('show');
-                    }
-                },
-                complete: function() {
-                    // Hide the spinner
-                    spinner.addClass('d-none');
-                }
-            });
-        });
     </script>
     {% include 'extbackup/upload_form_js.html' %}
 {% endblock script %}

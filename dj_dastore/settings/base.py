@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'subscription_plan.apps.SubscriptionPlanConfig',
     'folder.apps.FolderConfig',
     'storages',
+    'widget_tweaks',
+    'bootstrap_modal_forms',
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'dj_dastore.redirect_middleware.HtmxRedirectMiddleware',
 ]
 
 # =====================================================================

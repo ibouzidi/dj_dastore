@@ -1,5 +1,5 @@
 <!-- Upload Form -->
-<div id="hiddenForm" class="upload_form d-none">
+<div id="upload-files-form" class="upload_form d-none">
     <div class="row">
         <div class="col-12 col-xl-12">
             <div class="card card-body bg-white border-light shadow-sm mb-4">
@@ -9,6 +9,7 @@
                         {{ form_upload.folder.label_tag }} {{ form_upload.folder }}
                     </p>
                     <p>
+                        {{ form_upload.description.label  }}
                         {{ form_upload.description.label  }}
                         {{ form_upload.description }}
                     </p>

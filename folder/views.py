@@ -1,48 +1,70 @@
+from bootstrap_modal_forms.generic import BSModalCreateView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
 from django.http import JsonResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect
+    HttpResponseRedirect, HttpResponse
 from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from .forms import FolderCreateForm, FolderEditForm
 from .models import Folder
 from extbackup.models import File
 from extbackup.forms import FileForm
 
 
-class FolderCreateView(View):
-    template_name = 'folder/folder_list.html'
+# FolderCreateView
+class FolderCreateView(BSModalCreateView):
+    template_name = 'folder/folder_create.html'
+    form_class = FolderCreateForm
+    success_message = 'Success: Folder was created.'
+    success_url = reverse_lazy('folder:folder_list')
 
-    def get(self, request, *args, **kwargs):
-        form = FolderCreateForm()
-        context = {
-            'form': form,
-            'submit_url': reverse('folder:folder_create'),
-            'add_folder': reverse('folder:folder_create'),
-        }
-        return render(request, self.template_name, context)
+    def get_initial(self):
+        initial = super().get_initial()
+        parent_folder_id = self.request.GET.get('id')
+        if parent_folder_id:
+            initial['parent_folder_id'] = parent_folder_id
+        return initial
 
-    def post(self, request, *args, **kwargs):
-        form = FolderCreateForm(request.POST)
-        if form.is_valid():
-            new_folder = form.save(commit=False)
-            new_folder.user = request.user
-            parent_folder_id = form.cleaned_data.get('parent_folder_id')
-            if parent_folder_id:
-                new_folder.parent = Folder.objects.get(pk=parent_folder_id)
-            new_folder.save()
-            return redirect(reverse('folder:folder_list'))
-        else:
-            context = {
-                'form': form,
-                'submit_url': reverse('folder:folder_create'),
-                'add_folder': reverse('folder:folder_create'),
-            }
-            return render(request, self.template_name, context)
+
+
+# class FolderCreateView(View):
+#     template_name = 'folder/folder_create.html'
+#
+#     def get(self, request, *args, **kwargs):
+#         parent_folder_id = request.GET.get('parent_folder_id', None)
+#         print('Parent Folder ID:', parent_folder_id)
+#         form = FolderCreateForm(initial={'parent_folder_id': parent_folder_id})
+#         context = {
+#             'form': form,
+#             'submit_url': reverse('folder:folder_create'),
+#             'add_folder': reverse('folder:folder_create'),
+#         }
+#         return render(request, self.template_name, context)
+#
+#     def post(self, request, *args, **kwargs):
+#         form = FolderCreateForm(request.POST)
+#         if form.is_valid():
+#             new_folder = form.save(commit=False)
+#             new_folder.user = request.user
+#             parent_folder_id = form.cleaned_data.get('parent_folder_id')
+#             if parent_folder_id:
+#                 new_folder.parent = Folder.objects.get(pk=parent_folder_id)
+#             new_folder.save()
+#             messages.success(request, "Folder created successfully")
+#             return redirect("folder:folder_list")
+#         else:
+#             context = {
+#                 'form': form,
+#                 'submit_url': reverse('folder:folder_create'),
+#                 'add_folder': reverse('folder:folder_create'),
+#             }
+#             return render(request, self.template_name, context)
+
+
 
 
 class FolderListView(View):
@@ -50,7 +72,7 @@ class FolderListView(View):
 
     def get(self, request, *args, **kwargs):
         pk = request.GET.get('id')
-        form_folder = FolderCreateForm()
+        add_folder_form = FolderCreateForm()
         # form_edit_folder = FolderEditForm()
         form_upload = FileForm()
         queryset = Folder.objects.filter(user=request.user)
@@ -97,13 +119,13 @@ class FolderListView(View):
 
         context = {
             'form_upload': form_upload,
-            'form_folder': form_folder,
+            'add_folder_form': add_folder_form,
             # 'form_edit_folder': form_edit_folder,
             'custom_folder_list': queryset,
             'backup_list': file_query,
-            'add_folder': reverse('folder:folder_create_with_parent', kwargs={
-                'parent_folder_id': pk}) if pk else reverse(
-                'folder:folder_create'),
+            # 'add_folder': reverse('folder:folder_create_with_parent', kwargs={
+            #     'parent_folder_id': pk}) if pk else reverse(
+            #     'folder:folder_create'),
             'parent_folder': parent_folder,
         }
 
