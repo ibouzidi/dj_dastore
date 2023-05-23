@@ -43,9 +43,7 @@
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton">
-                                <a href="#" class="dropdown-item delete-custom-folder"
-                                   data-confirm="Are you sure, you want to delete the selected custom folder ?"
-                                   data-folder-id="{{ custom_folder.pk }}">
+                                <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_folder_view' folder_id=custom_folder.pk %}">
                                     <span class="fas fa-trash-alt mr-2"></span>Delete
                                 </a>
                                 <a href="#" class="dropdown-item rename-custom-folder"
@@ -92,9 +90,7 @@
                                 <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
                                     <span class="fas fa-info-circle mr-2"></span>Show Info
                                 </a>
-                                <a href="#" class="dropdown-item delete-backup-folder"
-                                   data-confirm="Are you sure, you want to delete the selected folder ?"
-                                   data-file-id="{{ backup.0 }}">
+                                <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_file_view' file_id=backup.0 %}">
                                     <span class="fas fa-trash-alt mr-2"></span>Delete
                                 </a>
                             </div>
@@ -143,30 +139,38 @@
             });
         });
 
-            /**
-             * This code allow to files based on the current folder
-             * using a modal window.
-             */
-            $("#addFilesButton").on("click", function() {
-                console.log("yes ")
-                // Set the modal title and message
-                $("#confirmModalLabel").text("Backup Your Files");
-                $("#confirmButton").hide();
-                $("#dismissButton").text("Discard");
-                $("#confirmMessage").html($("#upload-files-form").html());
-                // Kick-off
-                // Re-initialize the event listeners for the form elements
-                try {
-                    var d = Object.create(dragAndUpload);
-                    d.setUp();
-                } catch (exception) {
-                    console.log('Error creating menus. ' +
-                        'In all likelihood your browser is out ' +
-                        'of date.\r\n', exception, '\r\n', navigator.userAgent);
-                }
-                // Show the modal
-                $("#confirmModal").modal("show");
+        $(function () {
+            $(".delete-custom-folder, .delete-backup-folder").each(function () {
+                $(this).modalForm({
+                    formURL: $(this).data("form-url"),
+                    isDeleteForm: true,
+                });
             });
+        });
+        /**
+         * This code allow to files based on the current folder
+         * using a modal window.
+         */
+        $("#addFilesButton").on("click", function() {
+            console.log("yes ")
+            // Set the modal title and message
+            $("#confirmModalLabel").text("Backup Your Files");
+            $("#confirmButton").hide();
+            $("#dismissButton").text("Discard");
+            $("#confirmMessage").html($("#upload-files-form").html());
+            // Kick-off
+            // Re-initialize the event listeners for the form elements
+            try {
+                var d = Object.create(dragAndUpload);
+                d.setUp();
+            } catch (exception) {
+                console.log('Error creating menus. ' +
+                    'In all likelihood your browser is out ' +
+                    'of date.\r\n', exception, '\r\n', navigator.userAgent);
+            }
+            // Show the modal
+            $("#confirmModal").modal("show");
+        });
     </script>
     {% include 'extbackup/upload_form_js.html' %}
 {% endblock script %}

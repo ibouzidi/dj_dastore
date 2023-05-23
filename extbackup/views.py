@@ -2,9 +2,11 @@ import ast
 import csv
 import random
 import magic
+from bootstrap_modal_forms.generic import BSModalDeleteView
 from cryptography.fernet import Fernet
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 # from django.contrib.auth.decorators import login_required
@@ -18,7 +20,7 @@ from django.core.files.storage import default_storage
 from datetime import datetime, timedelta
 import os
 import zipfile
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse, JsonResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from folder.models import Folder
@@ -227,56 +229,46 @@ def download_zip_file(request, file_id):
 #             yield from traverse_content_tree(node, path)
 
 
-@method_decorator(login_required, name='dispatch')
-class DeleteBackupsView(View):
-    def post(self, request, *args, **kwargs):
-        file_id = request.POST.get('file_id')
-        custom_folder_id = request.POST.get('custom_folder_id')
+class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
+    model = None  # We'll set the model dynamically based on the item to delete.
+    template_name = 'extbackup/folder_delete.html'
+    success_message = 'Success: Item was deleted.'
+    success_url = reverse_lazy('folder:folder_list')
+
+    def get_object(self):
+        if 'file_id' in self.kwargs:
+            self.model = File
+            return get_object_or_404(File, pk=self.kwargs['file_id'])
+        elif 'folder_id' in self.kwargs:
+            self.model = Folder
+            return get_object_or_404(Folder, pk=self.kwargs['folder_id'])
+
+    def delete(self, request, *args, **kwargs):
         ftp_storage = default_storage
-        deleted_folders = []
+        deleted_items = []
 
-        try:
-            if file_id:
-                file = File.objects.get(id=file_id)
-                if file.user == request.user:
-                    # If we're deleting a file, delete it from storage and database
-                    self.delete_file(file, ftp_storage)
-                    deleted_folders.append(file.name)
-                else:
-                    messages.error(request, "Cannot delete someone else's files")
-                    return redirect('folder:folder_list')
-            elif custom_folder_id:
-                folder = Folder.objects.get(id=custom_folder_id)
-                if folder.user == request.user:
-                    # If we're deleting a custom folder, recursively delete all child folders and files
-                    self.delete_folder(folder, ftp_storage, deleted_folders)
-                else:
-                    messages.error(request, "Cannot delete someone else's folders")
-                    return redirect('folder:folder_list')
-            else:
-                messages.error(request, "File or Folder ID is missing")
-                return redirect('folder:folder_list')
-        except (File.DoesNotExist, Folder.DoesNotExist):
-            messages.error(request, "File or Folder not found")
-            return redirect('folder:folder_list')
-        except PermissionError:
-            messages.error(request, "Cannot delete a file or folder that is used or open by another process")
-            return redirect('folder:folder_list')
-        if deleted_folders:
-            messages.success(request, f"Folders {', '.join(deleted_folders)} deleted successfully")
-        return redirect('folder:folder_list')
+        self.object = self.get_object()
+        if self.object.user != request.user:
+            messages.error(request, "Cannot delete someone else's items")
+            return super().delete(request, *args, **kwargs)
 
-    def delete_folder(self, folder, storage, deleted_folders):
-        # Delete all child folders recursively
+        if isinstance(self.object, Folder):
+            self.delete_folder(self.object, ftp_storage, deleted_items)
+        elif isinstance(self.object, File):
+            self.delete_file(self.object, ftp_storage)
+            deleted_items.append(self.object.name)
+
+        if deleted_items:
+            messages.success(request, f"Items {', '.join(deleted_items)} deleted successfully")
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def delete_folder(self, folder, storage, deleted_items):
         for child_folder in folder.children.all():
-            self.delete_folder(child_folder, storage, deleted_folders)
-
-        # Delete all files in this folder
+            self.delete_folder(child_folder, storage, deleted_items)
         for file in folder.files.all():
             self.delete_file(file, storage)
-
-        # Delete the folder from the database
-        deleted_folders.append(folder.name)
+        deleted_items.append(folder.name)
         folder.delete()
 
     def delete_file(self, file, storage):
