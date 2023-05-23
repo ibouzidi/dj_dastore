@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %} Backup {% endblock title %}
 
 
@@ -129,106 +130,43 @@
             </div>
         </div>
         {% include 'extbackup/upload_from.html' %}
-        {#        {% include 'folder/folder_create.html' %}#}
     </div>
 {% endblock content%}
 
 {% block script %}
-
     <script type="text/javascript">
+        const urlParams = new URLSearchParams(window.location.search);
+        var parentFolderId = urlParams.get("id") == undefined ? '' : urlParams.get("id").trim();
         $(function () {
-            $("#addFolderButton").click(function () {
-                const urlParams = new URLSearchParams(window.location.search);
-                var parentFolderId = urlParams.get("id") == undefined ? '' : urlParams.get("id").trim();
-                $(this).modalForm({
-                    formURL: `{% url 'folder:folder_create' %}?id=${parentFolderId}`
-                });
+            $("#addFolderButton").modalForm({
+                formURL: `{% url 'folder:folder_create' %}?id=${parentFolderId}`
             });
         });
-        {#var modal;#}
-        {##}
-        {#htmx.on("htmx:afterSwap", (e) => {#}
-        {#    // Response targeting #dialog => show the modal#}
-        {#    if (e.detail.target.id == "dialog") {#}
-        {#        var modal = new bootstrap.Modal(document.getElementById("modal"));#}
-        {#        modal.show();#}
-        {##}
-        {#        // Bind a click event to the cancel button#}
-        {#        document.querySelector('button[data-bs-dismiss="modal"]').addEventListener('click', function() {#}
-        {#            modal.hide();#}
-        {#        });#}
-        {#    }#}
-        {#});#}
-            {##}
-            {#htmx.on("htmx:beforeSwap", (e) => {#}
-            {#    if (e.detail.target.id == "dialog") {#}
-            {#        modal.hide();#}
-            {#    }#}
-            {#});#}
-                {##}
-                {#htmx.on("hidden.bs.modal", () => {#}
-                {#    document.getElementById("dialog").innerHTML = "";#}
-                {#});#}
 
-                    {#/**#}
-                    {# * This code allow to add folder based on the current folder#}
-                    {# * using a modal window.#}
-                    {# */#}
-                    {#$("#addFolderButton").on("click", function() {#}
-                    {#    // Set the modal title and message#}
-                    {#    $("#confirmModalLabel").text("Create New Folder");#}
-                    {#    $("#confirmButton").text("Add").show();#}
-                    {#    $("#dismissButton").text("Discard");#}
-                    {##}
-                    {#    // Move the form HTML from the hidden form to the modal#}
-                    {#    $("#confirmMessage").html($("#add-folder-form").html());#}
-                    {##}
-                    {#    // Show the modal#}
-                    {#    $("#confirmModal").modal("show");#}
-                    {##}
-                    {#    // Bind form submission to the Confirm button click event#}
-                    {#    $("#confirmButton").on("click", function(event) {#}
-                    {#        event.preventDefault();#}
-                    {#        // Get the folder name#}
-                    {#        const folderName = $("#folderName").val();#}
-                    {#        // Create form data for the POST request#}
-                    {#        const formData = new FormData();#}
-                    {#        formData.append("name", folderName);#}
-                    {#        formData.append("csrfmiddlewaretoken", "{{ csrf_token }}");#}
-                    {#        // and parent folder ID from the URL query parameter#}
-                    {#        if (parentFolderId) {#}
-                    {#            formData.append("parent_folder_id", parentFolderId);#}
-                    {#        }#}
-                    {#        // Send the POST request#}
-                    {#        $.ajax({#}
-                    {#            url: '{% url 'folder:folder_create' %}',#}
-                    {#            method: "POST",#}
-                    {#            data: formData,#}
-                    {#            processData: false,#}
-                    {#            contentType: false,#}
-                    {#            success: function(response) {#}
-                    {#                console.log("response")#}
-                    {#                console.log(response)#}
-                    {#                // Close the modal after success#}
-                    {#                $("#confirmModal").modal("hide");#}
-                    {#                notyf.success(response.message);#}
-                    {#                #}
-                    {#            },#}
-                    {#            error: function(response) {#}
-                    {#                // Display error message using Notyf#}
-                    {#                notyf.error(response.message);#}
-                    {##}
-                    {#            }#}
-                    {#        });#}
-                    {#    });#}
-                    {#});#}
-                        {##}
-                        {#// Clear form data and close the modal when it's dismissed#}
-                        {#$("#confirmModal").on("hidden.bs.modal", function() {#}
-                        {#    $("#add-folder-form")[0].reset();#}
-                        {#});#}
-
-
+            /**
+             * This code allow to files based on the current folder
+             * using a modal window.
+             */
+            $("#addFilesButton").on("click", function() {
+                console.log("yes ")
+                // Set the modal title and message
+                $("#confirmModalLabel").text("Backup Your Files");
+                $("#confirmButton").hide();
+                $("#dismissButton").text("Discard");
+                $("#confirmMessage").html($("#upload-files-form").html());
+                // Kick-off
+                // Re-initialize the event listeners for the form elements
+                try {
+                    var d = Object.create(dragAndUpload);
+                    d.setUp();
+                } catch (exception) {
+                    console.log('Error creating menus. ' +
+                        'In all likelihood your browser is out ' +
+                        'of date.\r\n', exception, '\r\n', navigator.userAgent);
+                }
+                // Show the modal
+                $("#confirmModal").modal("show");
+            });
     </script>
     {% include 'extbackup/upload_form_js.html' %}
 {% endblock script %}

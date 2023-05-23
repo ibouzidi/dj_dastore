@@ -20,7 +20,6 @@ class FolderCreateView(BSModalCreateView):
     template_name = 'folder/folder_create.html'
     form_class = FolderCreateForm
     success_message = 'Success: Folder was created.'
-    success_url = reverse_lazy('folder:folder_list')
 
     def get_initial(self):
         initial = super().get_initial()
@@ -29,7 +28,12 @@ class FolderCreateView(BSModalCreateView):
             initial['parent_folder_id'] = parent_folder_id
         return initial
 
-
+    def get_success_url(self):
+        parent_folder_id = self.request.GET.get('id')
+        if parent_folder_id:
+            return reverse('folder:folder_list') + '?id=' + parent_folder_id
+        else:
+            return reverse('folder:folder_list')
 
 # class FolderCreateView(View):
 #     template_name = 'folder/folder_create.html'

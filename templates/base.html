@@ -53,6 +53,15 @@
     .breadcrumb-item.active {
         color: #6c757d;
     }
+    .invalid .form-control {
+        border-color: #dc3545;
+    }
+
+    .invalid .help-block {
+        color: #dc3545;
+        font-size: 14px;
+        margin-top: 5px;
+    }
 </style>
 <div class="container" id="id_loading_spinner" style="display: none">
     <div class="d-flex flex-row mx-auto flex-grow-1 justify-content-center">
@@ -64,13 +73,13 @@
 
 <!-- display messages to the user !-->
 {% include 'snippets/messages.html' %}
-{#{% include 'snippets/modal_page.html' %}#}
+{% include 'snippets/modal_page.html' %}
 {#{% include 'snippets/js_messages.html' %}#}
 {% if request.user.is_authenticated %}
     {% include 'snippets/sidebare.html' %}
     <main class="content">
-        {% include 'snippets/nav.html' %}
-        <div id="breadcrumb">{% block breadcrumb %}{% endblock %}</div>
+    {% include 'snippets/nav.html' %}
+    <div id="breadcrumb">{% block breadcrumb %}{% endblock %}</div>
 {% else %}
     {% include 'snippets/header.html' %}
 {% endif %}
@@ -87,32 +96,26 @@
 {#{% include 'snippets/footer.html' %}#}
 <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
-
-<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/jquery-sticky/jquery.sticky.js' %}"></script>
 <script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
-
-
 <script type="module" src="{% static 'js/cropperjs/dist/cropper.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-<script src="{% static 'js/jquery-sticky/jquery.sticky.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-<script src="{% static 'js/main.js' %}"></script>
-    <script type="text/javascript">
-
-
-{#const notyf = new Notyf();#}
-
-        function displayLoadingSpinner(isDisplayed){
-            var spinner = document.getElementById("id_loading_spinner")
-            if(isDisplayed){
-                spinner.style.display = "block"
-            }
-            else{
-                spinner.style.display = "none"
-            }
+<script type="text/javascript">
+    function displayLoadingSpinner(isDisplayed){
+        var spinner = document.getElementById("id_loading_spinner")
+        if(isDisplayed){
+            spinner.style.display = "block"
         }
-    </script>
+        else{
+            spinner.style.display = "none"
+        }
+    }
+</script>
+<script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+
+
 {% include "snippets/add_active_class.html" %}
 {% block script %}
 {% endblock %}

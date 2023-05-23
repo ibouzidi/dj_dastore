@@ -20,7 +20,7 @@
 
         <div class="form-group">
             <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
-            {% render_field form.name class="form-control" placeholder=form.name.label %}
+            {% render_field form.name class="form-control" placeholder=form.name.label%}
             <div class="{% if form.name.errors %} invalid{% endif %}">
                 {% for error in form.name.errors %}
                     <p class="help-block">{{ error }}</p>
