@@ -8,9 +8,6 @@ urlpatterns = [
     path('upload_files/', views.BackupUploadView.as_view(), name='upload_files'),
     path('delete_backup/file/<int:file_id>/',
          views.DeleteBackupsView.as_view(), name='delete_file_view'),
-    path('delete_backup/folder/<int:folder_id>/',
-         views.DeleteBackupsView.as_view(), name='delete_folder_view'),
-
     path('download/<int:file_id>/', views.download_zip_file,
          name="download_zip_file"),
     path('view_content/<int:file_id>/', views.view_zip_content,

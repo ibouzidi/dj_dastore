@@ -120,8 +120,8 @@ def check_file_hashes(request, file_id):
         # If the time elapsed since the last request is less than the rate limit interval, block the request
         if current_time - last_request_time < rate_limit_interval:
             return JsonResponse({
-                                    'message': 'Rate limit exceeded. Please wait before trying again.'},
-                                status=429)
+                'message': 'Rate limit exceeded. Please wait before trying again.'},
+                status=429)
 
     # Update the last request timestamp in the session
     request.session['last_request_timestamp'] = current_time.isoformat()
@@ -230,7 +230,8 @@ def download_zip_file(request, file_id):
 
 
 class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
-    model = None  # We'll set the model dynamically based on the item to delete.
+    # We'll set the model dynamically based on the item to delete.
+    model = None
     template_name = 'extbackup/folder_delete.html'
     success_message = 'Success: Item was deleted.'
     success_url = reverse_lazy('folder:folder_list')
@@ -248,6 +249,13 @@ class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
         deleted_items = []
 
         self.object = self.get_object()
+        # Save parent folder id before deleting the object
+        # Save parent folder id before deleting the object
+        if isinstance(self.object, Folder):
+            self.parent_id = self.object.parent.pk if self.object.parent else None
+        elif isinstance(self.object, File):
+            self.parent_id = self.object.folder.pk if self.object.folder else None
+
         if self.object.user != request.user:
             messages.error(request, "Cannot delete someone else's items")
             return super().delete(request, *args, **kwargs)
@@ -259,9 +267,16 @@ class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
             deleted_items.append(self.object.name)
 
         if deleted_items:
-            messages.success(request, f"Items {', '.join(deleted_items)} deleted successfully")
+            messages.success(request, f"Items {', '.join(deleted_items)} "
+                                      f"deleted successfully")
 
         return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        if self.parent_id:
+            return reverse('folder:folder_list') + '?id=' + str(self.parent_id)
+        else:
+            return reverse('folder:folder_list')
 
     def delete_folder(self, folder, storage, deleted_items):
         for child_folder in folder.children.all():

@@ -1,4 +1,4 @@
-from bootstrap_modal_forms.mixins import CreateUpdateAjaxMixin
+from bootstrap_modal_forms.mixins import CreateUpdateAjaxMixin, PopRequestMixin
 from django import forms
 from .models import Folder
 from bootstrap_modal_forms.forms import BSModalModelForm
@@ -9,7 +9,7 @@ class FolderCreateForm(BSModalModelForm):
 
     class Meta:
         model = Folder
-        fields = ('name',)
+        fields = ['name']
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -22,16 +22,7 @@ class FolderCreateForm(BSModalModelForm):
         return instance
 
 
-class FolderEditForm(forms.ModelForm):
-    folder_id = forms.IntegerField(required=False,
-                                          widget=forms.HiddenInput())
-
+class FolderEditForm(PopRequestMixin, CreateUpdateAjaxMixin, forms.ModelForm):
     class Meta:
         model = Folder
-        fields = ('name',)
-        widgets = {
-            'name': forms.TextInput(attrs={
-                                    'id': 'folderName',
-                                    'class': 'form-control '
-                                             'form-form shadow-none'}),
-        }
+        fields = ['name']

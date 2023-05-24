@@ -4,7 +4,7 @@
     {% csrf_token %}
 
     <div class="modal-header">
-        <h5 class="modal-title">Create new Folder</h5>
+        <h5 class="modal-title">Update Folder</h5>
         <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
@@ -21,7 +21,7 @@
         <div class="form-group">
             <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
             {% render_field form.name class="form-control" placeholder="New Folder Name" %}
-            <div class="{% if form.name.errors %} invalid{% endif %}">
+            <div class="{% if form.name.errors %}invalid{% endif %}">
                 {% for error in form.name.errors %}
                     <p class="help-block">{{ error }}</p>
                 {% endfor %}
@@ -35,7 +35,7 @@
 
     <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">Update</button>
     </div>
 
 </form>

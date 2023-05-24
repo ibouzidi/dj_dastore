@@ -1,4 +1,4 @@
-from bootstrap_modal_forms.generic import BSModalCreateView
+from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import default_storage
@@ -32,6 +32,30 @@ class FolderCreateView(BSModalCreateView):
         parent_folder_id = self.request.GET.get('id')
         if parent_folder_id:
             return reverse('folder:folder_list') + '?id=' + parent_folder_id
+        else:
+            return reverse('folder:folder_list')
+
+
+class FolderUpdateView(BSModalUpdateView):
+    model = Folder
+    template_name = 'folder/folder_update.html'
+    form_class = FolderEditForm
+    success_message = 'Success: Folder was renamed.'
+
+    def form_valid(self, form):
+        folder = form.save(commit=False)
+        if folder.user != self.request.user:
+            messages.error(self.request, "Permission denied")
+            return redirect('folder:folder_list')
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        print("YES")
+        folder = self.get_object()
+        print("folder")
+        print(folder.parent.pk)
+        if folder.parent is not None:
+            return reverse('folder:folder_list') + '?id=' + str(folder.parent.pk)
         else:
             return reverse('folder:folder_list')
 
@@ -136,42 +160,6 @@ class FolderListView(View):
         return render(request, self.template_name, context)
 
 
-def get_folder_edit_form(request):
-    if request.is_ajax():
-        folder_id = request.GET.get('folder_id')
-        folder = get_object_or_404(Folder, id=folder_id)
-        form = FolderEditForm(instance=folder, initial={'folder_id': folder_id})
-        form_html = render_to_string('folder/folder_edit.html', {'form': form}, request=request)
-        return JsonResponse({'form_html': form_html})
-    else:
-        return HttpResponseBadRequest()
 
 
-class RenameFolderView(View):
-    def post(self, request, *args, **kwargs):
-        print("on passe !")
-        form = FolderEditForm(request.POST)
-        if form.is_valid():
-            folder_id = form.cleaned_data.get('folder_id')
-            new_name = form.cleaned_data.get('name')
-            folder = get_object_or_404(Folder, id=folder_id)
-            if folder.user == request.user:
-                folder.name = new_name
-                folder.save()
-                messages.success(request, "Folder name change successfully")
-                # Get the parent folder id
-                parent_folder_id = folder.parent.id if folder.parent else None
 
-                # Redirect to the parent folder if it exists,
-                # otherwise to the folder list
-                if parent_folder_id is not None:
-                    return HttpResponseRedirect(reverse('folder:folder_list') +
-                                                f'?id={parent_folder_id}')
-                else:
-                    return redirect('folder:folder_list')
-            else:
-                messages.success(request, "Permission denied")
-                return redirect('folder:folder_list')
-        else:
-            messages.success(request, "Invalid data")
-            return redirect('folder:folder_list')
