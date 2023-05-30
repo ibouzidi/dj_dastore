@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends "sub_base.html" %}
 {% load static %}
 
-{% block content %}
+{% block sub_content %}
     <!-- Section -->
     <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <div class="container">
@@ -84,7 +84,7 @@
                             {% for field in registration_form %}
                                 <p>
                                     {% for error in field.errors %}
-                                        <p style="color: red">{{ field.label }}, {{ error }}</p>
+                                        <p style="color: red">{{ error }}</p>
                                     {% endfor %}
                                 </p>
                             {% endfor %}
@@ -112,7 +112,7 @@
                         <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="font-weight-normal">
                                     Already have an account?
-                                    <a href="{% url 'accounts:login' %}" class="font-weight-bold">Login here</a>
+                                    <a href="{% url 'account:login' %}" class="font-weight-bold">Login here</a>
                                 </span>
                         </div>
                     </div>
@@ -120,4 +120,4 @@
             </div>
         </div>
     </section>
-{% endblock content %}
+{% endblock %}

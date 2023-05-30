@@ -1,12 +1,45 @@
-{% extends 'base.html' %}
+{% extends "sub_base.html" %}
 {% load static %}
+{% load i18n %}
+{% load two_factor_tags %}
 
-{% block content %}
+{% block sub_content %}
     <div class="profil_settings py-5">
         <div class="row">
+            <div class="col-12 col-xl-4">
+                <div class="row">
+                    <div class="col-12 mb-4">
+                        <div class="card border-light text-center p-0">
+                            <div class="profile-cover rounded-top"
+                                 data-background="/static/assets/img/profile-cover.jpg">
+                            </div>
+                            <div class="card-body pb-5">
+
+                                {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
+                                    <img src="{{ user.avatar_url }}" class="user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
+                                {% else %}
+                                    <img src="{% static 'dastore/default_user_icon.png' %}" class="border border-dark user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4">
+                                {% endif %}
+                                <h4 class="h3">{{ username }}</h4>
+                                <h5 class="font-weight-normal">
+                                    {{ email }}
+                                </h5>
+                                <p class="btn btn-secondary">Subscription Plan : {{ subscription_plan }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-4">
+                        <div class="card card-body bg-white border-light shadow-sm mb-4">
+                            <h2 class="h5 mb-4">Storage information</h2>
+                            <!-- Create a canvas element to display the chart -->
+                            <canvas id="storageUsageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-12 col-xl-8">
                 <div class="card card-body bg-white border-light shadow-sm mb-4">
-                    <h2 class="h5 mb-4">Profile information</h2>
+                    <h2 class="h5 mb-">General information</h2>
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <div class="row">
@@ -86,56 +119,94 @@
 
                         <div class="mt-3">
                             {% if is_self %}
-                                <a href="{% url 'accounts:account_edit' user_id=id %}" class="btn btn-primary">Edit All</a>
-                                <a class="btn btn-primary" href="{% url 'password_change' %}">Change password</a>
+                                <a href="{% url 'account:account_edit' user_id=id %}" class="btn btn-primary">Edit All</a>
+                                <button class="btn btn-primary show-change-password">Change password</button>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="card card-body bg-white border-light shadow-sm mb-4">
+                    <h2 class="h5 mb-4">Security information</h2>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
 
+                            {% if default_device %}
+
+                                <h6>{% blocktrans trimmed %}Congratulations, you've successfully enabled two-factor
+                                    authentication.{% endblocktrans %}</h6>
+                                <p>{% blocktrans trimmed %}However we strongly discourage you to do so, you can
+                                    also disable two-factor authentication for your account.{% endblocktrans %}</p>
+                                <div class="mt-3">
+                                    <p><a class="btn btn-secondary" href="{% url 'two_factor:disable' %}">
+
+                                        {% trans "Disable Two-Factor Authentication" %}</a>
+                                        <a href="{% url 'two_factor:profile' %}"
+                                           class="btn btn btn-link">{% trans "Back to Account Security" %}</a></p>
+                                </div>
+
+
+
+                            {% else %}
+                                <p>{% blocktrans trimmed %}Two-factor authentication is not enabled for your
+                                    account. Enable two-factor authentication for enhanced account
+                                    security.{% endblocktrans %}</p>
+                                <p><a href="{% url 'two_factor:setup' %}" class="btn btn-primary">
+                                    {% trans "Enable Two-Factor Authentication" %}</a>
+                                </p>
                             {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-xl-4">
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        <div class="card border-light text-center p-0">
-                            <div class="profile-cover rounded-top"
-                                 data-background="/static/assets/img/profile-cover.jpg"></div>
-                            <div class="card-body pb-5">
-
-                                {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
-                                    <img src="{{ user.avatar_url }}" class="user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
-                                {% else %}
-                                    <img src="{% static 'dastore/default_user_icon.png' %}" class="border border-dark user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4">
-                                {% endif %}
-                                <h4 class="h3">{{ username }}</h4>
-                                <h4 class="font-weight-normal">{{ first_name }} {{ last_name }}</h4>
-                                <h5 class="font-weight-normal">
-                                    {{ email }}
-                                </h5>
-                                <p class="text-gray mb-4">{{ city|default:'' }} | {{ number }}, {{ address|default:'' }}</p>
-
-                                <p class="btn btn-secondary">Subscription Plan : {{ subscription_plan }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 mb-4">
-                        <div class="card card-body bg-white border-light shadow-sm mb-4">
-                            <h2 class="h5 mb-4">Storage information</h2>
-                            <!-- Create a canvas element to display the chart -->
-                            <canvas id="storageUsageChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
         </div>
     </div>
-{% endblock content %}
+    {% include 'account/password_change.html' %}
+{% endblock %}
 
 {% block script %}
-    {#    <!-- Add JavaScript to create the chart -->#}
     <script>
+
+        $('.show-change-password').on('click', function() {
+            // Set the modal title
+            $("#confirmModalLabel").text("Reset Password");
+            $("#confirmButton").text("Update");
+            $("#dismissButton").text("Cancel");
+            $("#confirmModal").attr("data-keyboard", "true");
+            $("#confirmModal").attr("data-backdrop", "dynamic");
+            // Set the modal body with the form
+            $("#confirmMessage").html($("#passwordChangeDiv").html());
+            // Show the modal
+            $("#confirmModal").modal("show");
+        });
+
+        $("#confirmButton").on('click', function(e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'POST',
+                url: "{% url 'account:password_change' %}",
+                data: $('#passwordChangeForm').serialize(),
+                dataType: 'json',
+                success: function(data) {
+                    if (data.result === 'success') {
+                        // Close the modal and display a success message
+                        $('#confirmModal').modal('hide');
+                        const notyf = new Notyf();
+                        notyf.success("Password changed successfully.");
+                    }
+                },
+                error: function(data) {
+                    // Display form errors in the modal
+                    $.each(data.responseJSON, function(field, errors) {
+                        var errorDiv = $(`#id_${field}`).closest('.form-group').find('.errors');
+                        errorDiv.empty();
+                        $.each(errors, function(index, error){
+                            errorDiv.append(`<p style="color: red">${error}</p>`);
+                        });
+                    });
+                }
+            });
+        });
+        {#    <!-- Add JavaScript to create the chart -->#}
         function getRandomColor() {
             let letters = '0123456789ABCDEF';
             let color = '#';
@@ -207,7 +278,7 @@
         });
     </script>
 
-{% endblock script %}
+{% endblock %}
 
 
 

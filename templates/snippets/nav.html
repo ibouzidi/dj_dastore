@@ -29,9 +29,9 @@
                         </div>
                     </a>
                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-right mt-2">
-                        <a class="dropdown-item font-weight-bold" href="{% url 'accounts:account_profile' user_id=request.user.id %}"><span class="fas fa-cog"></span>Settings</a>
+                        <a class="dropdown-item font-weight-bold" href="{% url 'account:account_profile' %}"><span class="fas fa-cog"></span>Settings</a>
                         <div role="separator" class="dropdown-divider"></div>
-                        <a class="dropdown-item font-weight-bold" href="{% url 'accounts:logout' %}">
+                        <a class="dropdown-item font-weight-bold" href="{% url 'account:logout' %}">
                             <span class="fas fa-sign-out-alt text-danger"></span>Logout</a>
                     </div>
                 </li>

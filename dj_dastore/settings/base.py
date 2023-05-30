@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts.apps.AccountsConfig',
+    'account.apps.AccountConfig',
     'app.apps.AppConfig',
     'extbackup.apps.ExtbackupConfig',
     'subscription_plan.apps.SubscriptionPlanConfig',
@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'storages',
     'widget_tweaks',
     'bootstrap_modal_forms',
+    # 2fa Authentication
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -55,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # 'dj_dastore.redirect_middleware.HtmxRedirectMiddleware',
@@ -102,12 +109,12 @@ DATABASES = {
 # AUTHENTICATION BACKENDS SETTINGS
 # =====================================================================
 
-AUTH_USER_MODEL = 'accounts.Account' #
+AUTH_USER_MODEL = 'account.Account' #
 
 AUTHENTICATION_BACKENDS = [
     # 'django.contrib.auth.backends.AllowAllUsersModelBackend',
     'django.contrib.auth.backends.ModelBackend',
-    'accounts.backends.CaseInsensitiveModelBackend',
+    'account.backends.CaseInsensitiveModelBackend',
 ]
 
 # =====================================================================
@@ -199,3 +206,7 @@ JAZZMIN_SETTINGS = {
 }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
+LOGIN_URL = 'two_factor:login'
+
+LOGIN_REDIRECT_URL = 'account:account_profile'

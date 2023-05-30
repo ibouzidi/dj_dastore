@@ -2,7 +2,7 @@ from django.urls import reverse
 
 from django.db import models
 
-from accounts.models import Account
+from account.models import Account
 
 
 class Folder(models.Model):

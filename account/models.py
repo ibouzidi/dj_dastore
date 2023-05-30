@@ -19,7 +19,7 @@ class MyAccountManager(BaseUserManager):
             raise ValueError('Users must have a username')
 
         user = self.model(
-            email=self.normalize_email(email),
+            email=self.normalize_email(email).lower(),
             username=username,
             subscription_plan=subscription_plan,
         )

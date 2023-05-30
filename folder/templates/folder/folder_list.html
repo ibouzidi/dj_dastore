@@ -168,114 +168,114 @@
                     });
                 });
             });
-                    /**
-                     * This code allow to files based on the current folder
-                     * using a modal window.
-                     */
-                    $("#addFilesButton").on("click", function() {
-                        console.log("yes ")
-                        // Set the modal title and message
-                        $("#confirmModalLabel").text("Backup Your Files");
-                        $("#confirmButton").hide();
-                        $("#dismissButton").text("Discard");
-                        $("#confirmMessage").html($("#upload-files-form").html());
-                        // Kick-off
-                        // Re-initialize the event listeners for the form elements
-                        try {
-                            var d = Object.create(dragAndUpload);
-                            d.setUp();
-                        } catch (exception) {
-                            console.log('Error creating menus. ' +
-                                'In all likelihood your browser is out ' +
-                                'of date.\r\n', exception, '\r\n', navigator.userAgent);
-                        }
-                        // Show the modal
-                        $("#confirmModal").modal("show");
-                    });
+            /**
+             * This code allow to files based on the current folder
+             * using a modal window.
+             */
+            $("#addFilesButton").on("click", function() {
+                console.log("yes ")
+                // Set the modal title and message
+                $("#confirmModalLabel").text("Backup Your Files");
+                $("#confirmButton").hide();
+                $("#dismissButton").text("Discard");
+                $("#confirmMessage").html($("#upload-files-form").html());
+                // Kick-off
+                // Re-initialize the event listeners for the form elements
+                try {
+                    var d = Object.create(dragAndUpload);
+                    d.setUp();
+                } catch (exception) {
+                    console.log('Error creating menus. ' +
+                        'In all likelihood your browser is out ' +
+                        'of date.\r\n', exception, '\r\n', navigator.userAgent);
+                }
+                // Show the modal
+                $("#confirmModal").modal("show");
+            });
 
-                    /**
-                     * This code allow to show a modal window containing information
-                     * about folder such as the name, description and size.
-                     */
-                    $('.show-file-info').on('click', function() {
-                        var detailBackup = $(this).closest('.card').find('#detail-backup');
-                        $('#confirmModalLabel').text('Detail Information');
+            /**
+             * This code allow to show a modal window containing information
+             * about folder such as the name, description and size.
+             */
+            $('.show-file-info').on('click', function() {
+                var detailBackup = $(this).closest('.card').find('#detail-backup');
+                $('#confirmModalLabel').text('Detail Information');
 
-                        $('#confirmButton').hide();
-                        $('#dismissButton').text('Close');
-                        // Set the new modal content
-                        $('#confirmMessage').html(detailBackup.html());
-                        // Show the modal
-                        $('#confirmModal').modal('show');
-                    });
+                $('#confirmButton').hide();
+                $('#dismissButton').text('Close');
+                // Set the new modal content
+                $('#confirmMessage').html(detailBackup.html());
+                // Show the modal
+                $('#confirmModal').modal('show');
+            });
 
-                    /**
-                     * This code updates an icon's CSS class based on an AJAX response
-                     * and displays a tooltip with the response message.
-                     */
-                    $('.integrity-tooltip').tooltip();
-                    $('.check-hash').click(function(event) {
-                        event.preventDefault();
-                        const url = $(this).data('url');
-                        const file_id = $(this).data('file-id');
-                        console.log(file_id)
+            /**
+             * This code updates an icon's CSS class based on an AJAX response
+             * and displays a tooltip with the response message.
+             */
+            $('.integrity-tooltip').tooltip();
+            $('.check-hash').click(function(event) {
+                event.preventDefault();
+                const url = $(this).data('url');
+                const file_id = $(this).data('file-id');
+                console.log(file_id)
+                const icon = $('#hash-check-icon-' + file_id);
+                const spinner = $('#hash-check-spinner-' + file_id);
+
+                // Show the icon
+                icon.show();
+
+                // Show the spinner
+                spinner.removeClass('d-none');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response, textStatus, xhr) {
+                        const status = response.message;
+                        const statusCode = xhr.status;
                         const icon = $('#hash-check-icon-' + file_id);
-                        const spinner = $('#hash-check-spinner-' + file_id);
+                        if (statusCode === 200) {
+                            icon.removeClass('fa-question-circle text-warning').addClass(
+                                'fa-check-circle text-success');
+                        } else {
+                            icon.removeClass('fa-question-circle text-warning').addClass(
+                                'fa-exclamation-circle text-danger');
+                        }
+                        icon.tooltip('dispose').tooltip();
+                        icon.attr('data-original-title', status).tooltip('show');
+                        // Automatically hide the tooltip after 3 seconds (3000 ms)
+                        setTimeout(function() {
+                            icon.tooltip('hide');
+                        }, 3000);
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        const message = xhr.responseJSON.message;
+                        const icon = $('#hash-check-icon-' + file_id);
+                        icon.removeClass('fa-check-circle text-success').addClass(
+                            'fa-exclamation-circle text-danger');
 
-                        // Show the icon
-                        icon.show();
-
-                        // Show the spinner
-                        spinner.removeClass('d-none');
-                        $.ajax({
-                            url: url,
-                            type: 'GET',
-                            dataType: 'json',
-                            success: function(response, textStatus, xhr) {
-                                const status = response.message;
-                                const statusCode = xhr.status;
-                                const icon = $('#hash-check-icon-' + file_id);
-                                if (statusCode === 200) {
-                                    icon.removeClass('fa-question-circle text-warning').addClass(
-                                        'fa-check-circle text-success');
-                                } else {
-                                    icon.removeClass('fa-question-circle text-warning').addClass(
-                                        'fa-exclamation-circle text-danger');
-                                }
-                                icon.tooltip('dispose').tooltip();
-                                icon.attr('data-original-title', status).tooltip('show');
-                                // Automatically hide the tooltip after 3 seconds (3000 ms)
-                                setTimeout(function() {
-                                    icon.tooltip('hide');
-                                }, 3000);
-                            },
-                            error: function(xhr, textStatus, errorThrown) {
-                                const message = xhr.responseJSON.message;
-                                const icon = $('#hash-check-icon-' + file_id);
-                                icon.removeClass('fa-check-circle text-success').addClass(
-                                    'fa-exclamation-circle text-danger');
-
-                                if (xhr.status === 429) {
-                                    // Display the rate limit message to the user
-                                    // You can use an alert, a tooltip, or any other preferred method
-                                    icon.tooltip('dispose').tooltip();
-                                    icon.attr('data-original-title', message).tooltip('show');
-                                } else {
-                                    icon.tooltip('dispose').tooltip();
-                                    console.error('Error:', errorThrown);
-                                    icon.attr('data-original-title', message).tooltip('show');
-                                }
-                            },
-                            complete: function() {
-                                // Hide the spinner
-                                spinner.addClass('d-none');
-                            }
-                        });
-                    });
-                    // autofocus to first input field of a modal
-                $('.modal').on('shown.bs.modal', function () {
-                    $('form').find('input[type=text]').filter(':visible:first').focus();
+                        if (xhr.status === 429) {
+                            // Display the rate limit message to the user
+                            // You can use an alert, a tooltip, or any other preferred method
+                            icon.tooltip('dispose').tooltip();
+                            icon.attr('data-original-title', message).tooltip('show');
+                        } else {
+                            icon.tooltip('dispose').tooltip();
+                            console.error('Error:', errorThrown);
+                            icon.attr('data-original-title', message).tooltip('show');
+                        }
+                    },
+                    complete: function() {
+                        // Hide the spinner
+                        spinner.addClass('d-none');
+                    }
                 });
+            });
+            // autofocus to first input field of a modal
+            $('.modal').on('shown.bs.modal', function () {
+                $('form').find('input[type=text]').filter(':visible:first').focus();
+            });
     </script>
     {% include 'extbackup/upload_form_js.html' %}
 {% endblock script %}

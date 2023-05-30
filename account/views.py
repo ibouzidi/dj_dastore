@@ -7,16 +7,18 @@ from django.contrib.auth.views import PasswordChangeView
 from django.core.mail import send_mail, BadHeaderError
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from accounts.forms import RegistrationForm, AccountAuthenticationForm, \
+from two_factor.utils import default_device
+
+from account.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
-from accounts.models import Account
+from account.models import Account
 from .calc_storage_limit import calculate_storage_usage
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
@@ -78,7 +80,7 @@ def register_view(request, plan_name, *args, **kwargs):
         form = RegistrationForm()
         context['plan'] = plan
         context['registration_form'] = form
-    return render(request, 'accounts/register.html', context)
+    return render(request, 'account/register.html', context)
 
 
 @login_required
@@ -117,7 +119,7 @@ def login_view(request, *args, **kwargs):
 
     context['login_form'] = form
 
-    return render(request, "accounts/login.html", context)
+    return render(request, "account/login.html", context)
 
 
 def get_redirect_if_exists(request):
@@ -128,52 +130,42 @@ def get_redirect_if_exists(request):
     return redirect
 
 @login_required
-def account_view(request, *args, **kwargs):
+def account_view(request):
+    print("default_device(request.user)")
+    print(default_device(request.user))
     context = {}
-    user_id = kwargs.get("user_id")
     try:
-        account = get_object_or_404(Account, pk=user_id)
-        if account.pk != request.user.pk:
-            messages.warning(request,
-                             "You cannot see someone else's profile.")
-            return redirect("accounts:account_profile",
-                            user_id=request.user.id)
+        account = request.user
     except:
-        messages.error(request, "No user with that id.")
-        return redirect("accounts:account_profile",
-                        user_id=request.user.id)
+        messages.error(request, "No user logged in.")
+        return redirect("login")  # redirect to your login view
 
-    if account:
-        context['id'] = account.id
-        context['username'] = account.username
-        context['first_name'] = account.first_name
-        context['last_name'] = account.last_name
-        context['phone'] = account.phone
-        context['address'] = account.address
-        context['number'] = account.number
-        context['city'] = account.city
-        context['zip'] = account.zip
-        context['email'] = account.email
-        context['profile_image'] = account.profile_image
-        context['subscription_plan'] = account.subscription_plan
+    context['id'] = account.id
+    context['username'] = account.username
+    context['first_name'] = account.first_name
+    context['last_name'] = account.last_name
+    context['phone'] = account.phone
+    context['address'] = account.address
+    context['number'] = account.number
+    context['city'] = account.city
+    context['zip'] = account.zip
+    context['email'] = account.email
+    context['profile_image'] = account.profile_image
+    context['subscription_plan'] = account.subscription_plan
 
-        is_self = True
-        user = request.user
-        if user.is_authenticated and user != account:
-            is_self = False
-        elif not user.is_authenticated:
-            is_self = False
-        context['is_self'] = is_self
+    context['is_self'] = True
 
-        storage_used, storage_limit, storage_limit_unit, storage_used_unit \
-            = calculate_storage_usage(account)
-        # # Store the values in the context dictionary
-        context['storage_used'] = storage_used
-        context['storage_limit'] = storage_limit
-        context['storage_limit_unit'] = storage_limit_unit
-        context['storage_used_unit'] = storage_used_unit
+    storage_used, storage_limit, storage_limit_unit, storage_limit_used \
+        = calculate_storage_usage(account)
+    # Store the values in the context dictionary
+    context['storage_used'] = storage_used
+    context['storage_limit'] = storage_limit
+    context['storage_limit_unit'] = storage_limit_unit
+    context['storage_used_unit'] = storage_limit_used
 
-        return render(request, "accounts/account.html", context)
+    context['default_device'] = default_device(
+        request.user) if request.user.is_authenticated else None
+    return render(request, "account/account.html", context)
 
 
 def save_temp_profile_image_from_base64String(imageString, user):
@@ -244,12 +236,12 @@ def crop_image(request, *args, **kwargs):
 @login_required
 def edit_account_view(request, *args, **kwargs):
     if not request.user.is_authenticated:
-        return redirect("accounts:login")
+        return redirect("account:login")
     user_id = kwargs.get("user_id")
     account = get_object_or_404(Account, pk=user_id)
     if account.pk != request.user.pk:
         messages.warning(request, "You cannot edit someone else's profile.")
-        return redirect("accounts:account_profile", user_id=request.user.id)
+        return redirect("account:account_profile")
     context = {}
     if request.POST:
         form = AccountUpdateForm(request.POST, request.FILES,
@@ -258,7 +250,7 @@ def edit_account_view(request, *args, **kwargs):
             form.save()
             messages.success(request,
                              'Your account has be successfully updated.')
-            return redirect("accounts:account_profile", user_id=account.pk)
+            return redirect("account:account_profile")
         else:
             form = AccountUpdateForm(request.POST, instance=request.user,
                                      initial={
@@ -295,19 +287,29 @@ def edit_account_view(request, *args, **kwargs):
         context['form'] = form
     context[
         'DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
-    return render(request, "accounts/edit_account.html", context)
+    return render(request, "account/edit_account.html", context)
 
 
 @method_decorator(login_required, name='dispatch')
 class CustomPasswordChangeView(PasswordChangeView):
-    template_name = 'password_reset/password_change.html'
+    # template_name = 'account/password_change.html'
 
-    def get_success_url(self):
-        user_id = self.request.user.id
-        success_url = reverse_lazy('accounts:account_profile',
-                                   kwargs={'user_id': user_id})
-        return success_url
+    def clean_old_password(self):
+        old_password = super().clean_old_password()
+        print('Old password cleaned data:', old_password)
+        return old_password
 
     def form_valid(self, form):
-        messages.success(self.request, 'Your password has been Updated.')
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        if self.request.is_ajax():
+            return JsonResponse({'result': 'success'}, status=200)
+        else:
+            return response
+
+    def form_invalid(self, form):
+        print('Form errors:', form.errors)
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response

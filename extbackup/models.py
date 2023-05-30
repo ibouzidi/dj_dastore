@@ -4,7 +4,7 @@ from django.db import models
 
 from folder.models import Folder
 # from storages.backends.ftp import FTPStorage
-from accounts.models import Account
+from account.models import Account
 
 # fs = FTPStorage()
 

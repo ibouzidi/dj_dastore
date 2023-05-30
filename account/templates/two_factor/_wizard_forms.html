@@ -1,0 +1,33 @@
+{% load static %}
+{% load example %}
+
+{% block sub_content %}
+    {{ wizard.management_form }}
+    {% for field in wizard.form %}
+        <div class="form-group mb-4">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">
+                    {% if field.name == 'username' %}
+                        <span class="fas fa-envelope"></span>
+                    {% elif field.name == 'password' %}
+                        <span class="fas fa-lock"></span>
+                    {% else %}
+                        <span class="fas fa-user"></span>
+                    {% endif %}
+                </span>
+                {{ field|add_attrs:'class:form-control, placeholder:true' }}
+            </div>
+            <!-- Display field errors -->
+            {% for error in field.errors %}
+                <p style="color: red">{{ error }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    {% if wizard.form.non_field_errors %}
+        <div style="color: red">
+            <p>{{ wizard.form.non_field_errors }}</p>
+        </div>
+    {% endif %}
+
+{% endblock %}

@@ -62,7 +62,7 @@
                                 <h2 class="h6">
                                     {{ user.username }}
                                 </h2>
-                                <a href="{% url 'accounts:logout' %}"
+                                <a href="{% url 'account:logout' %}"
                                    class="btn btn-secondary text-dark btn-xs">
                                     <span class="mr-2"><span
                                             class="fas fa-sign-out-alt"></span></span>Sign
@@ -98,7 +98,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'accounts:account_profile' user_id=request.user.id %}"
+                            <a href="{% url 'account:account_profile' %}"
                                class="nav-link">
                                 <span class="sidebar-icon" ><span
                                         class="fas fa-user-cog"></span></span>
@@ -106,7 +106,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="{% url 'accounts:logout' %}"
+                            <a href="{% url 'account:logout' %}"
                                class="nav-link">
                                 <span class="sidebar-icon"><span
                                         class="fas fa-sign-out-alt text-danger"></span></span>
