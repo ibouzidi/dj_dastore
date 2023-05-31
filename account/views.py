@@ -14,6 +14,7 @@ from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from two_factor.signals import user_verified
 from two_factor.utils import default_device
 
 from account.forms import RegistrationForm, AccountAuthenticationForm, \
@@ -94,7 +95,8 @@ def login_view(request, *args, **kwargs):
     context = {}
 
     user = request.user
-    if user.is_authenticated:
+    if user.is_authenticated and user_verified(request):
+        messages.info(request, "You are already logged in.")
         return redirect("home")
 
     destination = get_redirect_if_exists(request)

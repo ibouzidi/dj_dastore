@@ -7,7 +7,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Backup and restore application in Django</title>
+    <title>Backup and Restore application in Django</title>
     <link type="text/css" href="{% static 'css/volt.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="{% static 'css/icofont/icofont.min.css' %}">
@@ -80,9 +80,10 @@
     <main class="py-5">
 {% endif %}
     <div id="content">{% block content %} {% endblock %}</div>
+{% include 'snippets/footer.html' %}
 </main>
 
-{% include 'snippets/footer.html' %}
+
 <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>
 <script src="{% static 'js/jquery-sticky/jquery.sticky.js' %}"></script>

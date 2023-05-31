@@ -1,4 +1,5 @@
 {% extends "../_base.html" %}
+{% load static %}
 {% load i18n %}
 {% load two_factor_tags %}
 
@@ -66,8 +67,12 @@
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <img src="{% static 'illustrations/2fa.jpg' %}" alt="">
             </div>
         </div>
     </div>

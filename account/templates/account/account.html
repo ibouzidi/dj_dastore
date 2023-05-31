@@ -1,9 +1,10 @@
-{% extends "sub_base.html" %}
+{% extends "../sub_base.html" %}
 {% load static %}
 {% load i18n %}
 {% load two_factor_tags %}
 
 {% block sub_content %}
+
     <div class="profil_settings py-5">
         <div class="row">
             <div class="col-12 col-xl-4">
@@ -14,7 +15,6 @@
                                  data-background="/static/assets/img/profile-cover.jpg">
                             </div>
                             <div class="card-body pb-5">
-
                                 {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
                                     <img src="{{ user.avatar_url }}" class="user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
                                 {% else %}

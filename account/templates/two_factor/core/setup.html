@@ -21,9 +21,21 @@
 
                                     {% if wizard.steps.current == 'welcome' %}
                                         <h3>{% trans "Welcome" %}</h3>
-                                        <p>{% blocktrans trimmed %}You are about to take your account security to the
-                                            next level. Follow the steps in this wizard to enable two-factor
-                                            authentication.{% endblocktrans %}</p>
+                                        <p>{% blocktrans trimmed %}
+                                            Congratulations on your decision to enhance your account security!
+                                            <br><br>
+                                            By enabling two-factor authentication, you're adding an extra layer of protection
+                                            to safeguard your valuable data.
+                                             <br><br>
+                                            Two-factor authentication, often referred to as 2FA,
+                                            requires not only a password and username but also something
+                                            that only the user has on them, i.e., a piece of information only
+                                            they should know or have immediately on hand - like a physical token.
+                                             <br><br>
+                                            Follow the steps in this wizard to enable two-factor
+                                            authentication.
+                                        {% endblocktrans %}</p>
+
                                     {% elif wizard.steps.current == 'method' %}
                                         <p>{% blocktrans trimmed %}Please select which authentication method you would
                                             like to use.{% endblocktrans %}</p>
