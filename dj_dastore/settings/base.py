@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_static',
     'django_otp.plugins.otp_totp',
     'two_factor',
+    # Recaptcha
+    'captcha',
 
 ]
 
@@ -210,3 +212,8 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 LOGIN_URL = 'two_factor:login'
 
 LOGIN_REDIRECT_URL = 'account:account_profile'
+
+
+RECAPTCHA_PUBLIC_KEY = '6LdEG1smAAAAAAEn-_8vrhE4eUeVgMKhiW8Tr_eP'
+RECAPTCHA_PRIVATE_KEY = '6LdEG1smAAAAAFNBtdDqDaUJrFWknkdtz-fETWIB'
+# SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']

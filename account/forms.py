@@ -4,11 +4,12 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
-
+from captcha.fields import ReCaptchaField
 from account.models import Account
 
 
 class RegistrationForm(UserCreationForm):
+	captcha = ReCaptchaField()
 	email = forms.EmailField(max_length=254, help_text='Required. Add a valid email address.')
 
 	class Meta:
@@ -33,7 +34,6 @@ class RegistrationForm(UserCreationForm):
 
 
 class AccountAuthenticationForm(forms.ModelForm):
-
 	password = forms.CharField(label='Password', widget=forms.PasswordInput)
 
 	class Meta:
