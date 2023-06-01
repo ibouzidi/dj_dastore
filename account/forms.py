@@ -1,6 +1,9 @@
+import re
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
+from django.core.exceptions import ValidationError
 
 from account.models import Account
 
@@ -68,13 +71,40 @@ class AccountUpdateForm(forms.ModelForm):
 			return email
 		raise forms.ValidationError('Email "%s" is already in use.' % account)
 
+	def clean_phone(self):
+		phone = self.cleaned_data['phone']
+		if not re.match(r'^\+?1?\d{9,15}$',
+						phone):  # Adjust the regex as needed
+			raise ValidationError(
+				"Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
+		return phone
+
 	def clean_username(self):
 		username = self.cleaned_data['username']
+		if not re.match(r'^[\w.@+-]+$',
+						username):  # Django's default validation
+			raise ValidationError("Username contains invalid characters.")
 		try:
-			account = Account.objects.exclude(pk=self.instance.pk).get(username=username)
+			account = Account.objects.exclude(pk=self.instance.pk).get(
+				username=username)
 		except Account.DoesNotExist:
 			return username
-		raise forms.ValidationError('Username "%s" is already in use.' % username)
+		raise forms.ValidationError(
+			'Username "%s" is already in use.' % username)
+
+	def clean_first_name(self):
+		first_name = self.cleaned_data['first_name']
+		if not re.match(r'^[a-zA-Z]+$',
+						first_name):  # Only allows alphabetical characters
+			raise ValidationError("First name must only contain letters.")
+		return first_name
+
+	def clean_last_name(self):
+		last_name = self.cleaned_data['last_name']
+		if not re.match(r'^[a-zA-Z]+$',
+						last_name):  # Only allows alphabetical characters
+			raise ValidationError("Last name must only contain letters.")
+		return last_name
 
 	def save(self, commit=True):
 		account = super(AccountUpdateForm, self).save(commit=False)

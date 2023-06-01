@@ -257,15 +257,6 @@ def edit_account_view(request, *args, **kwargs):
             form = AccountUpdateForm(request.POST, instance=request.user,
                                      initial={
                                          "id": account.pk,
-                                         "email": account.email,
-                                         "first_name": account.first_name,
-                                         "last_name": account.last_name,
-                                         "address": account.address,
-                                         "phone": account.phone,
-                                         "city": account.city,
-                                         "zip": account.zip,
-                                         "number": account.number,
-                                         "username": account.username,
                                          "profile_image": account.profile_image,
                                      }
                                      )
@@ -284,7 +275,7 @@ def edit_account_view(request, *args, **kwargs):
                 "number": account.number,
                 "username": account.username,
                 "profile_image": account.profile_image,
-            }
+            }, instance=request.user
         )
         context['form'] = form
     context[

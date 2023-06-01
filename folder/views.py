@@ -50,14 +50,21 @@ class FolderUpdateView(BSModalUpdateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        print("YES")
-        folder = self.get_object()
-        print("folder")
-        print(folder.parent.pk)
-        if folder.parent is not None:
-            return reverse('folder:folder_list') + '?id=' + str(folder.parent.pk)
+        parent_folder_id = self.request.GET.get('id')
+        if parent_folder_id:
+            return reverse('folder:folder_list') + '?id=' + parent_folder_id
         else:
             return reverse('folder:folder_list')
+
+    # def get_success_url(self):
+    #     print("YES")
+    #     folder = self.get_object()
+    #     print("folder")
+    #     print(folder.parent.pk)
+    #     if folder.parent is not None:
+    #         return reverse('folder:folder_list') + '?id=' + str(folder.parent.pk)
+    #     else:
+    #         return reverse('folder:folder_list')
 
 # class FolderCreateView(View):
 #     template_name = 'folder/folder_create.html'
@@ -91,8 +98,6 @@ class FolderUpdateView(BSModalUpdateView):
 #                 'add_folder': reverse('folder:folder_create'),
 #             }
 #             return render(request, self.template_name, context)
-
-
 
 
 class FolderListView(View):
