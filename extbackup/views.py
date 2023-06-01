@@ -1,7 +1,6 @@
 import ast
 import csv
 import random
-import magic
 from bootstrap_modal_forms.generic import BSModalDeleteView
 from cryptography.fernet import Fernet
 from django.contrib import messages
