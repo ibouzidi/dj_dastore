@@ -1,5 +1,27 @@
 {% extends 'base.html' %}
-
+{% block header %}
+    <header id="header" class="header">
+        <div class="header-content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="text-container">
+                            <h1 data-aos="fade-right"><span>DaStore, Privacy by Design</span></h1>
+                            <h2 data-aos="fade-right" data-aos-delay="100"><span>Backup, Restore,
+Download...</span></h2>
+                            <div class="social mt-4" data-aos="fade-right" data-aos-delay="200">
+                                <a class="facebook" href="#"><i class="fa fa-facebook-square"></i></a>
+                                <a class="twitter" href="#"><i class="fa fa-twitter-square"></i></a>
+                                <a class="youtube" href="#"><i class="fa fa-youtube-square"></i></a>
+                            </div>
+                            <a href="#service" class="target-scroll" data-aos="fade-right" data-aos-delay="100"><i class="fa fa-chevron-down"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+{% endblock %}
 {% block content %}
     <style type="text/css">
         .my-grid {
@@ -10,15 +32,15 @@
             border: 1px solid blue;
         }
     </style>
-       <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
-    <div class="col-md-5 p-lg-5 mx-auto my-5">
-      <h1 class="display-4 fw-normal">Welcome !</h1>
-      <p class="lead fw-normal">This page will be soon available to you.</p>
-      <a class="btn btn-outline-secondary" href="#">Coming soon</a>
+    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+        <div class="col-md-5 p-lg-5 mx-auto my-5">
+            <h1 class="display-4 fw-normal">Welcome !</h1>
+            <p class="lead fw-normal">This page will be soon available to you.</p>
+            <a class="btn btn-outline-secondary" href="#">Coming soon</a>
+        </div>
+        <div class="product-device shadow-sm d-none d-md-block"></div>
+        <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
     </div>
-    <div class="product-device shadow-sm d-none d-md-block"></div>
-    <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
-  </div>
 
 
 {% endblock content %}

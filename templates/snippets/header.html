@@ -1,6 +1,5 @@
 {% load static %}
 <style>
-
 </style>
 <!-- ======= HEADER ======= -->
 <header id="nav-header">
@@ -12,7 +11,7 @@
         <!-- NAVIGATION -->
         <nav class="nav-menu d-none d-lg-block">
             <ul>
-            <li><a href="{% url 'subscription_plan:subscription_plan_index' %}">GET STARTED</a></li>
+            <li class="active"><a href="{% url 'subscription_plan:subscription_plan_index' %}">GET STARTED</a></li>
 
                 {% if request.user.is_authenticated %}
                     <li><a href="{% url 'extbackup:upload_files' %}">Backup</a></li>

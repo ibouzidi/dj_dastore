@@ -72,15 +72,19 @@
 
 {% if request.user.is_authenticated %}
     {% include 'snippets/sidebare.html' %}
-    <main class="content">
-    {% include 'snippets/nav.html' %}
+    <main>
+
 {#    <div id="breadcrumb">{% block breadcrumb %}{% endblock %}</div>#}
 {% else %}
     {% include 'snippets/header.html' %}
     <main class="py-5">
 {% endif %}
-    <div id="content">{% block content %} {% endblock %}</div>
+{% block header %} {% endblock %}
+
+{# {% include 'snippets/nav.html' %}#}
+    <div>{% block content %} {% endblock %}</div>
 {% include 'snippets/footer.html' %}
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 </main>
 
 
@@ -104,6 +108,7 @@
 </script>
 <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
+{#<script src="{% static 'js/nav_menu_member.js' %}"></script>#}
 
 
 {% include "snippets/add_active_class.html" %}

@@ -2,26 +2,25 @@
 $(document).ready(function() {
     // Create a mapping of paths to CSS selectors
     var pathMap = {
-        'subscription_plan': '.nav-link[href="{% url 'subscription_plan:subscription_plan_index' %}"]',
-        'folder': '.nav-link[href="{% url 'folder:folder_list' %}"]',
-        'account': '.nav-link[href="{% url 'account:account_profile' %}"]',
-        'backup': '.nav-link[href="{% url 'folder:folder_list' %}"]',
-        'password_change': '.nav-link[href="{% url 'account:account_profile' %}"]',
+        'subscription': 'a[href="{% url 'subscription_plan:subscription_plan_index' %}"]',
+        'folder': 'a[href="{% url 'folder:folder_list' %}"]',
+        'account': 'a[href="{% url 'account:account_profile' %}"]',
+        'account_logout': 'a[href="{% url 'account:logout' %}"]'
     };
 
-    // Get the first part of the current URL path (e.g., "account")
+    // Get the first two parts of the current URL path (e.g., "account")
     var currentPath = window.location.pathname.split('/')[1];
-    console.log("currentPath")
-    console.log(currentPath)
 
     // If the current path is in the mapping
     if (currentPath in pathMap) {
         // Get the CSS selector associated with the current path
         var currentSelector = pathMap[currentPath];
 
+        // Remove 'active' class from all nav items
+        $("#nav-header .nav-menu ul li").removeClass('active');
+
         // Add the 'active' class to the element that matches the CSS selector
-        $(currentSelector).parent().addClass('active');
+        $(currentSelector).parent('li').addClass('active');
     }
 });
-
 </script>

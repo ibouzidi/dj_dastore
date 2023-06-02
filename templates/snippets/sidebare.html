@@ -1,121 +1,123 @@
 {% load static %}
-<nav class="navbar navbar-dark navbar-theme-primary px-4 col-12 d-md-none">
-    <a class="navbar-brand mr-lg-5" href="/">
-        <img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="navbar-brand-dark" style="width: 100%; height: 60px">
-    </a>
-    <div class="d-flex align-items-center">
-        <button class="navbar-toggler d-md-none collapsed" type="button"
-                data-toggle="collapse" data-target="#sidebarMenu"
-                aria-controls="sidebarMenu" aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-    </div>
-</nav>
-
 <style>
-    .nav-link {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
+    #nav-header {
+        height: 6.375rem;
+        transition: all 0.5s;
+        z-index: 997;
+        transition: all 0.5s;
+        padding: 0.625rem 0;
+        background: #8187dd;
+        -moz-box-shadow: 0 0.850rem 1rem rgba(0, 0, 0, 0.06);
+        -webkit-box-shadow: 0 0.850rem 1rem rgba(0, 0, 0, 0.06);
+        box-shadow: 0 0.850rem 1rem rgba(0, 0, 0, 0.06);
+        position: relative;
+        color: white;
     }
 
-    .nav-item {
-        width: 100%;
+    #nav-header .logo img {
+        padding: 0;
+        margin: 0;
+        max-height: 6.0625rem;
+        filter: brightness(0) invert(1);
     }
 
-    .sidebar-icon {
-        font-size: 50px;
-        display: block;
+
+    #nav-header .user-info,
+    #nav-header p,
+    #nav-header li {
+        color: black;
     }
 
-    {#.nav-link:hover {#}
-    {#     width: 100%;#}
-    {#    background-color: rgba(255, 193, 7, 0.1);#}
+    #nav-header .nav-menu .drop-down li a {
+        color: black;
+    }
+
+    #nav-header .nav-menu i {
+        margin-right: 5px;
+    }
+    #nav-header .nav-menu ul li {
+        margin: 0 20px; /* Adjust the margin as needed */
+    }
+
+    .nav-menu a {
+        color: var(--clr-white);
+    }
+
+    .nav-menu a > i {
+        margin-right: 5px;
+
+    }
+
+    .nav-menu a:hover,
+    .nav-menu .active > a,
+    .nav-menu li:hover > a {
+        color: var(--clr-cod-grey);
+    }
+
+    .mobile-nav a:hover,
+    .mobile-nav .active > a,
+    .mobile-nav li:hover > a {
+        color: #c487fa;
+    }
+
+    .mobile-nav-toggle i.icofont-navigation-menu {
+        color: #fff;
+        font-size: 50px; /* size for the navigation menu icon */
+    }
+
+    .mobile-nav-toggle i.icofont-close {
+        color: #fff;
+        font-size: 30px; /* different size for the close icon */
+    }
+    {#.mobile-nav {#}
+    {#    background: #d2bff2;#}
+    {#    color:white;#}
     {#}#}
-
-    .nav-link:hover .sidebar-icon {
-        color: #FFC107;
-    }
 </style>
 
+<header id="nav-header">
+    <div class="container d-flex">
+        <div class="logo mr-auto">
+            <a href="{% url 'home' %}">
+                <img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid">
+            </a>
+        </div>
 
+        <!-- NAVIGATION -->
+        <nav class="nav-menu d-none d-lg-block">
+            <ul>
+                <li><a href="{% url 'subscription_plan:subscription_plan_index' %}"><i class="material-symbols-outlined">play_circle</i> GET STARTED</a></li>
+                <li><a href="{% url 'folder:folder_list' %}"><i class="material-symbols-outlined">cloud_upload</i> Backup</a></li>
+                <li><a href="{% url 'account:account_profile' %}"><i class="material-symbols-outlined">settings</i> Settings</a></li>
+                <li class="drop-down">
+                    <a href="#"><i class="material-symbols-outlined">account_circle</i> My account</a>
+                    <ul>
+                        <li>
+                            <div class="user-info">
+                                {#                                <img src="{% if profile_image %}{{ profile_image.url }}{% else %}{% static 'dastore/default_user_icon.png' %}{% endif %}" class="account-image rounded-circle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" alt="profile user image" width="40" height="40">#}
 
-<div class="container-fluid bg-soft">
-    <div class="row">
-        <div class="col-12">
-            <nav id="sidebarMenu"
-                 class="sidebar d-md-block bg-primary text-white collapse px-4">
-                <div class="sidebar-sticky pt-3 mx-auto">
-                    <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
-                        <div class="d-flex align-items-center">
-                            <div class="user-avatar lg-avatar mr-4">
                                 {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
                                     <img src="{{ user.avatar_url }}" class="user-avatar md-avatar rounded-circle" alt="Neil Portrait">
                                 {% else %}
                                     <img src="{% static 'dastore/default_user_icon.png' %}" class="border border-dark user-avatar md-avatar rounded-circle">
                                 {% endif %}
+
+                                <p>{{ request.user.username }}</p>
                             </div>
-                            <div class="d-block">
-                                <h2 class="h6">
-                                    {{ user.username }}
-                                </h2>
-                                <a href="{% url 'account:logout' %}"
-                                   class="btn btn-secondary text-dark btn-xs">
-                                    <span class="mr-2"><span
-                                            class="fas fa-sign-out-alt"></span></span>Sign
-                                    Out</a>
-                            </div>
-                        </div>
-                        <div class="collapse-close d-md-none">
-                            <a href="#sidebarMenu" class="fas fa-times"
-                               data-toggle="collapse"
-                               data-target="#sidebarMenu"
-                               aria-controls="sidebarMenu" aria-expanded="true"
-                               aria-label="Toggle navigation"></a>
-                        </div>
-                    </div>
-                    <div class="logo mr-auto">
-                        <a href="{% url 'home' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid" style="max-height: 6.0625rem"></a>
-                    </div>
-                    <ul class="nav flex-column">
-                        <li class="nav-item  ">
-                            <a href="{% url 'subscription_plan:subscription_plan_index' %}"
-                               class="nav-link">
-                                <span class="sidebar-icon"><span
-                                        class="fas fa-rocket text-danger"></span></span>
-                                <span>Plans and Prices</span>
-                            </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{% url 'folder:folder_list' %}"
-                               class="nav-link">
-                                <span class="sidebar-icon" ><span
-                                        class="fas fa-upload"></span></span>
-                                <span>Backup</span>
-                            </a>
+                        <hr>
+                        <li>
+                            <i class="material-symbols-outlined">person</i><a href="{% url 'account:account_profile' %}">Profil</a>
                         </li>
-                        <li class="nav-item">
-                            <a href="{% url 'account:account_profile' %}"
-                               class="nav-link">
-                                <span class="sidebar-icon" ><span
-                                        class="fas fa-user-cog"></span></span>
-                                <span>Settings</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'account:logout' %}"
-                               class="nav-link">
-                                <span class="sidebar-icon"><span
-                                        class="fas fa-sign-out-alt text-danger"></span></span>
-                                <span>Logout</span>
-                            </a>
+                        <li>
+                            <i class="material-symbols-outlined">logout</i><a href="{% url 'account:logout' %}">Logout</a>
                         </li>
                     </ul>
-                </div>
-            </nav>
-        </div>
+                </li>
+            </ul>
+        </nav>
+        <!-- NAVIGATION -->
     </div>
-</div>
+</header>
+
+

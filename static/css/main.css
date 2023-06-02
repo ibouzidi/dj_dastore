@@ -322,6 +322,11 @@ Header
     color: var(--clr-dark-2);
 }
 
+.nav-header2-toggle i {
+    color: #fff !important;  // white color
+    font-size: 25px !important;  // size of 25 pixels
+}
+
 .mobile-nav {
     position: fixed;
     top: 3.4375rem;
@@ -428,6 +433,54 @@ Header
     transition: ease-in-out 0.2s;
 }
 
+/*
+===============
+ Header responsive
+===============
+*/
+
+.header {
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)), url('/media/illustrations/reseau-telechargement-pour-cloud-computing.jpg') top center no-repeat fixed;
+    background-size: cover;
+    height: 35rem;
+    text-align: center;
+}
+
+/* mobile */
+
+.header .header-content {
+    padding-top: 4rem;
+}
+
+.header .text-container h1 {
+    font: 700 4rem "Montserrat", sans-serif;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    color: var(--clr-white);
+}
+
+.header .text-container h2 {
+    color: var(--clr-white);
+    text-transform: uppercase;
+}
+
+.header .text-container h2 span {
+    color: var(--clr-white);
+    /*background-color: var(--clr-yellow-1);*/
+    padding: 0.7rem;
+    line-height: 2.3;
+}
+
+.header .target-scroll i {
+    color: var(--clr-white);
+    font-size: 3rem;
+}
+
+.header .target-scroll i:hover {
+    /*color: var(--clr-yellow-2);*/
+    transition: all 0.5s;
+}
+
 .mobile-nav-active {
     overflow: hidden;
 }
@@ -439,6 +492,14 @@ Header
 
 .mobile-nav-active .mobile-nav-toggle i {
     color: var(--clr-white);
+}
+
+.white-color {
+    color: white;
+}
+
+.bigger-size {
+    font-size: 20px; /* Adjust the font size as needed */
 }
 
 /*
