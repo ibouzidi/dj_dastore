@@ -440,7 +440,7 @@ Header
 */
 
 .header {
-    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)), url('/media/illustrations/reseau-telechargement-pour-cloud-computing.jpg') top center no-repeat fixed;
+    background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5)), url('/static/illustrations/reseau-telechargement-pour-cloud-computing.jpg') top center no-repeat fixed;
     background-size: cover;
     height: 35rem;
     text-align: center;
@@ -474,6 +474,8 @@ Header
 .header .target-scroll i {
     color: var(--clr-white);
     font-size: 3rem;
+    padding-top: 35%;
+
 }
 
 .header .target-scroll i:hover {

@@ -77,9 +77,10 @@
 {#    <div id="breadcrumb">{% block breadcrumb %}{% endblock %}</div>#}
 {% else %}
     {% include 'snippets/header.html' %}
+    {% block header %} {% endblock %}
+
     <main class="py-5">
 {% endif %}
-{% block header %} {% endblock %}
 
 {# {% include 'snippets/nav.html' %}#}
     <div>{% block content %} {% endblock %}</div>
