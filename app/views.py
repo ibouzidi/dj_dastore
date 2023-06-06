@@ -1,13 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.contrib import messages
-from djstripe.models import Plan
-from djstripe.models import Product, Price
-from django.views.generic import View
 
 
 def home_screen_view(request):
-    list_sub = SubscriptionPlan.objects.all().order_by('price')
-    context = {'list_sub': list_sub}
+    context = {}
     return render(request, "app/home.html", context)
 
 
