@@ -12,7 +12,7 @@ from django.contrib import messages
 import stripe
 
 
-from accounts.models import Account
+from account.models import Account
 
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
@@ -21,8 +21,9 @@ class SubListView(View):
     def get(self, request):
         if request.user.is_authenticated and \
                 request.user.get_active_subscriptions:
-            return redirect("accounts:account_profile",
-                            user_id=request.user.id)
+            messages.info(request, "You're already subscribed! "
+                          "Thank you for your continued support.")
+            return redirect("account:account_profile")
 
         # Retrieve products and active prices
         products = Product.objects.all()
@@ -58,6 +59,8 @@ class CreateCheckoutSession(View):
             user_id = request.user.id
             plan_id = request.COOKIES.get("selectedPlan")
 
+        # Retrieve the plan
+        plan = stripe.Plan.retrieve(plan_id)
         user = Account.objects.get(id=user_id)
 
         customer = Customer.objects.filter(subscriber=user).first()
@@ -68,8 +71,7 @@ class CreateCheckoutSession(View):
             customer.subscriber = user
             customer.save()
 
-        # Retrieve the plan and get the trial period
-        plan = stripe.Plan.retrieve(plan_id)
+        # get the trial period
         trial_period_days = plan['trial_period_days']
 
         subscription_data = {
@@ -107,7 +109,7 @@ class CreateCheckoutSession(View):
 class SuccessView(View):
     def get(self, request):
         messages.success(request, "Subscription successfull !")
-        return redirect("accounts:login")
+        return redirect("account:login")
 
 
 class CancelView(View):
@@ -128,7 +130,7 @@ class CancelConfirmView(View):
             # Cancel the subscription
             messages.error(request, "Subscription canceled!")
             user.delete()  # Delete the user or disable the account as needed
-            return redirect("HomeView")
+            return redirect("home")
         else:
             # Update the session with the free plan ID and
             # redirect to the CreateCheckoutSession view
@@ -145,9 +147,20 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
     lines = invoice.get("lines", [])
 
     if lines:
-        user_id = lines["data"][0]["metadata"].get("user_id", None)
-        user = Account.objects.filter(id=user_id).first()
-        if user:
-            user.is_active = True
-            user.save()
+        for line in lines['data']:
+            if line['type'] == 'subscription':
+                user_id = line["metadata"].get("user_id", None)
+                user = Account.objects.filter(id=user_id).first()
+                if user:
+                    user.is_active = True
+                    # Retrieve the plan and set the user's storage limit
+                    plan_id = line['plan']['id']
+                    plan = get_object_or_404(Plan, id=plan_id)
+                    # plan = stripe.Plan.retrieve(plan_id)
+                    print("plan")
+                    print(plan)
+                    print("plan.metadata")
+                    print(plan.product.metadata["storage_limit"])
+                    user.storage_limit = plan.product.metadata["storage_limit"]
+                    user.save()
     return

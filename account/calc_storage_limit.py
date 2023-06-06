@@ -1,7 +1,7 @@
 def calculate_storage_usage(account):
     # Calculate storage limit based on subscription plan
-    if account.subscription_plan is not None:
-        storage_limit = account.subscription_plan.storage_limit * 1024 ** 3
+    if account.storage_limit is not None:
+        storage_limit = account.storage_limit * 1024 ** 3
     else:
         storage_limit = 0
     # Determine the unit for storage limit and usage (GB or MB)

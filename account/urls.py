@@ -3,7 +3,7 @@ from django.urls import path
 app_name = 'account'
 
 from account.views import (
-    register_view,
+    RegisterView,
     login_view,
     logout_view,
     account_view,

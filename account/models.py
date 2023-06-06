@@ -6,8 +6,6 @@ from django.conf import settings
 import os
 from django.utils import timezone
 import datetime
-
-from subscription_plan.models import SubscriptionPlan
 from djstripe.models import Customer
 
 
@@ -22,7 +20,7 @@ class MyAccountManager(BaseUserManager):
         user = self.model(
             email=self.normalize_email(email).lower(),
             username=username,
-            subscription_plan=subscription_plan,
+            # subscription_plan=subscription_plan,
         )
 
         user.set_password(password)
@@ -72,8 +70,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
                                       null=True, blank=True,
                                       default=get_default_profile_image)
     storage_usage = models.BigIntegerField(default=0)
-    subscription_plan = models.ForeignKey(SubscriptionPlan,
-                                          on_delete=models.SET_NULL, null=True)
+    storage_limit = models.BigIntegerField(default=0)
     plan_id = models.CharField(max_length=255, null=True, blank=True)
     request_counts = models.PositiveIntegerField(default=0)
     last_request_timestamp = models.DateTimeField(null=True, blank=True)

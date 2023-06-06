@@ -88,13 +88,13 @@ def extract_file_contents(files):
 
 
 def calculate_storage_remaining(total_size, user_account, storage_limit):
-    if user_account.subscription_plan is not None:
+    if storage_limit is not None:
         storage_limit_gb = storage_limit * 1024 ** 3
     else:
         storage_limit_gb = 0
     size_conversion = total_size
-    remaining_storage = storage_limit_gb - (
-                user_account.storage_usage + size_conversion)
+    storage_usage = user_account.storage_usage if user_account.storage_usage else 0
+    remaining_storage = storage_limit_gb - (storage_usage + size_conversion)
     return remaining_storage
 
 

@@ -39,7 +39,12 @@
                                             <img src="{% static 'dastore/default_user_icon.png' %}" class="border-2 border-purple user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4">
                                         {% endif %}
                                         <h5 class="h4">{{ username }}</h5>
-                                        <p class="prm-btn btn purple">Subscription Plan : {{ subscription_plan }}</p>
+                                        <p class="prm-btn btn purple">
+                                            {% if request.user.get_active_subscriptions %}
+                                            Subscription Plan : {{ request.user.get_active_subscriptions.0.plan.product.name }}
+                                                <p>Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
+                                        {% else %}No active subscription</p>
+                                        {% endif %}
                                     </div>
                                 </div>
                             <hr>

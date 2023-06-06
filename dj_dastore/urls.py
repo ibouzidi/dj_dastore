@@ -12,9 +12,8 @@ from app.views import (
 )
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='HomeView'),
+    # path('', HomeView.as_view(), name='HomeView'),
     path("stripe/", include("djstripe.urls", namespace="djstripe")),
-    path('subscription/price/', include('subscription_plan.urls')),
     path("subscriptions/", include("subscriptions.urls")),
     path('backup/', include('extbackup.urls')),
     path('folder/', include('folder.urls')),

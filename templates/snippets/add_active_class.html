@@ -2,7 +2,7 @@
 $(document).ready(function() {
     // Create a mapping of paths to CSS selectors
     var pathMap = {
-        'subscription': 'a[href="{% url 'subscription_plan:subscription_plan_index' %}"]',
+        'subscriptions': 'a[href="{% url 'subscriptions:SubListView' %}"]',
         'folder': 'a[href="{% url 'folder:folder_list' %}"]',
         'account': 'a[href="{% url 'account:account_profile' %}"]',
         'account_logout': 'a[href="{% url 'account:logout' %}"]'

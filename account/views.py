@@ -17,7 +17,7 @@ from django.utils.http import urlsafe_base64_encode
 from two_factor.signals import user_verified
 from two_factor.utils import default_device
 from django.views import View
-from accounts.forms import RegistrationForm, AccountAuthenticationForm, \
+from account.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
 from account.models import Account
 from .calc_storage_limit import calculate_storage_usage
@@ -32,8 +32,6 @@ from django.core import files
 from djstripe.models import Plan
 from djstripe.models import Product, Price
 
-from subscription_plan.models import SubscriptionPlan
-
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 
 
@@ -45,11 +43,11 @@ class RegisterView(View):
 
         if not plan_id:
             messages.info(request, 'Please select a plan before registering.')
-            return redirect("HomeView")
+            return redirect("home")
 
         plan = get_object_or_404(Plan, id=plan_id)
 
-        return render(request, 'accounts/register.html',
+        return render(request, 'account/register.html',
                       {'form': form, 'plan': plan})
 
     def post(self, request):
@@ -71,7 +69,7 @@ class RegisterView(View):
             #     print('YES TRIAL')
             #     return redirect('subscriptions:TrialPlanView')
             return redirect('subscriptions:CreateCheckoutSession')
-        return render(request, 'accounts/register.html', {'form': form})
+        return render(request, 'account/register.html', {'form': form})
 
 
 
@@ -79,7 +77,7 @@ class RegisterView(View):
 def logout_view(request):
     logout(request)
     messages.success(request, "You are now logged out.")
-    return redirect("HomeView")
+    return redirect("home")
 
 
 def login_view(request, *args, **kwargs):
@@ -87,7 +85,7 @@ def login_view(request, *args, **kwargs):
 
     user = request.user
     if request.user.is_authenticated and request.user.get_active_subscriptions:
-        return redirect("HomeView")
+        return redirect("home")
 
     destination = get_redirect_if_exists(request)
 
@@ -103,7 +101,7 @@ def login_view(request, *args, **kwargs):
                 messages.success(request, "You are now logged in.")
                 if destination:
                     return redirect(destination)
-                return redirect("HomeView")
+                return redirect("home")
             else:
                 messages.error(request, "Invalid email or password.")
         else:
@@ -145,7 +143,7 @@ def account_view(request):
     context['zip'] = account.zip
     context['email'] = account.email
     context['profile_image'] = account.profile_image
-    context['subscription_plan'] = account.subscription_plan
+    # context['subscription_plan'] = account.subscription_plan
 
     context['is_self'] = True
 

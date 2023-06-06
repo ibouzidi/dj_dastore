@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'app.apps.AppConfig',
     'extbackup.apps.ExtbackupConfig',
-    'subscription_plan.apps.SubscriptionPlanConfig',
     'folder.apps.FolderConfig',
     'subscriptions.apps.SubscriptionsConfig',
     'storages',

@@ -5,7 +5,7 @@
     <!-- Section -->
     <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <div class="container">
-            <p class="text-center"><a href="{% url 'HomeView' %}" class="text-gray-700"><i class="fas fa-angle-left mr-2"></i> Back to plan and prices</a></p>
+            <p class="text-center"><a href="{% url 'home' %}" class="text-gray-700"><i class="fas fa-angle-left mr-2"></i> Back to plan and prices</a></p>
             <div class="row justify-content-center form-bg-image" style="background-image: url({% static 'illustrations/signin.svg' %})">
                 <div class="col-12 col-xl-4">
                     <div class="card card-body bg-white border-light shadow-sm mb-4">
@@ -46,7 +46,7 @@
                                 <label for="username">Your Username</label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon3"><span class="fas fa-user"></span></span>
-                                    <input name="username" type="username" class="form-control" placeholder="b.david42" id="email" autofocus required>
+                                    <input name="username" type="username" class="form-control" placeholder="b.david42" id="username" autofocus required>
                                 </div>
                             </div>
                             <!-- End of Form -->
@@ -75,17 +75,17 @@
                                         I agree to the <a href="#">terms and conditions</a>
                                     </label>
                                 </div>
-                                {{ registration_form.captcha }}
+{#                                {{ form.captcha }}#}
                             </div>
                             <button type="submit" class="btn btn-block btn-primary">Sign in</button>
-                            {% for field in registration_form %}
+                            {% for field in form %}
                                 {% for error in field.errors %}
                                     <p class="py-2" style="color: red">{{ field.label }}: {{ error }}</p>
                                 {% endfor %}
                             {% endfor %}
-                            {% if registration_form.non_field_errors %}
+                            {% if form.non_field_errors %}
                                 <div class="py-2" style="color: red">
-                                    {% for error in registration_form.non_field_errors %}
+                                    {% for error in form.non_field_errors %}
                                         <p>{{ error }}</p>
                                     {% endfor %}
                                 </div>

@@ -9,7 +9,7 @@ from account.models import Account
 
 
 class RegistrationForm(UserCreationForm):
-	captcha = ReCaptchaField()
+	# captcha = ReCaptchaField()
 	email = forms.EmailField(max_length=254, help_text='Required. Add a valid email address.')
 
 	class Meta:

@@ -41,6 +41,21 @@ class BackupUploadView(View):
             except Exception as e:
                 return JsonResponse({'error': str(e)})
 
+            # Check remaining storage limit for all files combined
+            user_account = request.user
+            storage_limit = user_account.storage_limit \
+                if user_account.storage_limit else 0
+            total_size = sum(file.size for file in files)
+            remaining_storage = calculate_storage_remaining(total_size,
+                                                            user_account,
+                                                            storage_limit)
+            # Return error if storage limit is exceeded
+            if remaining_storage < 0:
+                return JsonResponse({
+                    'message': f"Your plan storage limit of {storage_limit:.1f}"
+                               f" GB has been reached.",
+                }, status=400)
+
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             rand_num = random.randint(1000, 9999)
             folder_name = f'uploads/upload_{request.user.username}' \

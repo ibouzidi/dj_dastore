@@ -61,7 +61,7 @@
             if (isAuthenticated) {
                 window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}"
             }else {
-                window.location.href = "{% url 'accounts:RegisterView' %}"
+                window.location.href = "{% url 'account:RegisterView' %}"
             }
         }
 

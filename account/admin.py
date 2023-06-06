@@ -31,11 +31,8 @@ class AccountAdmin(UserAdmin):
         ('Avatar', {
             'fields': ('profile_image',)
         }),
-        ('Storage Usage', {
-            'fields': ('storage_usage',)
-        }),
-        ('Subscription Plan', {
-            'fields': ('subscription_plan',)
+        ('Storage', {
+            'fields': ('storage_usage', 'storage_limit',)
         }),
     )
 
