@@ -4,29 +4,51 @@
 
 
 {% block content %}
+    <style>
+        .btn-group-vertical .material-symbols-outlined {
+            font-size: 48px; /* Adjust the font size as needed */
+        }
+
+    </style>
     {% include "folder/_modal.html" %}
 
-    <div class="folder_section py-5">
+    <div class="row gutters-sm">
+        <div class="col-md-2 d-none d-md-block">
+            <div class="fixed inside-container">
 
-
-        <!-- Menu Backup Action  -->
-        <div class="d-flex justify-content-end action_btn">
-            <button class="btn btn-outline-primary mx-2 pl-3 pr-3" title="Add Folder" id="addFolderButton">
-                <i class="fas fa-folder-plus fa-lg d-block"></i>
-            </button>
-            <button class="btn btn-outline-primary mr-2 pl-3 pr-3" title="Upload" id="addFilesButton">
-                <i class="fas fa-cloud-upload-alt fa-lg d-block"></i>
-            </button>
-            <button class="btn btn-outline-primary mr-2 pl-3 pr-3" title="Download">
-                <i class="fas fa-cloud-download-alt fa-lg d-block"></i>
-            </button>
+                <div class="card-body sticky">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="nav flex-column nav-pills nav-gap-y-1">
+                            <a href="#" class="nav-link action-btn my-2 add-folder-button" title="Add Folder">
+                                <i class="material-symbols-outlined">create_new_folder</i>
+                            </a>
+                            <a href="#" class="nav-link action-btn my-2 add-file-button" title="Upload">
+                                <i class="material-symbols-outlined">cloud_upload</i>
+                            </a>
+                            <a href="#" class="nav-link action-btn my-2" title="Download">
+                                <i class="material-symbols-outlined">cloud_download</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="modal" class="modal fade">
-            <div id="dialog" class="modal-dialog" hx-target="this"></div>
+        <div class="card-header border-bottom mb-3 d-flex d-md-none sticky-mobile out-container">
+            <div class="nav nav-pills card-header-tabs nav-gap-x-1" role="tablist">
+                <a href="#" class="nav-link action-btn mx-2 add-folder-button" title="Add Folder">
+                    <i class="material-symbols-outlined">create_new_folder</i>
+                </a>
+                <a href="#" class="nav-link action-btn mx-2 add-file-button" title="Upload">
+                    <i class="material-symbols-outlined">cloud_upload</i>
+                </a>
+                <a href="#" class="nav-link action-btn mx-2" title="Download">
+                    <i class="material-symbols-outlined">cloud_download</i>
+                </a>
+            </div>
         </div>
-        <!-- Custom Folder List -->
-        <div class="mt-3">
-            <div class="row" id="folderContainer">
+        <div class="col-md-10 col-lg-10 main-content">
+            <!-- Custom Folder List -->
+            <div class="row " id="folderContainer">
                 {% if folder_list|length > 0 %}
                     <p>Custom Folder</p>
                 {% endif %}
@@ -34,8 +56,6 @@
                     <div class="col-6 col-md-4 col-lg-2 mb-3">
                         <div class="card border-0 rounded-0 shadow position-relative">
                             <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
-                                {#                                <input class="folder-checkbox form-check-input position-absolute" id="check_all" data-id="{{ custom_folder.pk }}" type="checkbox" style="top: 10px; right: 10px;">#}
-
                                 <div class="card-body text-center">
 
                                     <i class="fas fa-folder fa-3x mb-3"></i>
@@ -59,15 +79,12 @@
                     </div>
                 {% endfor %}
             </div>
-        </div>
-
-        <!-- File List -->
-        <div class="mt-3">
+            <!-- File List -->
             <div class="row" id="folderContainer">
                 {% if file_list|length > 0 %}
                     <p>Your Backup</p>
                 {% endif %}
-                {% for backup in  backup_list %}
+                {% for backup in backup_list %}
                     <div class="col-6 col-md-4 col-lg-2 mb-3">
                         <div class="card border-0 rounded-0 shadow position-relative">
                             <a href="{% url 'extbackup:view_zip_content' backup.0  %}" class="text-decoration-none">
@@ -76,16 +93,16 @@
                                         <i class="fas fa-folder fa-3x mb-3"></i>
 
                                         <span class="font-weight-normal">
-                                        <i id="hash-check-icon-{{ backup.0 }}" class="fa fa-question-circle text-warning" data-toggle="tooltip" data-placement="top" title="Integrity check: pending" style="display: none"></i>
-                                        {{backup.1}}
-                                        <i id="hash-check-spinner-{{ backup.0 }}" class="fa fa-spinner fa-spin d-none"></i>
-                                </span>
+                                <i id="hash-check-icon-{{ backup.0 }}" class="fa fa-question-circle text-warning" data-toggle="tooltip" data-placement="top" title="Integrity check: pending" style="display: none"></i>
+                                {{backup.1}}
+                                <i id="hash-check-spinner-{{ backup.0 }}" class="fa fa-spinner fa-spin d-none"></i>
+                            </span>
                                     </div>
                                 </div>
                             </a>
                             <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton" id="menu-{{ backup.0 }}">
                                 <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' backup.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
-                                <a class="dropdown-item text-info check-hash" href="#"  data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
+                                <a class="dropdown-item text-info check-hash" href="#" data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
                                     <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>Check Integrity
                                 </a>
                                 <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
@@ -103,13 +120,13 @@
                                 <div class="row">
                                     <div class="col-4 font-weight-bold">Description:</div>
                                     <div class="col-8">
-                                    <span id="file-description-{{ backup.2 }}">
-                                        {% if backup.2|default_if_none:"" == "" %}
-                                            No description for this Backup.
-                                        {% else %}
-                                            {{ backup.2 }}
-                                        {% endif %}
-                                    </span>
+                            <span id="file-description-{{ backup.2 }}">
+                                {% if backup.2|default_if_none:"" == "" %}
+                                    No description for this Backup.
+                                {% else %}
+                                    {{ backup.2 }}
+                                {% endif %}
+                            </span>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -126,8 +143,10 @@
                 {% endfor %}
             </div>
         </div>
-        {% include 'extbackup/upload_from.html' %}
     </div>
+    </div>
+    </div>
+    {% include 'extbackup/upload_from.html' %}
 {% endblock content%}
 
 {% block script %}
@@ -137,7 +156,7 @@
 
 
         function AddFolderModalForm() {
-            $("#addFolderButton").modalForm({
+            $(".add-folder-button").modalForm({
                 formURL: `{% url 'folder:folder_create' %}?id=${parentFolderId}`
             });
         }
@@ -172,7 +191,7 @@
              * This code allow to files based on the current folder
              * using a modal window.
              */
-            $("#addFilesButton").on("click", function() {
+            $(".add-file-button").on("click", function() {
                 console.log("yes ")
                 // Set the modal title and message
                 $("#confirmModalLabel").text("Backup Your Files");

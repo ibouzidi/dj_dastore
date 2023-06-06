@@ -9,8 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Backup and Restore application in Django</title>
     <link type="text/css" href="{% static 'css/volt.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="{% static 'css/icofont/icofont.min.css' %}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" media="all">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.css" />
     <link rel="stylesheet" href="{% static 'js/cropperjs/dist/cropper.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-{#    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">#}
+    {#    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">#}
     <link rel="stylesheet" href="{% block stylesheet %}{% endblock %}">
 
 </head>
@@ -72,20 +72,16 @@
 
 {% if request.user.is_authenticated %}
     {% include 'snippets/sidebare.html' %}
-    <main>
-
-{#    <div id="breadcrumb">{% block breadcrumb %}{% endblock %}</div>#}
 {% else %}
     {% include 'snippets/header.html' %}
-    {% block header %} {% endblock %}
-
-    <main class="py-5">
 {% endif %}
+{% block hero %} {% endblock %}
 
-{# {% include 'snippets/nav.html' %}#}
-    <div>{% block content %} {% endblock %}</div>
-{% include 'snippets/footer.html' %}
-<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+<main>
+    {# {% include 'snippets/nav.html' %}#}
+    <div class="container-fluid py-5">{% block content %} {% endblock %}</div>
+    {% include 'snippets/footer.html' %}
+    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 </main>
 
 
