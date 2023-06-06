@@ -29,12 +29,23 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'accounts.apps.AccountsConfig',
+    'account.apps.AccountConfig',
     'app.apps.AppConfig',
     'extbackup.apps.ExtbackupConfig',
     'subscription_plan.apps.SubscriptionPlanConfig',
+    'folder.apps.FolderConfig',
     'subscriptions.apps.SubscriptionsConfig',
     'storages',
+    'widget_tweaks',
+    'bootstrap_modal_forms',
+    # 2fa Authentication
+    'django_otp',
+    'django_otp.plugins.otp_static',
+    'django_otp.plugins.otp_totp',
+    'two_factor',
+    # Recaptcha
+    'captcha',
+
     'djstripe',
 ]
 
@@ -54,8 +65,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'dj_dastore.redirect_middleware.HtmxRedirectMiddleware',
 ]
 
 # =====================================================================
@@ -100,11 +113,11 @@ DATABASES = {
 # AUTHENTICATION BACKENDS SETTINGS
 # =====================================================================
 
-AUTH_USER_MODEL = 'accounts.Account' #
+AUTH_USER_MODEL = 'account.Account' #
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'accounts.backends.CaseInsensitiveModelBackend',
+    'account.backends.CaseInsensitiveModelBackend',
 ]
 
 # =====================================================================
@@ -189,13 +202,22 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to Admin Panel.",
     "site_title": "Admin Panel",
     "site_header": "Panel",
-    "site_logo": "dastore/logo_dastore.png-60",
+    "site_logo": "dastore/logo_dastore_no_text.png",
     "site_logo_classes": ".logo-panel",
-    "copyright": "Idris BOUZIDI",
+    "copyright": "DaStore",
 
 }
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
+
+LOGIN_URL = 'two_factor:login'
+
+LOGIN_REDIRECT_URL = 'account:account_profile'
+
+
+RECAPTCHA_PUBLIC_KEY = '6LdEG1smAAAAAAEn-_8vrhE4eUeVgMKhiW8Tr_eP'
+RECAPTCHA_PRIVATE_KEY = '6LdEG1smAAAAAFNBtdDqDaUJrFWknkdtz-fETWIB'
+# SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 # stripe config
 STRIPE_TEST_PUBLIC_KEY = 'pk_test_51Han4nJWztZpQABxysTVGo4JzUVAofIK57O8wrZgN0vvjBsbQYja5RdeMdOKyGaaZUK9OdbmjJF9xUp6RVyrTYz200ofLajlDL'

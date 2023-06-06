@@ -1,0 +1,38 @@
+[
+  {
+    "model": "subscription_plan.SubscriptionPlan",
+    "pk": 1,
+    "fields": {
+      "name": "Basic",
+      "sub_title": "Basic Plan",
+      "popular": false,
+      "storage_limit": 5,
+      "price": 10.0,
+      "description": "Basic plan with limited features"
+    }
+  },
+  {
+    "model": "subscription_plan.SubscriptionPlan",
+    "pk": 2,
+    "fields": {
+      "name": "Standard",
+      "sub_title": "Standard Plan",
+      "popular": true,
+      "storage_limit": 50,
+      "price": 20.0,
+      "description": "Standard plan with more features"
+    }
+  },
+  {
+    "model": "subscription_plan.SubscriptionPlan",
+    "pk": 3,
+    "fields": {
+      "name": "Premium",
+      "sub_title": "Premium Plan",
+      "popular": false,
+      "storage_limit": 500,
+      "price": 30.0,
+      "description": "Premium plan with all features"
+    }
+  }
+]

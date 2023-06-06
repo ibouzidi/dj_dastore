@@ -1,6 +1,6 @@
 import random
 import time
-from accounts.models import Account
+from account.models import Account
 from extbackup.models import File
 
 

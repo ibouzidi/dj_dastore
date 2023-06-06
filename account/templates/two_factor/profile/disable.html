@@ -1,0 +1,45 @@
+{% extends "../_base.html" %}
+{% load i18n %}
+{% load example %}
+
+{% block sub_content %}
+    <div class="py-5">
+        <div class="row">
+            <div class="col-12 col-xl-12">
+                <div class="card card-body bg-white border-light shadow-sm mb-4">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2>{% block title %}{% trans "Disable Two-factor Authentication" %}{% endblock %}</h2>
+                                </div>
+                                <div class="card-body">
+                                    <p>{% blocktrans trimmed %}You are about to disable two-factor authentication. This
+                                        weakens your account security, are you sure?{% endblocktrans %}</p>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <div class="form-group mb-4">
+                                            <div class="input-group">
+                                                {% for field in form %}
+                                                    <div class="d-flex justify-content-start align-items-center mb-2">
+                                                        <div>{{ field.label_tag }}</div>
+                                                        <div class="ml-3">{{ field|add_attrs:'class:form-check-input' }}</div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+
+                                        <button class="btn btn-danger"
+                                                type="submit">{% trans "Disable" %}</button>
+                                    </form>
+                                    <a href="{% url 'two_factor:profile' %}"
+                                       class="mt-2 btn btn-primary">{% trans "Back to Account Security" %}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

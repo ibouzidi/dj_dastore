@@ -1,12 +1,11 @@
 {% load static %}
 <style>
-
 </style>
 <!-- ======= HEADER ======= -->
 <header id="nav-header">
     <div class="container d-flex">
         <div class="logo mr-auto">
-            <a href="{% url 'HomeView' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid"></a>
+            <a href="{% url 'home' %}"><img src="{% static 'dastore/logo_dastore.png' %}" alt="logo dastore" class="img-fluid"></a>
         </div>
 
         <!-- NAVIGATION -->
@@ -15,7 +14,6 @@
             <li><a href="{% url 'subscriptions:SubListView' %}">GET STARTED</a></li>
 
                 {% if request.user.is_authenticated %}
-                    <li><a href="{% url 'extbackup:extension_list' %}">Extentions</a></li>
                     <li><a href="{% url 'extbackup:upload_files' %}">Backup</a></li>
                     <li><a href="{% url 'extbackup:backup_dashboard' %}">Backup Dashboard</a></li>
                     <li class="drop-down">
@@ -31,17 +29,17 @@
                             <hr>
 
                             <li>
-                                <i class="material-symbols-outlined">person</i><a href="{% url 'accounts:account_profile' user_id=request.user.id %}">Profil</a>
+                                <i class="material-symbols-outlined">person</i><a href="{% url 'account:account_profile' %}">Profil</a>
                             </li>
                             <li>
-                                <i class="material-symbols-outlined">logout</i><a href="{% url 'accounts:logout' %}">Logout</a>
+                                <i class="material-symbols-outlined">logout</i><a href="{% url 'account:logout' %}">Logout</a>
                             </li>
                         </ul>
                     </li>
 
                 {% else %}
                     <li>
-                        <a href="{% url 'accounts:login' %}">Login</a>
+                        <a href="{% url 'account:login' %}">Login</a>
                     </li>
                 {% endif %}
             </ul>

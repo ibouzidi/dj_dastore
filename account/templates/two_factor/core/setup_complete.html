@@ -1,0 +1,37 @@
+{% extends "../_base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block sub_content %}
+    <div class="py-5">
+        <div class="row">
+            <div class="col-12 col-xl-12">
+                <div class="card card-body bg-white border-light shadow-sm mb-4">
+                    <div class="card-header text-center">
+                        <h2>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-center">{% blocktrans trimmed %}Congratulations, you've successfully enabled two-factor
+                            authentication.{% endblocktrans %}</p>
+                                            <img style="max-height: 200px;margin:auto;display: block;" class="mb-5" src="{% static 'illustrations/success-icon-23194.png' %}" alt="">
+
+
+                        {% if not phone_methods %}
+                            <p style="text-align: center"><a href="{% url 'two_factor:profile' %}"
+                                  class="sec-btn btn purple-two">{% trans "Back to Account Security" %}</a></p>
+                        {% else %}
+                            <p>{% blocktrans trimmed %}However, it might happen that you don't have access to
+                                your primary token device. To enable account recovery, add a phone
+                                number.{% endblocktrans %}</p>
+
+                            <a href="{% url 'two_factor:profile' %}"
+                               class="float-right btn btn-link">{% trans "Back to Account Security" %}</a>
+                            <p><a href="{% url 'two_factor:phone_create' %}"
+                                  class="btn btn-success">{% trans "Add Phone Number" %}</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

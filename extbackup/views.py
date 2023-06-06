@@ -1,24 +1,28 @@
+import ast
 import csv
 import random
-import magic
+from bootstrap_modal_forms.generic import BSModalDeleteView
 from cryptography.fernet import Fernet
 from django.contrib import messages
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect, HttpResponse
+from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 # from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from dj_dastore.decorator import dev
-from extbackup.forms import FileForm, ExtensionForm
-from extbackup.models import File, SupportedExtension
+from extbackup.forms import FileForm
+from extbackup.models import File
 from django.core.files.storage import default_storage
 from datetime import datetime, timedelta
 import os
 import zipfile
-from django.http import FileResponse, JsonResponse
+from django.http import FileResponse, JsonResponse, HttpResponseRedirect
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+
+from folder.models import Folder
 from .tools import extract_file_contents, calculate_storage_remaining, \
     fernet_encrypt, calculate_file_hash
 from django.contrib.auth.decorators import login_required
@@ -28,50 +32,10 @@ from .key import key
 
 @method_decorator(login_required, name='dispatch')
 class BackupUploadView(View):
-    def get(self, request):
-        form = FileForm()
-        supported_extensions = list(
-            SupportedExtension.objects.values_list('extension', flat=True))
-        context = {'form': form, 'supported_extensions': supported_extensions}
-
-        return render(request, 'extbackup/upload.html', context)
-
     def post(self, request):
         form = FileForm(request.POST, request.FILES)
         if form.is_valid():
             files = request.FILES.getlist('file')
-            # Check if any file extension is not supported
-            unsupported_files = []
-            mime = magic.Magic(mime=True)
-            for file in files:
-                if os.path.exists(file.name):
-                    mime_type = mime.from_file(file.name)
-                    if not SupportedExtension.objects.filter(
-                            extension=mime_type).exists():
-                        unsupported_files.append(file.name)
-                else:
-                    print(f"{file.name} path does not exist")
-            # Return error if any file extension is not supported
-            if unsupported_files:
-                return JsonResponse({
-                    'message': f"File type is not supported for files: "
-                               f"{', '.join(unsupported_files)}",
-                }, status=400)
-
-            # Check remaining storage limit for all files combined
-            user_account = request.user
-            storage_limit = user_account.subscription_plan.storage_limit \
-                if user_account.subscription_plan else 0
-            total_size = sum(file.size for file in files)
-            remaining_storage = calculate_storage_remaining(total_size,
-                                                            user_account,
-                                                            storage_limit)
-            # Return error if storage limit is exceeded
-            if remaining_storage < 0:
-                return JsonResponse({
-                    'message': f"Your plan storage limit of {storage_limit:.1f}"
-                               f" GB has been reached.",
-                }, status=400)
             try:
                 file_contents = extract_file_contents(files)
             except Exception as e:
@@ -98,10 +62,18 @@ class BackupUploadView(View):
 
             request.user.storage_usage += total_size
             request.user.save()
-
+            parent_folder_id = request.POST.get('parent_folder_id')
+            folder_instance = None
+            if parent_folder_id:
+                folder_instance = get_object_or_404(Folder,
+                                                    pk=parent_folder_id)
+            print("parent_folder_id")
+            print(parent_folder_id)
             new_file = File(
                 user=request.user,
+                name=folder_name.split("/")[-1],
                 file=folder_name.split("/")[-1],
+                folder=folder_instance,
                 description=form.cleaned_data['description'],
                 size=total_size,
                 content=file_contents,
@@ -147,8 +119,8 @@ def check_file_hashes(request, file_id):
         # If the time elapsed since the last request is less than the rate limit interval, block the request
         if current_time - last_request_time < rate_limit_interval:
             return JsonResponse({
-                                    'message': 'Rate limit exceeded. Please wait before trying again.'},
-                                status=429)
+                'message': 'Rate limit exceeded. Please wait before trying again.'},
+                status=429)
 
     # Update the last request timestamp in the session
     request.session['last_request_timestamp'] = current_time.isoformat()
@@ -203,7 +175,7 @@ def check_file_hashes(request, file_id):
             return JsonResponse({'message': 'Integrity: Mismatch'},
                                 status=400)
     else:
-        return HttpResponse("Folder not found")
+        return HttpResponse("folder not found")
 
 
 @login_required
@@ -244,7 +216,7 @@ def download_zip_file(request, file_id):
             'Content-Disposition'] = f'attachment; filename={folder_name}.zip'
         return response
     else:
-        return HttpResponse("Folder not found")
+        return HttpResponse("folder not found")
 
 
 # def traverse_content_tree(content, parent_path=""):
@@ -256,51 +228,75 @@ def download_zip_file(request, file_id):
 #             yield from traverse_content_tree(node, path)
 
 
-@method_decorator(login_required, name='dispatch')
-class DeleteBackupsView(View):
-    def post(self, request):
-        ids = request.POST.getlist('ids')
+class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
+    # We'll set the model dynamically based on the item to delete.
+    model = None
+    template_name = 'extbackup/folder_delete.html'
+    success_message = 'Success: Item was deleted.'
+    success_url = reverse_lazy('folder:folder_list')
+
+    def get_object(self):
+        if 'file_id' in self.kwargs:
+            self.model = File
+            return get_object_or_404(File, pk=self.kwargs['file_id'])
+        elif 'folder_id' in self.kwargs:
+            self.model = Folder
+            return get_object_or_404(Folder, pk=self.kwargs['folder_id'])
+
+    def delete(self, request, *args, **kwargs):
         ftp_storage = default_storage
-        deleted_folders = []
+        deleted_items = []
 
-        for file_id in ids:
-            try:
-                file = File.objects.get(id=file_id)
-                if file.user == request.user:
-                    folder_path = f'uploads/upload_{request.user.username}/{file.file.name}/'
+        self.object = self.get_object()
+        # Save parent folder id before deleting the object
+        # Save parent folder id before deleting the object
+        if isinstance(self.object, Folder):
+            self.parent_id = self.object.parent.pk if self.object.parent else None
+        elif isinstance(self.object, File):
+            self.parent_id = self.object.folder.pk if self.object.folder else None
 
-                    # List all files in the folder
-                    folder_files = ftp_storage.listdir(folder_path)[1]
+        if self.object.user != request.user:
+            messages.error(request, "Cannot delete someone else's items")
+            return super().delete(request, *args, **kwargs)
 
-                    # Delete each file inside the folder
-                    for folder_file in folder_files:
-                        ftp_storage.delete(f'{folder_path}{folder_file}')
+        if isinstance(self.object, Folder):
+            self.delete_folder(self.object, ftp_storage, deleted_items)
+        elif isinstance(self.object, File):
+            self.delete_file(self.object, ftp_storage)
+            deleted_items.append(self.object.name)
 
-                    # Delete the folder itself
-                    ftp_storage.delete(folder_path)
+        if deleted_items:
+            messages.success(request, f"Items {', '.join(deleted_items)} "
+                                      f"deleted successfully")
 
-                    # Update user storage usage and delete the File object
-                    file_size = file.size
-                    request.user.storage_usage -= file_size
-                    request.user.save()
-                    file.delete()
+        return HttpResponseRedirect(self.get_success_url())
 
-                    deleted_folders.append(file.file.name)
-                else:
-                    messages.error(request,
-                                   "Cannot delete someone else's folders")
-                    return redirect('extbackup:backup_dashboard')
-            except File.DoesNotExist:
-                messages.error(request, "Folder not found")
-                return redirect('extbackup:backup_dashboard')
-            except PermissionError:
-                messages.error(request,
-                               "Cannot delete a folder that is used "
-                               "or open by another processus")
+    def get_success_url(self):
+        if self.parent_id:
+            return reverse('folder:folder_list') + '?id=' + str(self.parent_id)
+        else:
+            return reverse('folder:folder_list')
 
-        if deleted_folders:
-            messages.success(request, "Folders deleted successfully")
-        return redirect('extbackup:backup_dashboard')
+    def delete_folder(self, folder, storage, deleted_items):
+        for child_folder in folder.children.all():
+            self.delete_folder(child_folder, storage, deleted_items)
+        for file in folder.files.all():
+            self.delete_file(file, storage)
+        deleted_items.append(folder.name)
+        folder.delete()
+
+    def delete_file(self, file, storage):
+        # Delete the file from storage
+        folder_path = f'uploads/upload_{file.user.username}/{file.file.name}/'
+        folder_files = storage.listdir(folder_path)[1]
+        for folder_file in folder_files:
+            storage.delete(f'{folder_path}{folder_file}')
+        storage.delete(folder_path)
+
+        # Update user storage usage and delete the File object
+        file.user.storage_usage -= file.size
+        file.user.save()
+        file.delete()
 
 
 @login_required
@@ -360,82 +356,3 @@ def backup_refresh(request):
                   {'zip_files': zip_files})
 
 
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionListView(ListView):
-    model = SupportedExtension
-    ordering = ['-id']
-    template_name = 'extension/extension_list.html'
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionCreateView(CreateView):
-    model = SupportedExtension
-    template_name = 'extension/extension_form.html'
-    form_class = ExtensionForm
-    success_url = reverse_lazy('extbackup:extension_list')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        # Add any additional processing here, such as sending an email or
-        # logging the action.
-        return response
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['breadcrumb'] = [{'url': reverse('extbackup:extension_list'),
-                                  'label': 'Extensions'},
-                                 {'url': '#', 'label': 'Create Extension'}]
-        return context
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionUpdateView(UpdateView):
-    model = SupportedExtension
-    template_name = 'extension/extension_form.html'
-    form_class = ExtensionForm
-    success_url = reverse_lazy('extbackup:extension_list')
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        # Add any additional processing here, such as sending an email or
-        # logging the action.
-        return response
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionDeleteAllView(View):
-    def post(self, request):
-        ids = request.POST.getlist('ids')
-        deleted_files = []
-        for extension_id in ids:
-            try:
-                extension = SupportedExtension.objects.get(id=extension_id)
-                deleted_files.append(extension.extension)
-                extension.delete()
-            except SupportedExtension.DoesNotExist:
-                messages.error(request, "Extension not found")
-                return redirect('extbackup:extension_list')
-        if deleted_files:
-            message = "Extension deleted successfully"
-            messages.success(request, message)
-        return redirect('extbackup:extension_list')
-
-
-@method_decorator(user_passes_test(dev), name='dispatch')
-class SupportedExtensionExportView(View):
-    def get(self, request, *args, **kwargs):
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; ' \
-                                          'filename="supported_extensions.csv"'
-
-        # Get all the extensions
-        supported_extension = SupportedExtension.objects.order_by('extension')
-
-        # Write CSV headers
-        writer = csv.writer(response)
-        writer.writerow(['extension'])
-        # Write CSV data
-        for i in supported_extension:
-            writer.writerow([i.extension])
-        messages.success(request, "Extension exported with success.")
-        return response

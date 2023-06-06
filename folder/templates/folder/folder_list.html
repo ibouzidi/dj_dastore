@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Backup {% endblock title %}
+
+
+{% block content %}
+    <style>
+        .btn-group-vertical .material-symbols-outlined {
+            font-size: 48px; /* Adjust the font size as needed */
+        }
+
+    </style>
+    {% include "folder/_modal.html" %}
+
+    <div class="row gutters-sm">
+        <div class="col-md-2 d-none d-md-block">
+            <div class="fixed inside-container">
+
+                <div class="card-body sticky">
+                    <div class="d-flex flex-column align-items-start">
+                        <div class="nav flex-column nav-pills nav-gap-y-1">
+                            <a href="#" class="nav-link action-btn my-2 add-folder-button" title="Add Folder">
+                                <i class="material-symbols-outlined">create_new_folder</i>
+                            </a>
+                            <a href="#" class="nav-link action-btn my-2 add-file-button" title="Upload">
+                                <i class="material-symbols-outlined">cloud_upload</i>
+                            </a>
+                            <a href="#" class="nav-link action-btn my-2" title="Download">
+                                <i class="material-symbols-outlined">cloud_download</i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-header border-bottom mb-3 d-flex d-md-none sticky-mobile out-container">
+            <div class="nav nav-pills card-header-tabs nav-gap-x-1" role="tablist">
+                <a href="#" class="nav-link action-btn mx-2 add-folder-button" title="Add Folder">
+                    <i class="material-symbols-outlined">create_new_folder</i>
+                </a>
+                <a href="#" class="nav-link action-btn mx-2 add-file-button" title="Upload">
+                    <i class="material-symbols-outlined">cloud_upload</i>
+                </a>
+                <a href="#" class="nav-link action-btn mx-2" title="Download">
+                    <i class="material-symbols-outlined">cloud_download</i>
+                </a>
+            </div>
+        </div>
+        <div class="col-md-10 col-lg-10 main-content">
+            <!-- Custom Folder List -->
+            <div class="row " id="folderContainer">
+                {% if folder_list|length > 0 %}
+                    <p>Custom Folder</p>
+                {% endif %}
+                {% for custom_folder in custom_folder_list %}
+                    <div class="col-6 col-md-4 col-lg-2 mb-3">
+                        <div class="card border-0 rounded-0 shadow position-relative">
+                            <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
+                                <div class="card-body text-center">
+
+                                    <i class="fas fa-folder fa-3x mb-3"></i>
+                                    <p class="card-title mb-0">{{ custom_folder.name }}</p>
+
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton">
+                                <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'folder:delete_folder_view' folder_id=custom_folder.pk %}">
+                                    <span class="fas fa-trash-alt mr-2"></span>Delete
+                                </a>
+                                <a href="#" class="dropdown-item rename-custom-folder"
+                                   data-folder-id="{{ custom_folder.pk }}" data-form-url="{% url 'folder:folder_rename' pk=custom_folder.pk %}">
+                                    <span class="fas fa-edit mr-2"></span>Rename
+                                </a>
+                            </div>
+                            <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <!-- File List -->
+            <div class="row" id="folderContainer">
+                {% if file_list|length > 0 %}
+                    <p>Your Backup</p>
+                {% endif %}
+                {% for backup in backup_list %}
+                    <div class="col-6 col-md-4 col-lg-2 mb-3">
+                        <div class="card border-0 rounded-0 shadow position-relative">
+                            <a href="{% url 'extbackup:view_zip_content' backup.0  %}" class="text-decoration-none">
+                                <div class="card-body text-center">
+                                    <div class="icon-container">
+                                        <i class="fas fa-folder fa-3x mb-3"></i>
+
+                                        <span class="font-weight-normal">
+                                <i id="hash-check-icon-{{ backup.0 }}" class="fa fa-question-circle text-warning" data-toggle="tooltip" data-placement="top" title="Integrity check: pending" style="display: none"></i>
+                                {{backup.1}}
+                                <i id="hash-check-spinner-{{ backup.0 }}" class="fa fa-spinner fa-spin d-none"></i>
+                            </span>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton" id="menu-{{ backup.0 }}">
+                                <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' backup.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
+                                <a class="dropdown-item text-info check-hash" href="#" data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
+                                    <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>Check Integrity
+                                </a>
+                                <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
+                                    <span class="fas fa-info-circle mr-2"></span>Detail
+                                </a>
+                                <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_file_view' file_id=backup.0 %}">
+                                    <span class="fas fa-trash-alt mr-2"></span>Delete
+                                </a>
+                            </div>
+                            <div id="detail-backup" class="d-none">
+                                <div class="row">
+                                    <div class="col-4 font-weight-bold">Name:</div>
+                                    <div class="col-8"><span id="file-name-{{ backup.1 }}">{{ backup.1 }}</span></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 font-weight-bold">Description:</div>
+                                    <div class="col-8">
+                            <span id="file-description-{{ backup.2 }}">
+                                {% if backup.2|default_if_none:"" == "" %}
+                                    No description for this Backup.
+                                {% else %}
+                                    {{ backup.2 }}
+                                {% endif %}
+                            </span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4 font-weight-bold">Size:</div>
+                                    <div class="col-8"><span id="file-size-{{ backup.4 }}">{{ backup.4|sizify }}</span></div>
+                                </div>
+                            </div>
+
+                            <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+    {% include 'extbackup/upload_from.html' %}
+{% endblock content%}
+
+{% block script %}
+    <script type="text/javascript">
+        const urlParams = new URLSearchParams(window.location.search);
+        var parentFolderId = urlParams.get("id") == undefined ? '' : urlParams.get("id").trim();
+
+
+        function AddFolderModalForm() {
+            $(".add-folder-button").modalForm({
+                formURL: `{% url 'folder:folder_create' %}?id=${parentFolderId}`
+            });
+        }
+
+        AddFolderModalForm();
+
+        function DeleteFolderModalForm() {
+            $(".delete-custom-folder, .delete-backup-folder").each(function () {
+                $(this).modalForm({
+                    formURL: $(this).data("form-url"),
+                    isDeleteForm: true,
+                });
+            });
+        }
+        DeleteFolderModalForm()
+
+        {#$(function () {#}
+        {#    $(".rename-custom-folder").modalForm({#}
+        {#        formURL: `{% url 'folder:folder_rename' %}?id=${parentFolderId}`,#}
+        {#        isUpdateForm: true#}
+        {#    });#}
+        {#});#}
+            $(function () {
+                $(".rename-custom-folder").each(function () {
+                    $(this).modalForm({
+                        formURL: $(this).data("form-url"),
+                        isUpdateForm: true
+                    });
+                });
+            });
+            /**
+             * This code allow to files based on the current folder
+             * using a modal window.
+             */
+            $(".add-file-button").on("click", function() {
+                console.log("yes ")
+                // Set the modal title and message
+                $("#confirmModalLabel").text("Backup Your Files");
+                $("#confirmButton").hide();
+                $("#dismissButton").text("Discard");
+                $("#confirmMessage").html($("#upload-files-form").html());
+                // Kick-off
+                // Re-initialize the event listeners for the form elements
+                try {
+                    var d = Object.create(dragAndUpload);
+                    d.setUp();
+                } catch (exception) {
+                    console.log('Error creating menus. ' +
+                        'In all likelihood your browser is out ' +
+                        'of date.\r\n', exception, '\r\n', navigator.userAgent);
+                }
+                // Show the modal
+                $("#confirmModal").modal("show");
+            });
+
+            /**
+             * This code allow to show a modal window containing information
+             * about folder such as the name, description and size.
+             */
+            $('.show-file-info').on('click', function() {
+                var detailBackup = $(this).closest('.card').find('#detail-backup');
+                $('#confirmModalLabel').text('Detail Information');
+
+                $('#confirmButton').hide();
+                $('#dismissButton').text('Close');
+                // Set the new modal content
+                $('#confirmMessage').html(detailBackup.html());
+                // Show the modal
+                $('#confirmModal').modal('show');
+            });
+
+            /**
+             * This code updates an icon's CSS class based on an AJAX response
+             * and displays a tooltip with the response message.
+             */
+            $('.integrity-tooltip').tooltip();
+            $('.check-hash').click(function(event) {
+                event.preventDefault();
+                const url = $(this).data('url');
+                const file_id = $(this).data('file-id');
+                console.log(file_id)
+                const icon = $('#hash-check-icon-' + file_id);
+                const spinner = $('#hash-check-spinner-' + file_id);
+
+                // Show the icon
+                icon.show();
+
+                // Show the spinner
+                spinner.removeClass('d-none');
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response, textStatus, xhr) {
+                        const status = response.message;
+                        const statusCode = xhr.status;
+                        const icon = $('#hash-check-icon-' + file_id);
+                        if (statusCode === 200) {
+                            icon.removeClass('fa-question-circle text-warning').addClass(
+                                'fa-check-circle text-success');
+                        } else {
+                            icon.removeClass('fa-question-circle text-warning').addClass(
+                                'fa-exclamation-circle text-danger');
+                        }
+                        icon.tooltip('dispose').tooltip();
+                        icon.attr('data-original-title', status).tooltip('show');
+                        // Automatically hide the tooltip after 3 seconds (3000 ms)
+                        setTimeout(function() {
+                            icon.tooltip('hide');
+                        }, 3000);
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        const message = xhr.responseJSON.message;
+                        const icon = $('#hash-check-icon-' + file_id);
+                        icon.removeClass('fa-check-circle text-success').addClass(
+                            'fa-exclamation-circle text-danger');
+
+                        if (xhr.status === 429) {
+                            // Display the rate limit message to the user
+                            // You can use an alert, a tooltip, or any other preferred method
+                            icon.tooltip('dispose').tooltip();
+                            icon.attr('data-original-title', message).tooltip('show');
+                        } else {
+                            icon.tooltip('dispose').tooltip();
+                            console.error('Error:', errorThrown);
+                            icon.attr('data-original-title', message).tooltip('show');
+                        }
+                    },
+                    complete: function() {
+                        // Hide the spinner
+                        spinner.addClass('d-none');
+                    }
+                });
+            });
+            // autofocus to first input field of a modal
+            $('.modal').on('shown.bs.modal', function () {
+                $('form').find('input[type=text]').filter(':visible:first').focus();
+            });
+    </script>
+    {% include 'extbackup/upload_form_js.html' %}
+{% endblock script %}

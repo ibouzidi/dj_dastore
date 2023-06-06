@@ -1,29 +1,26 @@
 <script>
-    $(document).ready(function() {
-    // Get the current URL path and split it into an array of components
-    var pathComponents = window.location.pathname.split('/');
+$(document).ready(function() {
+    // Create a mapping of paths to CSS selectors
+    var pathMap = {
+        'subscription': 'a[href="{% url 'subscription_plan:subscription_plan_index' %}"]',
+        'folder': 'a[href="{% url 'folder:folder_list' %}"]',
+        'account': 'a[href="{% url 'account:account_profile' %}"]',
+        'account_logout': 'a[href="{% url 'account:logout' %}"]'
+    };
 
-    // Loop through each nav link and add the active class if it matches the current path
-    $('.nav-item a').each(function() {
-        var linkPathComponents = $(this).attr('href').split('/');
-        if (arraysEqual(pathComponents, linkPathComponents)) {
-            $(this).addClass('active');
-            $(this).parents('.nav-item').addClass('active');
-            $(this).parents('.collapse').addClass('show');
-        }
-    });
-});
+    // Get the first two parts of the current URL path (e.g., "account")
+    var currentPath = window.location.pathname.split('/')[1];
 
-// Helper function to compare two arrays
-function arraysEqual(a, b) {
-    if (a === b) return true;
-    if (a == null || b == null) return false;
-    if (a.length != b.length) return false;
+    // If the current path is in the mapping
+    if (currentPath in pathMap) {
+        // Get the CSS selector associated with the current path
+        var currentSelector = pathMap[currentPath];
 
-    for (var i = 0; i < a.length; ++i) {
-        if (a[i] !== b[i]) return false;
+        // Remove 'active' class from all nav items
+        $("#nav-header .nav-menu ul li").removeClass('active');
+
+        // Add the 'active' class to the element that matches the CSS selector
+        $(currentSelector).parent('li').addClass('active');
     }
-
-    return true;
-}
+});
 </script>
