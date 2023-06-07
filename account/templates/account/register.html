@@ -5,12 +5,11 @@
     <!-- Section -->
     <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <div class="container">
-            <p class="text-center"><a href="{% url 'home' %}" class="text-gray-700"><i class="fas fa-angle-left mr-2"></i> Back to plan and prices</a></p>
-            <div class="row justify-content-center form-bg-image" style="background-image: url({% static 'illustrations/signin.svg' %})">
+            <p data-aos="fade-right" data-aos-delay="100"><a href="{% url 'subscriptions:SubListView' %}" class="prm-btn btn purple"><i class="fas fa-angle-left mr-2"></i> Back to plan and prices</a></p>
+            <div data-aos="fade-right" data-aos-delay="200" class="row justify-content-center form-bg-image" style="background-image: url({% static 'illustrations/signin.svg' %})">
                 <div class="col-12 col-xl-4">
                     <div class="card card-body bg-white border-light shadow-sm mb-4">
-
-                        <div class="single_price_plan wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                        <div class="single_price_plan choice" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
                             <h2 class="h5 mb-4">Plan choosen</h2>
                             <!-- Side Shape-->
                             <div class="title">
@@ -27,7 +26,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-xl-8">
+                <div data-aos="fade-right" data-aos-delay="300" class="col-12 col-xl-8">
                     <div class="mb-4 mb-lg-0 bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
                         <div class="text-center text-md-center mb-4 mt-md-0">
                             <h1 class="mb-0 h3">Create an account</h1>
@@ -77,7 +76,7 @@
                                 </div>
 {#                                {{ form.captcha }}#}
                             </div>
-                            <button type="submit" class="btn btn-block btn-primary">Sign in</button>
+                            <button type="submit" class="prm-btn btn btn-block purple">Sign in</button>
                             {% for field in form %}
                                 {% for error in field.errors %}
                                     <p class="py-2" style="color: red">{{ field.label }}: {{ error }}</p>

@@ -1,25 +1,25 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
     <section class="price_plan_area section_padding_130_80 py-5" id="pricing">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-8 col-lg-6">
                     <!-- Section Heading-->
                     <div class="section-heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
-                        <h6>Pricing Plans</h6>
-                        <h3>Let's find a way together</h3>
-                        <p>Choose you plan, take what you need for you.</p>
-                        <div class="line"></div>
+                        <h6 data-aos="fade-right" data-aos-delay="100">Pricing Plans</h6>
+                        <h3 data-aos="fade-right" data-aos-delay="400">Let's find a way together</h3>
+                        <p data-aos="fade-right" data-aos-delay="400">Choose your plan, take what you need for you.</p>
+                        <div data-aos="fade-right" data-aos-delay="400" class="line"></div>
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                {% for plan in plans %}
-                    <!-- Single Price Plan Area-->
-                    <div class="col-12 col-sm-8 col-md-6 col-lg-4">
-                        <div class="single_price_plan wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+
+            {% for plan in plans %}
+                <!-- Single Price Plan Area-->
+                <div data-aos="fade-right" data-aos-delay="500" class="single_price_plan" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                    <div class="row plan-row">
+                        <div class="col-12 col-md-4">
                             <!-- Plan Title -->
                             <div class="title">
                                 {% if plan.metadata.popular == "true" %}
@@ -35,17 +35,29 @@
                             <div class="price">
                                 <h4>{{ plan.amount }}$/{{ plan.interval }}</h4>
                             </div>
+                        </div>
+
+                        <div class="col-12 col-md-4">
                             <!-- Plan Description -->
                             <div class="description">
-                                {% for key, value in plan.description.items %}
-                                    <p>{{ value }}</p>
-                                {% endfor %}
+                                <p>{{ plan.description }}</p>
+                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_one }}</p>
+                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_two }}</p>
+                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_three }}</p>
                             </div>
-                            <button class="btn btn-primary" data-id="{{ plan.id }}" onclick="handleSelectPlan(this)">Choose</button>
+                        </div>
+
+                        <div class="col-12 col-md-4 text-center">
+                            <div class="slide-container">
+                                <div class="slider" data-id="{{ plan.id }}" onclick="handleSelectPlan(this)">
+                                    <!-- The arrow is added using CSS -->
+                                </div>
+                            </div>
                         </div>
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endfor %}
+
         </div>
     </section>
 {% endblock content %}

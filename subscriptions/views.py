@@ -30,15 +30,11 @@ class SubListView(View):
         plans = []
         for product in products:
             for price in Price.objects.filter(product=product, active=True):
-                description = product.description.split(".")
-                dict_ = {}
-                for index, phrase in enumerate(description):
-                    dict_[f"phrase_{index + 1}"] = phrase.strip() + "."
                 plan = {
                     "id": price.id,
                     "product": product,
                     "amount": price.unit_amount / 100,
-                    "description": dict_,
+                    "description": product.description,
                     "interval": price.recurring["interval"],
                     "metadata": product.metadata
                 }
@@ -156,11 +152,6 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     # Retrieve the plan and set the user's storage limit
                     plan_id = line['plan']['id']
                     plan = get_object_or_404(Plan, id=plan_id)
-                    # plan = stripe.Plan.retrieve(plan_id)
-                    print("plan")
-                    print(plan)
-                    print("plan.metadata")
-                    print(plan.product.metadata["storage_limit"])
                     user.storage_limit = plan.product.metadata["storage_limit"]
                     user.save()
     return
