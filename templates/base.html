@@ -69,12 +69,8 @@
 {% include 'snippets/modal_page.html' %}
 {#{% include 'snippets/js_messages.html' %}#}
 
+{% include 'snippets/header.html' %}
 
-{% if request.user.is_authenticated %}
-    {% include 'snippets/sidebare.html' %}
-{% else %}
-    {% include 'snippets/header.html' %}
-{% endif %}
 {% block hero %} {% endblock %}
 
 <main>

@@ -4,13 +4,13 @@ $(document).ready(function() {
     var pathMap = {
         'subscriptions': 'a[href="{% url 'subscriptions:SubListView' %}"]',
         'folder': 'a[href="{% url 'folder:folder_list' %}"]',
-        'account': 'a[href="{% url 'account:account_profile' %}"]',
-        'account_logout': 'a[href="{% url 'account:logout' %}"]'
+        'account': 'a[href="{% url 'account:account_profile' %}"], a[href="{% url 'account:login' %}"]',
     };
 
-    // Get the first two parts of the current URL path (e.g., "account")
+    // Get the first part of the current URL path
     var currentPath = window.location.pathname.split('/')[1];
-
+    console.log("currentPath");
+    console.log(currentPath);
     // If the current path is in the mapping
     if (currentPath in pathMap) {
         // Get the CSS selector associated with the current path
@@ -19,8 +19,15 @@ $(document).ready(function() {
         // Remove 'active' class from all nav items
         $("#nav-header .nav-menu ul li").removeClass('active');
 
-        // Add the 'active' class to the element that matches the CSS selector
-        $(currentSelector).parent('li').addClass('active');
+        // Check each selector associated with the current path
+        var selectors = currentSelector.split(',');
+        selectors.forEach(function(selector){
+            var $el = $(selector.trim());
+            // Add the 'active' class to the element that matches the CSS selector
+            if($el.length) {
+                $el.parent('li').addClass('active');
+            }
+        });
     }
 });
 </script>
