@@ -733,8 +733,7 @@ Header
 }
 .breadcrumb-container {
     background-color: white;
-    margin-right: auto;
-    margin-left: auto;
+    width: 80rem!important;
 }
 
 .breadcrumb-container ol {
