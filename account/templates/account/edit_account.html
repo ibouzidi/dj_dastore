@@ -6,7 +6,7 @@
 <div class="breadcrumb-container">
     <div class="row">
         <div class="col-12 col-md-6 col-lg-4">
-        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
             <ol class="breadcrumb mb-4">
                 {% url 'account:account_profile' as account_url %}
                 {% url 'home' as home_url %}
@@ -30,14 +30,14 @@
     </style>
 
     <div class="row gutters-sm">
-        <div class="col-md-3 d-none d-md-block">
+        <div class="col-md-3 d-none d-md-block" data-aos="fade-left" data-aos-delay="200">
             <div class="card">
                 <div class="card-body">
                     {% include 'account/profile_tab.html' %}
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9" data-aos="fade-left" data-aos-delay="300">
             <div class="card">
                 <div class="card-header border-bottom mb-3 d-flex d-md-none">
                     {% include 'account/profile_tab_mobile.html' %}

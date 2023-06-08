@@ -7,7 +7,7 @@
 <div class="breadcrumb-container">
     <div class="row">
         <div class="col-12 col-md-6 col-lg-4">
-        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+        <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
             <ol class="breadcrumb mb-4">
                 {% url 'account:account_profile' as account_url %}
                 {% url 'two_factor:setup' as two_factor_setup %}
@@ -29,7 +29,7 @@
 {% block sub_content %}
     <div class="py-5">
         <div class="row">
-            <div class="col-12 col-xl-12">
+            <div class="col-12 col-xl-12" data-aos="fade-left" data-aos-delay="100">
                 <div class="card card-body bg-white border-light shadow-sm mb-4">
                     <div class="row">
                         <div class="col-md-6 mb-3">

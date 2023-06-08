@@ -8,7 +8,7 @@
     <div class="breadcrumb-container">
         <div class="row">
             <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
-                <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
                     <ol class="breadcrumb mb-4">
                         {% url 'folder:folder_list' as backups_dashboard %}
                         {% url 'account:account_profile' as account_url %}
@@ -44,7 +44,7 @@
     {% include "folder/_modal.html" %}
 
     <div class="row gutters-sm py-2">
-        <div class="col-md-2 d-none d-md-block">
+        <div class="col-md-2 d-none d-md-block" data-aos="fade-right" data-aos-delay="300">
             <div class="fixed inside-container">
 
                 <div class="card-body sticky">
@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-        <div class="card-header border-bottom mb-3 d-flex d-md-none sticky-mobile out-container">
+        <div class="card-header border-bottom mb-3 d-flex d-md-none sticky-mobile out-container" data-aos="fade-right" data-aos-delay="300">
             <div class="nav nav-pills card-header-tabs nav-gap-x-1" role="tablist">
                 <a href="#" class="nav-link action-btn mx-2 add-folder-button" title="Add Folder">
                     <i class="material-symbols-outlined">create_new_folder</i>
@@ -85,7 +85,7 @@
                 {% endif %}
                 {% for custom_folder in custom_folder_list %}
                     <div class="col-6 col-md-4 col-lg-2 mb-3">
-                        <div class="card border-0 rounded-0 shadow position-relative">
+                        <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
                             <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
                                 <div class="card-body text-center">
 
@@ -117,7 +117,7 @@
                 {% endif %}
                 {% for backup in backup_list %}
                     <div class="col-6 col-md-4 col-lg-2 mb-3">
-                        <div class="card border-0 rounded-0 shadow position-relative">
+                        <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
                             <a href="{% url 'extbackup:view_zip_content' backup.0  %}" class="text-decoration-none">
                                 <div class="card-body text-center">
                                     <div class="icon-container">
