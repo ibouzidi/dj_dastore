@@ -1,11 +1,30 @@
 {% extends "sub_base.html" %}
 {% load static %}
+{% load breadcrumb %}
+
+
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
+                <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'subscriptions:SubListView' as plans_list_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb 'Subscriptions List' plans_list_url %}
+                        {% breadcrumb 'Register' %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
 {% block sub_content %}
     <!-- Section -->
     <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <div class="container">
-            <p data-aos="fade-right" data-aos-delay="100"><a href="{% url 'subscriptions:SubListView' %}" class="prm-btn btn purple"><i class="fas fa-angle-left mr-2"></i> Back to plan and prices</a></p>
             <div data-aos="fade-right" data-aos-delay="200" class="row justify-content-center form-bg-image" style="background-image: url({% static 'illustrations/signin.svg' %})">
                 <div class="col-12 col-xl-4">
                     <div class="card card-body bg-white border-light shadow-sm mb-4">

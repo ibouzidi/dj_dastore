@@ -2,11 +2,30 @@
 {% load static %}
 {% load i18n %}
 {% load two_factor_tags %}
+{% load breadcrumb %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-3">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <ol class="breadcrumb mb-4">
+                {% url 'account:account_profile' as account_url %}
+                {% url 'home' as home_url %}
+                {% breadcrumb "Home" home_url %}
+                {% breadcrumb "Profile" %}
+            </ol>
+        </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block sub_content %}
     <style>
         .user-avatar {
-            border: 1px solid var(--clr-violet-1);
+            border: 1px solid var(--clr-purple-1);
         }
     </style>
     <div class="row gutters-sm">

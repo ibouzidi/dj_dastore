@@ -340,7 +340,8 @@ def view_zip_content(request, file_id):
 
     tree = build_tree(file.content)
     print(tree)
-    return render(request, 'extbackup/view_zip_content.html', {'tree': tree})
+    return render(request, 'extbackup/view_zip_content.html', {'tree': tree,
+                                                               'file': file})
 
 
 @user_passes_test(dev)

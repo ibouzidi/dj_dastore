@@ -1,14 +1,34 @@
 {% extends "../_base.html" %}
 {% load static %}
 {% load i18n %}
+{% load breadcrumb %}
+
+{% block breadcrumbs %}
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <ol class="breadcrumb mb-4">
+                {% url 'account:account_profile' as account_url %}
+                {% url 'two_factor:setup' as two_factor_setup %}
+                {% url 'home' as home_url %}
+                {% breadcrumb "Home" home_url %}
+                {% breadcrumb "Profile" account_url %}
+                {% breadcrumb "Two Factor Setup" %}
+            </ol>
+        </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block sub_content %}
-    <div class="py-5">
+    <div class="py-1">
         <div class="row">
             <div class="col-12 col-xl-12">
                 <div class="card card-body bg-white border-light shadow-sm mb-4">
                     <div class="card-header text-center">
-                        <h2>{% block title %}{% trans "Enable Two-Factor Authentication" %}{% endblock %}</h2>
+                        <h2>{% block title %}{% trans "Two-Factor Authentication Activated" %}{% endblock %}</h2>
                     </div>
                     <div class="card-body">
                         <p class="text-center">{% blocktrans trimmed %}Congratulations, you've successfully enabled two-factor

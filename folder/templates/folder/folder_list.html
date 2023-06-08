@@ -1,6 +1,37 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load breadcrumb %}
+
 {% block title %} Backup {% endblock title %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
+                <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'folder:folder_list' as backups_dashboard %}
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url %}
+                        {% breadcrumb "Backups" backups_dashboard %}
+                        {% if parent_folder|length >= 3 %}
+                            {% breadcrumb parent_folder.0.text parent_folder.0.link %}
+                            {% breadcrumb parent_folder.1.text parent_folder.1.link %}
+                            <li class="breadcrumb-item">...</li>
+                            {% breadcrumb parent_folder|last.text parent_folder|last.link %}
+                        {% else %}
+                            {% for parent in parent_folder %}
+                                {% breadcrumb parent.text parent.link %}
+                            {% endfor %}
+                        {% endif %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
 
 {% block content %}
@@ -12,7 +43,7 @@
     </style>
     {% include "folder/_modal.html" %}
 
-    <div class="row gutters-sm">
+    <div class="row gutters-sm py-2">
         <div class="col-md-2 d-none d-md-block">
             <div class="fixed inside-container">
 

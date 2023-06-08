@@ -1,9 +1,29 @@
 {% extends 'base.html' %}
-
+{% load breadcrumb %}
 {% block title %} Backup {% endblock title %}
 
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
+                <nav aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'folder:folder_list' as backups_dashboard %}
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url %}
+                        {% breadcrumb "Backups" backups_dashboard %}
+                        {% breadcrumb file.name %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
 {% block content %}
-    <div class="view-content py-5">
+    <div class="view-content py-1">
         <div class="row">
             <div class="col-12 col-xl-12">
                 <div class="card card-body bg-white border-light shadow-sm mb-4 table-wrapper table-responsive">

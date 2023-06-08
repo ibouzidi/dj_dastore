@@ -1,6 +1,24 @@
 {% extends "sub_base.html" %}
 {% load static %}
+{% load breadcrumb %}
 
+{% block breadcrumbs %}
+<div class="breadcrumb-container">
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">
+        <nav aria-label="breadcrumb" class="breadcrumb-nav">
+            <ol class="breadcrumb mb-4">
+                {% url 'account:account_profile' as account_url %}
+                {% url 'home' as home_url %}
+                {% breadcrumb "Home" home_url %}
+                {% breadcrumb "Profile" account_url %}
+                {% breadcrumb "Edit Profile" %}
+            </ol>
+        </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
 
 {% block sub_content %}
     <style type="text/css">

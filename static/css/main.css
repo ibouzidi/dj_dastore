@@ -17,11 +17,12 @@ Variables
     --clr-dark-1: #1C1C1C;
     --clr-shark: #1c1e1e;
     --clr-dark-2: #3c3c3c;
-    --clr-violet-1: #722efa;
-    --clr-violet-2: #deacf5;
-    --clr-violet-3: #9754cb;
-    --clr-red-violet-1: #bd2e95;
+    --clr-purple-1: #722efa;
+    --clr-purple-2: #deacf5;
+    --clr-purple-3: #9754cb;
+    --clr-red-purple-1: #bd2e95;
     --clr-dark-purple: #1b162c;
+    --clr-deep-sky-blue: rgb(0, 183, 255);
     /* white / grey shades of primary color*/
     --clr-white: #fff;
     --clr-white-2: #EDEDED;
@@ -99,7 +100,7 @@ h6 {
 }
 
 ::selection {
-    background-color: var(--clr-violet-1);
+    background-color: var(--clr-purple-1);
     color: var(--clr-white);
 }
 
@@ -109,7 +110,7 @@ h6 {
 .thr-btn.btn:active{
     transform: translate(0px, 5px);
     -webkit-transform: translate(0px, 5px);
-    box-shadow: 0px 1px 0px 0px var(--clr-violet-3)!important;
+    box-shadow: 0px 1px 0px 0px var(--clr-purple-3)!important;
     color: white!important;
 }
 
@@ -121,24 +122,24 @@ h6 {
 
 /* Styles specific to prm-btn */
 .prm-btn.purple {
-    background-color: var(--clr-violet-1);
-    box-shadow: 0px 5px 0px 0px var(--clr-violet-3)!important;
+    background-color: var(--clr-purple-1);
+    box-shadow: 0px 5px 0px 0px var(--clr-purple-3)!important;
 }
 
 .prm-btn.purple:hover {
-    background-color: var(--clr-violet-2);
-    color: var(--clr-violet-1);
+    background-color: var(--clr-purple-2);
+    color: var(--clr-purple-1);
 }
 
 /* Styles specific to sec-btn */
 .sec-btn.purple-two {
-    background-color: var(--clr-violet-3);
-    box-shadow: 0px 5px 0px 0px var(--clr-violet-2)!important;
+    background-color: var(--clr-purple-3);
+    box-shadow: 0px 5px 0px 0px var(--clr-purple-2)!important;
 }
 
 .sec-btn.purple-two:hover {
-    background-color: var(--clr-red-violet-1);
-    color: var(--clr-violet-1);
+    background-color: var(--clr-red-purple-1);
+    color: var(--clr-purple-1);
 }
 
 .thr-btn.return-grey{
@@ -157,17 +158,17 @@ h6 {
 }
 
 .thr-btn.return-grey:hover{
-    background-color: var(--clr-violet-1);
+    background-color: var(--clr-purple-1);
     color: white!important;
-    box-shadow: 0px 5px 0px 0px var(--clr-violet-2)!important;
+    box-shadow: 0px 5px 0px 0px var(--clr-purple-2)!important;
 }
 
 #id_text{
-    background-color: var(--clr-violet-1)!important;
+    background-color: var(--clr-purple-1)!important;
 }
 
 .tooltip .tooltip-inner {
-    background-color: var(--clr-violet-1);
+    background-color: var(--clr-purple-1);
     color: white;
 }
 
@@ -176,13 +177,13 @@ h6 {
 }
 
 .action-btn {
-    border: 1px solid var(--clr-violet-2);
+    border: 1px solid var(--clr-purple-2);
     transition: background-color 0.3s, transform 0.3s;
 }
 
 .action-btn:hover {
-    border: 1px solid var(--clr-violet-1);
-    background-color: var(--clr-violet-1);
+    border: 1px solid var(--clr-purple-1);
+    background-color: var(--clr-purple-1);
     transform: translate(0px, -5px);
     -webkit-transform: translate(0px, -5px);
 }
@@ -192,7 +193,7 @@ h6 {
 }
 
 .action-btn i {
-    color: var(--clr-violet-1);
+    color: var(--clr-purple-1);
     font-size: 38px;
 }
 .sticky {
@@ -218,14 +219,14 @@ h6 {
 }
 @media (max-width: 767px) { /* Bootstrap's md breakpoint */
     .action-btn {
-        border: 1px solid var(--clr-violet-2);
+        border: 1px solid var(--clr-purple-2);
         transition: background-color 0.3s, transform 0.3s;
-        background-color: var(--clr-violet-1);
+        background-color: var(--clr-purple-1);
     }
 
     .action-btn:hover {
-        border: 1px solid var(--clr-violet-3);
-        background-color: var(--clr-violet-3);
+        border: 1px solid var(--clr-purple-3);
+        background-color: var(--clr-purple-3);
         transform: translate(0px, -5px);
         -webkit-transform: translate(0px, -5px);
     }
@@ -277,7 +278,7 @@ Back to top button
 }
 
 .back-to-top:hover {
-    background: var(--clr-violet-1);
+    background: var(--clr-purple-1);
     color: var(--clr-white);
 }
 
@@ -345,7 +346,7 @@ Header
 .nav-menu a:hover,
 .nav-menu .active > a,
 .nav-menu li:hover > a {
-    color: var(--clr-violet-1);
+    color: var(--clr-purple-1);
     text-decoration: none;
 }
 
@@ -512,7 +513,7 @@ Header
 .mobile-nav a:hover,
 .mobile-nav .active > a,
 .mobile-nav li:hover > a {
-    color: var(--clr-violet-1);
+    color: var(--clr-purple-1);
     text-decoration: none;
 }
 
@@ -583,7 +584,7 @@ Header
 /* Nav Header Two */
 
 #nav-header.nav-header-two {
-    background: var(--clr-violet-1);
+    background: var(--clr-purple-1);
 }
 
 #nav-header.nav-header-two .logo img {
@@ -623,7 +624,7 @@ Header
 .nav-menu.nav-menu.nav-menu-two  a:hover,
 .nav-menu.nav-menu.nav-menu-two  .active > a,
 .nav-menu.nav-menu.nav-menu-two  li:hover > a {
-    color: var(--clr-violet-2);
+    color: var(--clr-cyan-1);
 }
 
 .nav-menu.nav-menu-two .mobile-nav a:hover,
@@ -632,7 +633,7 @@ Header
 .nav-menu.nav-menu-two .mobile-nav li:hover a > i,
 .nav-menu.nav-menu-two .mobile-nav .active a > i
 {
-    color: #fff;
+    color: var(--clr-cyan-1);
 }
 
 #nav-header.nav-header-two .mobile-nav-toggle {
@@ -652,10 +653,10 @@ Header
 }
 
 .nav-menu.nav-menu-two .mobile-nav a {
-    color: var(--clr-violet-3);
+    color: var(--clr-purple-3);
 }
 .nav-menu.nav-menu-two .mobile-nav a > i {
-    color: var(--clr-violet-3);
+    color: var(--clr-purple-3);
 }
 /*
 ===============
@@ -726,6 +727,66 @@ Header
 
 .bigger-size {
     font-size: 20px; /* Adjust the font size as needed */
+}
+.breadcrumb-container .breadcrumb-item:last-child .fa-angle-right {
+    display: none;
+}
+.breadcrumb-container {
+    background-color: white;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.breadcrumb-container ol {
+    background-color: var(--clr-purple-1);
+}
+
+.breadcrumb-container .breadcrumb {
+    padding: 19px;
+    letter-spacing: 2px;
+    border-radius: 5px !important;
+}
+
+.breadcrumb-container .breadcrumb-item a{
+    text-decoration: none;
+    color: var(--clr-white);
+    font-size: 16px;
+    line-height: 2;
+}
+
+.breadcrumb-container .breadcrumb-item a:hover,
+.breadcrumb-container .breadcrumb-item .active-1 {
+    color: var(--clr-cyan-1);
+     line-height: 2;
+}
+
+.breadcrumb-container .breadcrumb>li+li:before {
+    content: "" !important;
+}
+
+.breadcrumb-container i{
+    color: var(--clr-cyan-1);
+    font-size: 26px;
+    line-height: 1.2;
+}
+
+@media (max-width: 767px) {
+    .breadcrumb-container .breadcrumb {
+        font-size: 10px;
+    }
+
+    .breadcrumb-container .breadcrumb-item+.breadcrumb-item {
+        padding-left: 0;
+    }
+
+    .breadcrumb-container .breadcrumb {
+        letter-spacing: 1px !important;
+    }
+
+    .breadcrumb-container .fa-caret-right:before {
+        content: "\f0da";
+        vertical-align: super !important;
+    }
 }
 
 /*
@@ -1010,7 +1071,7 @@ Header
 }
 
 .price_plan_area h3{
-    color: var(--clr-violet-1);
+    color: var(--clr-purple-1);
 }
 
 .price_plan_area h6{
@@ -1028,7 +1089,7 @@ Header
     transition-duration: 500ms;
     margin-bottom: 30px;
     background-color: #ffffff;
-    border: 3px solid var(--clr-violet-1);
+    border: 3px solid var(--clr-purple-1);
     padding: 2rem;
     height: 270px;
     width: auto;
@@ -1067,7 +1128,7 @@ Header
     padding: 0.2rem 0.6rem;
     font-size: 12px;
     text-transform: uppercase;
-    background-color: var(--clr-violet-1);
+    background-color: var(--clr-purple-1);
     display: inline-block;
     margin-bottom: 0.5rem;
     border-radius: 0.25rem;
@@ -1088,7 +1149,7 @@ Header
     width: 80px;
     height: 4px;
     border-radius: 10px;
-    background-color: var(--clr-violet-1);
+    background-color: var(--clr-purple-1);
 }
 
 .single_price_plan .price {
@@ -1129,7 +1190,7 @@ Header
 }
 
 .single_price_plan .description p i {
-    color: var(--clr-violet-1);
+    color: var(--clr-purple-1);
     margin-right: 0.5rem;
 }
 
@@ -1168,7 +1229,7 @@ Header
     top: 0;
     bottom: 0;
     width: 100px;
-    background: var(--clr-violet-1);
+    background: var(--clr-purple-1);
     transition: right 0.5s ease-in-out;
     cursor: pointer;
 
@@ -1193,7 +1254,7 @@ Header
 }
 
 .single_price_plan .slider:hover:after {
-    color: var(--clr-violet-2);
+    color: var(--clr-purple-2);
     transform: translate(0, -50%);
 }
 

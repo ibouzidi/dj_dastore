@@ -9,11 +9,11 @@
             <div class="input-group">
                 <span class="input-group-text" id="basic-addon1">
                     {% if field.name == 'username' %}
-                        <span class="fas fa-envelope" style="color:var(--clr-violet-1)"></span>
+                        <span class="fas fa-envelope" style="color:var(--clr-purple-1)"></span>
                     {% elif field.name == 'password' %}
-                        <span class="fas fa-lock" style="color:var(--clr-violet-1)"></span>
+                        <span class="fas fa-lock" style="color:var(--clr-purple-1)"></span>
                     {% else %}
-                        <span class="fas fa-user" style="color:var(--clr-violet-1)"></span>
+                        <span class="fas fa-user" style="color:var(--clr-purple-1)"></span>
                     {% endif %}
                 </span>
                 {{ field|add_attrs:'class:form-control, placeholder:true' }}

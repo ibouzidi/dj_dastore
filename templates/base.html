@@ -75,7 +75,15 @@
 
 <main>
     {# {% include 'snippets/nav.html' %}#}
-    <div class="container-fluid py-5">{% block content %} {% endblock %}</div>
+ {% if request.user.is_authenticated %}
+    <div class="container-fluid py-5">
+{% else %}
+      <div class="container py-5">
+{% endif %}
+
+{% block breadcrumbs %}{% endblock %}
+        {% block content %} {% endblock %}
+    </div>
     {% include 'snippets/footer.html' %}
     <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 </main>
