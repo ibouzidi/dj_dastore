@@ -27,8 +27,8 @@
     <p>Are you sure you want to cancel your subscription?</p>
     <form method="post" action="{% url 'subscriptions:CancelConfirmView' %}">
         {% csrf_token %}
-        <button type="submit" name="cancel" class="btn btn-danger">Yes, cancel subscription</button>
-        <button type="submit" name="free_plan" class="btn btn-secondary">Try the free plan.</button>
+        <button type="submit" name="cancel" class="prm-btn btn" style="background-color: var(--clr-red-purple-1);color:white;">Yes, cancel subscription</button>
+{#        <button type="submit" name="free_plan" class="btn btn-secondary">Try the free plan.</button>#}
     </form>
         </div>
      </section>

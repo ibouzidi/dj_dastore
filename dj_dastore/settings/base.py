@@ -229,3 +229,4 @@ DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 
 #stripe listen --forward-to localhost:8000/stripe/webhook/
+#python manage.py djstripe_sync_models

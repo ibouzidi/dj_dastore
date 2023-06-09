@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
@@ -68,7 +70,7 @@ class CreateCheckoutSession(View):
             customer.save()
 
         # get the trial period
-        trial_period_days = plan['trial_period_days']
+        # trial_period_days = plan['trial_period_days']
 
         subscription_data = {
             "items": [
@@ -81,15 +83,15 @@ class CreateCheckoutSession(View):
             }
         }
 
-        if trial_period_days:
-            subscription_data.update({
-                "trial_period_days": trial_period_days,
-                "trial_settings": {
-                    "end_behavior": {
-                        "missing_payment_method": "cancel"
-                    }
-                }
-            })
+        # if trial_period_days:
+        #     subscription_data.update({
+        #         "trial_period_days": trial_period_days,
+        #         "trial_settings": {
+        #             "end_behavior": {
+        #                 "missing_payment_method": "cancel"
+        #             }
+        #         }
+        #     })
 
         session = stripe.checkout.Session.create(
             customer=customer.id,
@@ -104,8 +106,15 @@ class CreateCheckoutSession(View):
 
 class SuccessView(View):
     def get(self, request):
+        # Clean up the session and cookies after registration
+        if 'user_id' in request.session:
+            del request.session['user_id']
+        if 'plan_id' in request.session:
+            del request.session['plan_id']
+        response = redirect("account:login")
         messages.success(request, "Subscription successfull !")
-        return redirect("account:login")
+        response.delete_cookie('selectedPlan')
+        return response
 
 
 class CancelView(View):
@@ -124,15 +133,33 @@ class CancelConfirmView(View):
 
         if 'cancel' in request.POST:
             # Cancel the subscription
-            messages.error(request, "Subscription canceled!")
             user.delete()  # Delete the user or disable the account as needed
+            # Clean up the session and cookies after registration
+            if 'user_id' in request.session:
+                del request.session['user_id']
+            if 'plan_id' in request.session:
+                del request.session['plan_id']
+            response = redirect("home")
+            messages.error(request, "Subscription canceled")
+            response.delete_cookie('selectedPlan')
             return redirect("home")
-        else:
-            # Update the session with the free plan ID and
-            # redirect to the CreateCheckoutSession view
-            free_plan_id = 'price_1N1TMcJWztZpQABxdveM1RvB'
-            request.session['plan_id'] = free_plan_id
-            return redirect('subscriptions:CreateCheckoutSession')
+        # else:
+        #     # Update the session with the free plan ID and
+        #     # redirect to the CreateCheckoutSession view
+        #     free_plan_id = 'price_1N1TMcJWztZpQABxdveM1RvB'
+        #     request.session['plan_id'] = free_plan_id
+        #     return redirect('subscriptions:CreateCheckoutSession')
+
+
+class CancelSubscriptionView(View):
+    def get(self, request):
+        if len(request.user.get_active_subscriptions) > 0:
+            stripe.Subscription.modify(
+                request.user.get_active_subscriptions[0].id,
+                cancel_at_period_end=True,
+            )
+            messages.success(request, "Subscription will be cancelled at the end of the billing period")
+        return redirect("account:account_profile")
 
 
 @webhooks.handler("payment_intent.succeeded")
@@ -154,4 +181,17 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     plan = get_object_or_404(Plan, id=plan_id)
                     user.storage_limit = plan.product.metadata["storage_limit"]
                     user.save()
+    return
+
+
+@webhooks.handler("customer.subscription.deleted")
+def subscription_cancelled_event_listener(event, **kwargs):
+    subscription_id = event.data["object"]["id"]
+    try:
+        subscription = Subscription.objects.get(id=subscription_id)
+        subscription.canceled_at = timezone.now()
+        subscription.status = "cancelled"
+        subscription.save()
+    except Subscription.DoesNotExist:
+        print("Subscription does not exist in the database")
     return

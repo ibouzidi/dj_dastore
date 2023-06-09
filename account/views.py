@@ -38,17 +38,37 @@ TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 class RegisterView(View):
     def get(self, request):
         form = RegistrationForm()
-        request.session["plan_id"] = request.COOKIES.get("selectedPlan")
-        plan_id = request.session.get('plan_id')
+        plan_id = request.COOKIES.get("selectedPlan")
 
         if not plan_id:
+            if 'plan_id' in request.session:
+                del request.session['plan_id']
             messages.info(request, 'Please select a plan before registering.')
             return redirect("home")
 
-        plan = get_object_or_404(Plan, id=plan_id)
+        # plan = get_object_or_404(Plan, id=plan_id)
 
-        return render(request, 'account/register.html',
-                      {'form': form, 'plan': plan})
+        try:
+            plan = Plan.objects.get(id=plan_id)
+        except Plan.DoesNotExist:
+            messages.error(request, 'The selected plan does not exist.')
+            return redirect("home")
+
+        # You can still check if the plan's product is active
+        if not plan.product.active:
+            messages.error(request,
+                           'The selected plan is not currently available.')
+            return redirect("home")
+
+        # Store the plan_id in the session
+        request.session["plan_id"] = plan_id
+
+        # Delete the cookie
+        response = render(request, 'account/register.html',
+                          {'form': form, 'plan': plan})
+        response.delete_cookie('selectedPlan')
+
+        return response
 
     def post(self, request):
         form = RegistrationForm(request.POST)
@@ -60,14 +80,8 @@ class RegisterView(View):
             )
             account.is_active = False
             account.plan_id = request.session.get("plan_id")
-            print(f"Plan ID: {account.plan_id}")
             account.save()
             request.session["user_id"] = account.id
-            request.session["plan_id"] = request.COOKIES.get("selectedPlan")
-            # if the plan is a trial
-            # if account.plan_id == "price_1N1TMcJWztZpQABxdveM1RvB":
-            #     print('YES TRIAL')
-            #     return redirect('subscriptions:TrialPlanView')
             return redirect('subscriptions:CreateCheckoutSession')
         return render(request, 'account/register.html', {'form': form})
 

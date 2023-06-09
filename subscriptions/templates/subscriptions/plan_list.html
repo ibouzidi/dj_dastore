@@ -25,16 +25,16 @@
                     <!-- Section Heading-->
                     <div class="section-heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
                         <h6 data-aos="fade-right" data-aos-delay="200">Pricing Plans</h6>
-                        <h3 data-aos="fade-right" data-aos-delay="400">Let's find a way together</h3>
-                        <p data-aos="fade-right" data-aos-delay="400">Choose your plan, take what you need for you.</p>
-                        <div data-aos="fade-right" data-aos-delay="400" class="line"></div>
+                        <h3 data-aos="fade-right" data-aos-delay="350">Let's find a way together</h3>
+                        <p data-aos="fade-right" data-aos-delay="350">Choose your plan, take what you need for you.</p>
+                        <div data-aos="fade-right" data-aos-delay="350" class="line"></div>
                     </div>
                 </div>
             </div>
 
             {% for plan in plans %}
                 <!-- Single Price Plan Area-->
-                <div data-aos="fade-right" data-aos-delay="500" class="single_price_plan" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                <div data-aos="fade-right" data-aos-delay="350" class="single_price_plan" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
                     <div class="row plan-row">
                         <div class="col-12 col-md-4">
                             <!-- Plan Title -->
@@ -102,16 +102,6 @@
                 expires = "; expires=" + date.toUTCString();
             }
             document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-        }
-        function getCookie(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for(var i=0;i < ca.length;i++) {
-                var c = ca[i];
-                while (c.charAt(0)==' ') c = c.substring(1,c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
-            }
-            return null;
         }
     </script>
 {% endblock script %}
