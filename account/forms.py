@@ -52,8 +52,6 @@ class AccountUpdateForm(forms.ModelForm):
 	class Meta:
 		model = Account
 		fields = (
-			'email',
-			'username',
 			'first_name',
 			'last_name',
 			'city', 'phone',
@@ -108,7 +106,11 @@ class AccountUpdateForm(forms.ModelForm):
 
 	def save(self, commit=True):
 		account = super(AccountUpdateForm, self).save(commit=False)
-		account.username = self.cleaned_data['username']
+		current_user = Account.objects.get(pk=self.instance.pk)
+
+		account.username = current_user.username
+		account.email = current_user.email
+
 		account.first_name = self.cleaned_data['first_name']
 		account.last_name = self.cleaned_data['last_name']
 		account.address = self.cleaned_data['address']
@@ -116,8 +118,8 @@ class AccountUpdateForm(forms.ModelForm):
 		account.city = self.cleaned_data['city']
 		account.number = self.cleaned_data['number']
 		account.zip = self.cleaned_data['zip']
-		account.email = self.cleaned_data['email'].lower()
 		account.profile_image = self.cleaned_data['profile_image']
+
 		if commit:
 			account.save()
 		return account

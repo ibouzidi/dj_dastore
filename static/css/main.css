@@ -13,7 +13,6 @@ Variables
 
 :root {
     /* dark shades of primary color*/
-    --clr-dark-purple: #1b1b1b;
     --clr-dark-1: #1C1C1C;
     --clr-shark: #1c1e1e;
     --clr-dark-2: #3c3c3c;
@@ -104,63 +103,29 @@ h6 {
     color: var(--clr-white);
 }
 
-/* Common styles for prm-btn and sec-btn */
-.prm-btn.btn:active,
-.sec-btn.btn:active,
-.thr-btn.btn:active{
+.prm-btn {
+    background-color: var(--clr-purple-1);
+    color: var(--clr-white);
+    letter-spacing: 1px;
+}
+
+.prm-btn:hover {
+    color: var(--clr-cyan-1);
+}
+.prm-btn.btn:active{
     transform: translate(0px, 5px);
     -webkit-transform: translate(0px, 5px);
-    box-shadow: 0px 1px 0px 0px var(--clr-purple-3)!important;
-    color: white!important;
+    /*box-shadow: 0px 1px 0px 0px var(--clr-purple-3)!important;*/
+    color: var(--clr-cyan-1);
 }
 
-.purple,
-.purple-two,
-.return-grey{
-    color: white!important;
-}
-
-/* Styles specific to prm-btn */
-.prm-btn.purple {
-    background-color: var(--clr-purple-1);
-    box-shadow: 0px 5px 0px 0px var(--clr-purple-3)!important;
-}
-
-.prm-btn.purple:hover {
-    background-color: var(--clr-purple-2);
-    color: var(--clr-purple-1);
-}
-
-/* Styles specific to sec-btn */
-.sec-btn.purple-two {
-    background-color: var(--clr-purple-3);
-    box-shadow: 0px 5px 0px 0px var(--clr-purple-2)!important;
-}
-
-.sec-btn.purple-two:hover {
-    background-color: var(--clr-red-purple-1);
-    color: var(--clr-purple-1);
-}
-
-.thr-btn.return-grey{
-    background-color: var(--clr-grey-6);
-    box-shadow: 0px 5px 0px 0px var(--clr-grey-1)!important;
-}
-
-.thr-btn.return-grey::before {
-    content: "";
-    display: inline-block;
-    border: solid #fff;
-    border-width: 0 4px 4px 0;
-    transform: rotate(135deg);
-    padding: 3px;
-    margin-right: 8px;
-}
-
-.thr-btn.return-grey:hover{
-    background-color: var(--clr-purple-1);
-    color: white!important;
-    box-shadow: 0px 5px 0px 0px var(--clr-purple-2)!important;
+.prm-btn:focus,
+.prm-btn:active,
+.prm-btn:active:focus,
+.prm-btn.active:focus {
+    outline: none;
+    box-shadow: none;
+    color: var(--clr-cyan-1);
 }
 
 #id_text{
@@ -189,7 +154,7 @@ h6 {
 }
 
 .action-btn:hover i {
-    color: var(--clr-white) !important;
+    color: var(--clr-cyan-1) !important;
 }
 
 .action-btn i {
@@ -219,20 +184,18 @@ h6 {
 }
 @media (max-width: 767px) { /* Bootstrap's md breakpoint */
     .action-btn {
-        border: 1px solid var(--clr-purple-2);
         transition: background-color 0.3s, transform 0.3s;
         background-color: var(--clr-purple-1);
     }
 
     .action-btn:hover {
-        border: 1px solid var(--clr-purple-3);
-        background-color: var(--clr-purple-3);
+        border: 0;
         transform: translate(0px, -5px);
         -webkit-transform: translate(0px, -5px);
     }
 
     .action-btn:hover i {
-        color: var(--clr-white) !important;
+        color: var(--clr-cyan-1) !important;
     }
 
     .action-btn i {
@@ -756,7 +719,7 @@ Header
 .breadcrumb-container .breadcrumb-item a:hover,
 .breadcrumb-container .breadcrumb-item .active-1 {
     color: var(--clr-cyan-1);
-     line-height: 2;
+    line-height: 2;
 }
 
 .breadcrumb-container .breadcrumb>li+li:before {
@@ -1253,7 +1216,7 @@ Header
 }
 
 .single_price_plan .slider:hover:after {
-    color: var(--clr-purple-2);
+    color: var(--clr-cyan-1);
     transform: translate(0, -50%);
 }
 
@@ -1277,6 +1240,26 @@ Header
     background: -webkit-gradient(linear, left top, right top, from(#e24997), to(#2d2ed4));
     background: linear-gradient(to right, #e24997, #2d2ed4);
 }
+
+
+.profile-nav .nav-link:hover,
+.profile-nav .nav-link:focus {
+  background-color: var(--clr-purple-1);
+  color: var(--clr-cyan-1);
+}
+
+.profile-nav .nav-link.active,
+.profile-nav .nav-link.active:focus {
+  background-color: var(--clr-purple-1);
+  color: var(--clr-cyan-1);
+}
+
+.profile-nav .nav-link.has-icon:hover svg,
+.profile-nav .nav-link.has-icon.active svg,
+.profile-nav .nav-link.has-icon:focus svg {
+  stroke: var(--clr-cyan-1);
+}
+
 
 /*.my-success {*/
 /*    opacity: 1!important;*/

@@ -121,43 +121,43 @@ def get_redirect_if_exists(request):
             redirect = str(request.GET.get("next"))
     return redirect
 
-@login_required
-def account_view(request):
-    print("default_device(request.user)")
-    print(default_device(request.user))
-    context = {}
-    try:
-        account = request.user
-    except:
-        messages.error(request, "No user logged in.")
-        return redirect("login")  # redirect to your login view
-
-    context['id'] = account.id
-    context['username'] = account.username
-    context['first_name'] = account.first_name
-    context['last_name'] = account.last_name
-    context['phone'] = account.phone
-    context['address'] = account.address
-    context['number'] = account.number
-    context['city'] = account.city
-    context['zip'] = account.zip
-    context['email'] = account.email
-    context['profile_image'] = account.profile_image
-    # context['subscription_plan'] = account.subscription_plan
-
-    context['is_self'] = True
-
-    storage_used, storage_limit, storage_limit_unit, storage_limit_used \
-        = calculate_storage_usage(account)
-    # Store the values in the context dictionary
-    context['storage_used'] = storage_used
-    context['storage_limit'] = storage_limit
-    context['storage_limit_unit'] = storage_limit_unit
-    context['storage_used_unit'] = storage_limit_used
-
-    context['default_device'] = default_device(
-        request.user) if request.user.is_authenticated else None
-    return render(request, "account/account.html", context)
+# @login_required
+# def account_view(request):
+#     print("default_device(request.user)")
+#     print(default_device(request.user))
+#     context = {}
+#     try:
+#         account = request.user
+#     except:
+#         messages.error(request, "No user logged in.")
+#         return redirect("login")  # redirect to your login view
+#
+#     context['id'] = account.id
+#     context['username'] = account.username
+#     context['first_name'] = account.first_name
+#     context['last_name'] = account.last_name
+#     context['phone'] = account.phone
+#     context['address'] = account.address
+#     context['number'] = account.number
+#     context['city'] = account.city
+#     context['zip'] = account.zip
+#     context['email'] = account.email
+#     context['profile_image'] = account.profile_image
+#     # context['subscription_plan'] = account.subscription_plan
+#
+#     context['is_self'] = True
+#
+#     storage_used, storage_limit, storage_limit_unit, storage_limit_used \
+#         = calculate_storage_usage(account)
+#     # Store the values in the context dictionary
+#     context['storage_used'] = storage_used
+#     context['storage_limit'] = storage_limit
+#     context['storage_limit_unit'] = storage_limit_unit
+#     context['storage_used_unit'] = storage_limit_used
+#
+#     context['default_device'] = default_device(
+#         request.user) if request.user.is_authenticated else None
+#     return render(request, "account/account.html", context)
 
 
 def save_temp_profile_image_from_base64String(imageString, user):
@@ -226,10 +226,10 @@ def crop_image(request, *args, **kwargs):
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
 @login_required
-def edit_account_view(request, *args, **kwargs):
+def account_view(request, *args, **kwargs):
     if not request.user.is_authenticated:
         return redirect("account:login")
-    user_id = kwargs.get("user_id")
+    user_id = request.user.pk
     account = get_object_or_404(Account, pk=user_id)
     if account.pk != request.user.pk:
         messages.warning(request, "You cannot edit someone else's profile.")
@@ -239,11 +239,13 @@ def edit_account_view(request, *args, **kwargs):
         form = AccountUpdateForm(request.POST, request.FILES,
                                  instance=request.user)
         if form.is_valid():
+            print("VALID")
             form.save()
             messages.success(request,
                              'Your account has be successfully updated.')
             return redirect("account:account_profile")
         else:
+            print("NON VALID")
             form = AccountUpdateForm(request.POST, instance=request.user,
                                      initial={
                                          "id": account.pk,
@@ -270,7 +272,7 @@ def edit_account_view(request, *args, **kwargs):
         context['form'] = form
     context[
         'DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
-    return render(request, "account/edit_account.html", context)
+    return render(request, "account/account.html", context)
 
 
 @method_decorator(login_required, name='dispatch')
