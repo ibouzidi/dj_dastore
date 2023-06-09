@@ -12,5 +12,4 @@ urlpatterns = [
     path("cancelled/", views.CancelView.as_view(), name="CancelView"),
     path("cancel_subscription/", views.CancelSubscriptionView.as_view(), name="CancelSubscriptionView"),
     # path("change-subscription/", views.ChangeSubscriptionView.as_view(), name="ChangeSubscriptionView"),
-    # path("invoices/", views.ListInvoiceView.as_view(), name="ListInvoiceView"),
 ]

@@ -1,0 +1,51 @@
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">#</th>
+        <th scope="col">Transaction Id</th>
+        <th scope="col">Customer</th>
+        <th scope="col">Billing Period</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Status</th>
+        <th scope="col">Paid At</th>
+        <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for invoice in invoices %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ invoice.number }}</td>
+            <td>{{ invoice.customer.email }}</td>
+            <td>{{ invoice.period_start }} - {{ invoice.period_end }}</td>
+            <td>{{ invoice.total }} {{ invoice.currency|upper }}</td>
+            <td>
+                {% if invoice.status == "paid" %}
+                    <i class="icofont-check-circled text-success"></i>
+                {% elif invoice.status == "unpaid" %}
+                    <i class="icofont-warning text-warning"></i>
+                {% else %}
+                    <i class="icofont-close text-danger"></i>
+                {% endif %}
+            </td>
+            <td class="date-col">{{ invoice.status_transitions.paid_at }}</td>
+            <td>
+                <a href="{{ invoice.invoice_pdf }}" class="btn btn-warning btn-sm" target="_blank">
+                    Download
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% block ExtraJs %}
+    <script>
+        const dateCols = document.querySelectorAll(".table .date-col");
+        dateCols.forEach(col => {
+            const timestamp = col.innerText;
+            const date = new Date(Number(timestamp) * 1000);
+            col.innerText = `${date.toLocaleString()}`
+        })
+    </script>
+{% endblock ExtraJs %}

@@ -24,6 +24,11 @@
 
 {% block sub_content %}
     <style>
+        #confirmMessage {
+            margin-top: 10px;
+            font-weight: bold;
+            color: red;
+        }
         .user-avatar {
             border: 1px solid var(--clr-purple-1);
         }
@@ -33,314 +38,219 @@
         }
     </style>
     <div class="row gutters-sm">
-        <div class="col-md-3 d-none d-md-block" data-aos="fade-left" data-aos-delay="300">
-            <div class="card">
-                <div class="card-body">
-                    {% include 'account/profile_tab.html' %}
+    <div class="col-md-3 d-none d-md-block" data-aos="fade-left" data-aos-delay="300">
+        <div class="card">
+            <div class="card-body">
+                {% include 'account/profile_tab.html' %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9" data-aos="fade-left" data-aos-delay="200">
+    <div class="card">
+    <div class="card-header border-bottom mb-3 d-flex d-md-none">
+        {% include 'account/profile_tab_mobile.html' %}
+    </div>
+    <div class="card-body tab-content">
+        <div class="tab-pane" id="profile">
+            <h6>EDIT YOUR PROFILE INFORMATION</h6>
+            <hr>
+            {% include 'account/profile_detail.html' %}
+        </div>
+        <div class="tab-pane" id="account">
+            ????
+            <h6>ACCOUNT SETTINGS ????</h6>
+            <hr>
+            <form>
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Enter your username" value="kennethvaldez">
+                    <small id="usernameHelp" class="form-text text-muted">After changing your username, your old username becomes available for anyone else to claim.</small>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label class="d-block text-danger">Delete Account</label>
+                    <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>
+                </div>
+                <button class="btn btn-danger" type="button">Delete Account</button>
+            </form>
+        </div>
+
+        <div class="tab-pane" id="security">
+            <h6>SECURITY SETTINGS</h6>
+            <hr>
+            {% include 'account/password_change.html' %}
+            <hr>
+            <label class="d-block">Two Factor Authentication</label>
+            {% if default_device %}
+                <h6>{% blocktrans trimmed %}Congratulations, you've successfully enabled two-factor
+                    authentication.{% endblocktrans %}</h6>
+                <p>{% blocktrans trimmed %}However we strongly discourage you to do so, you can
+                    also disable two-factor authentication for your account.{% endblocktrans %}</p>
+                <div class="mt-3">
+                    <p><a class="btn btn-secondary" href="{% url 'two_factor:disable' %}">
+
+                        {% trans "Disable Two-Factor Authentication" %}</a>
+                        <a href="{% url 'two_factor:profile' %}"
+                           class="btn btn btn-link">{% trans "Back to Account Security" %}</a></p>
+                </div>
+            {% else %}
+                <p>{% blocktrans trimmed %}Two-factor authentication is not enabled for your
+                    account. Enable two-factor authentication for enhanced account
+                    security.{% endblocktrans %}</p>
+                <p><a href="{% url 'two_factor:setup' %}" class="prm-btn btn">
+                    {% trans "Enable Two-Factor Authentication" %}</a>
+                </p>
+            {% endif %}
+            <p class="small text-muted mt-2">Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.</p>
+            <hr>
+            <form>
+                <div class="form-group mb-0">
+                    <label class="d-block">Sessions</label>
+                    <p class="font-size-sm text-secondary">This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize.</p>
+                    <ul class="list-group list-group-sm">
+                        <li class="list-group-item has-icon">
+                            <div>
+                                <h6 class="mb-0">San Francisco City 190.24.335.55</h6>
+                                <small class="text-muted">Your current session seen in United States</small>
+                            </div>
+                            <button class="btn btn-light btn-sm ml-auto" type="button">More info</button>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="tab-pane" id="notification">
+            <h6>Notification</h6>
+            <hr>
+            <div class="col-12 mb-4">
+                <div class="card card-body bg-white border-light shadow-sm mb-4">
+                    <h2 class="h5 mb-4">??????</h2>
+                    <!-- Create a canvas element to display the chart -->
+                    <canvas id="storageUsageChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-md-9" data-aos="fade-left" data-aos-delay="200">
-            <div class="card">
-                <div class="card-header border-bottom mb-3 d-flex d-md-none">
-                    {% include 'account/profile_tab_mobile.html' %}
-                </div>
-                <div class="card-body tab-content">
-                                        <div class="tab-pane active" id="profile">
-                        <h6>EDIT YOUR PROFILE INFORMATION</h6>
-                        <hr>
-                        <div class="row">
-                            <form method="POST" enctype="multipart/form-data" class="form-signin">
-                                {% csrf_token %}
-                                <div class="row">
-                                    <div class="col-12 col-xl-4">
-                                        <div class="row">
-                                            <div class="col-12 mb-4">
-                                                <div class="card border-light text-center p-0">
-
-                                                    <div class="mt-3 pl-4 pr-4" id="id_image_crop_confirm">
-                                                        <span id="id_cancel" class="btn btn-gray-700">Cancel</span>
-                                                        <span id="id_confirm" class="prm-btn btn ml-4">Validate</span>
-                                                    </div>
-                                                    <div class="card-body py-5">
-                                                        <div class="image-container" id="id_image_container">
-                                                            {% if user.avatar_url and 'default_user_icon.png' not in user.avatar_url %}
-                                                                <img src="{{ user.avatar_url }}"
-                                                                     id="id_profile_image_display"
-                                                                     class="border-2 border-purple user-avatar large-avatar rounded-circle mx-auto profile-image"
-                                                                     alt="Neil Portrait">
-                                                            {% else %}
-                                                                <img src="{% static 'dastore/default_user_icon.png' %}"
-                                                                     id="id_profile_image_display"
-                                                                     class="border-2 border-purple user-avatar large-avatar rounded-circle mx-auto profile-image">
-                                                            {% endif %}
-                                                            <div class="middle" id="id_middle_container">
-                                                                <div class="text"
-                                                                     id="id_text">
-                                                                    Edit
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
-                                                    <div class="text-gray small">JPG or PNG. Max size of 10 MB.</div>
-                                                    <div class="card-body">
-                                                        <h5>{{ user.username }}</h5>
-                                                        <p class="prm-btn btn purple">
-                                                            {% if request.user.get_active_subscriptions %}
-                                                            Subscription Plan : {{ request.user.get_active_subscriptions.0.plan.product.name }}
-                                                            <p>Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
-                                                            {% else %}No active subscription</p>
-                                                            {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12 col-xl-8">
-                                        <div class="card card-body bg-white border-light shadow-sm mb-4">
-                                            <h2 class="h5 mb-4">Profile information</h2>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <div>
-                                                        <label for="first_name">First Name</label>
-                                                        <input name="first_name" class="form-control" id="first_name" type="text"
-                                                               placeholder="Enter your first name" value="{{ form.initial.first_name }}"
-                                                               required>
-                                                        {% if form.first_name.errors %}
-                                                            <span style="color: red;margin: 0">
-                                        {{ form.first_name.errors }}
-                                    </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <div>
-                                                        <label for="last_name">Last Name</label>
-                                                        <input name="last_name" class="form-control" id="last_name" type="text"
-                                                               placeholder="Also your last name" value="{{ form.initial.last_name }}"
-                                                               required>
-                                                        {% if form.last_name.errors %}
-                                                            <span style="color: red;margin: 0">
-                                        {{ form.last_name.errors }}
-                                    </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6 mb-3">
-                                                    <div class="form-group">
-                                                        <label for="email">Email</label>
-                                                        <input name="email" class="form-control" id="email" type="email"
-                                                               placeholder="name@company.com" value="{{ form.initial.email }}" readonly>
-                                                        {% if form.email.errors %}
-                                                            <span style="color: red;margin: 0">
-                                            {{ form.email.errors }}
-                                        </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <div class="form-group">
-                                                        <label for="username">Username</label>
-                                                        <input name="username" class="form-control" id="username" type="text"
-                                                               placeholder="Username" value="{{ form.initial.username }}" readonly>
-                                                        {% if form.username.errors %}
-                                                            <span style="color: red;margin: 0">
-                                            {{ form.username.errors }}
-                                        </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6 mb-3">
-                                                    <div class="form-group">
-                                                        <label for="phone">Phone</label>
-                                                        <input name="phone" class="form-control" id="phone" type="number"
-                                                               placeholder="+12-345 678 910" value="{{ form.initial.phone }}" required>
-                                                        {% if form.phone.errors %}
-                                                            <span style="color: red;margin: 0">
-                                            {{ form.phone.errors }}
-                                        </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <h2 class="h5 my-4">Address</h2>
-                                            <div class="row">
-                                                <div class="col-sm-9 mb-3">
-                                                    <div class="form-group">
-                                                        <label for="address">Address</label>
-                                                        <input name="address" class="form-control" id="address" type="text"
-                                                               placeholder="Enter your home address" value="{{ form.initial.address|default:'' }}" required>
-                                                        {% if form.address.errors %}
-                                                            <span style="color: red;margin: 0">
-                                            {{ form.address.errors }}
-                                        </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-3 mb-3">
-                                                    <div class="form-group">
-                                                        <label for="number">Number</label>
-                                                        <input name="number" class="form-control" id="number" type="number"
-                                                               placeholder="No." value="{{ form.initial.number|default:'' }}" required>
-                                                        {% if form.number.errors %}
-                                                            <span style="color: red;margin: 0">
-                                            {{ form.number.errors }}
-                                        </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-sm-4 mb-3">
-                                                    <div class="form-group">
-                                                        <label for="city">City</label>
-                                                        <input name="city" class="form-control" id="city" type="text" placeholder="City"
-                                                               value="{{ form.initial.city|default:'' }}" required>
-                                                        {% if form.city.errors %}
-                                                            <span style="color: red;margin: 0">
-                                            {{ form.city.errors }}
-                                        </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-4">
-                                                    <div class="form-group">
-                                                        <label for="zip">ZIP</label>
-                                                        <input name="zip" class="form-control" id="zip" type="tel" placeholder="ZIP"
-                                                               value="{{ form.initial.zip|default:'' }}" required>
-                                                        {% if form.zip.errors %}
-                                                            <span style="color: red;margin: 0">
-                                            {{ form.zip.errors }}
-                                        </span>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mt-3">
-                                                <a class="btn btn-outline-light text-gray-700" href="{% url 'account:account_profile' %}"><i class="fas fa-angle-left mr-2"></i>Return</a>
-                                                <button type="submit" class="prm-btn btn mx-2">Update Detail</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+        <div class="tab-pane" id="billing">
+            <h6>BILLING SETTINGS</h6>
+            <hr>
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <!-- Billing card 3-->
+                    <div class="card h-100 border-start-lg border-start-success">
+                        <div class="card-body">
+                            <div class="small text-muted">Current plan</div>
+                            <div class="h3 d-flex align-items-center">{{ request.user.get_active_subscriptions.0.plan.product.name }}</div>
+                            <div class="h5 d-flex align-items-center">Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</div>
+                            {#                        <a class="text-arrow-icon small text-success" href="#!">#}
+                            {#                            Upgrade plan#}
+                            {#                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>#}
+                            {#                        </a>#}
                         </div>
                     </div>
-                    <div class="tab-pane" id="account">
-                        <h6>ACCOUNT SETTINGS</h6>
-                        <hr>
-                        <form>
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Enter your username" value="kennethvaldez">
-                                <small id="usernameHelp" class="form-text text-muted">After changing your username, your old username becomes available for anyone else to claim.</small>
-                            </div>
-                            <hr>
-                            <div class="form-group">
-                                <label class="d-block text-danger">Delete Account</label>
-                                <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>
-                            </div>
-                            <button class="btn btn-danger" type="button">Delete Account</button>
-                        </form>
-                    </div>
-                    <div class="tab-pane" id="security">
-                        <h6>SECURITY SETTINGS</h6>
-                        <hr>
-                        {% include 'account/password_change.html' %}
-                        <hr>
-                        <form>
-                            <div class="form-group">
-                                <label class="d-block">Two Factor Authentication</label>
-                                {% if default_device %}
-                                    <h6>{% blocktrans trimmed %}Congratulations, you've successfully enabled two-factor
-                                        authentication.{% endblocktrans %}</h6>
-                                    <p>{% blocktrans trimmed %}However we strongly discourage you to do so, you can
-                                        also disable two-factor authentication for your account.{% endblocktrans %}</p>
-                                    <div class="mt-3">
-                                        <p><a class="btn btn-secondary" href="{% url 'two_factor:disable' %}">
-
-                                            {% trans "Disable Two-Factor Authentication" %}</a>
-                                            <a href="{% url 'two_factor:profile' %}"
-                                               class="btn btn btn-link">{% trans "Back to Account Security" %}</a></p>
-                                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <!-- Billing card 2-->
+                    <div class="card h-100 border-start-lg border-start-secondary">
+                        <div class="card-body">
+                            <div class="small text-muted">Current monthly bill</div>
+                            <div class="h3">${{ request.user.get_active_subscriptions.0.plan.amount}}</div>
+                            <div class="small text-muted">Next payment due</div>
+                            <div class="h3">{{ request.user.get_active_subscriptions.0.current_period_end.date }}</div>
+                            {#                        <a class="text-arrow-icon small text-secondary" href="#!">#}
+                            {#                            View payment history#}
+                            {#                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>#}
+                            {#                        </a>#}
+                            {% for subscription in user.get_active_subscriptions %}
+                                {% if subscription.cancel_at_period_end %}
+                                    <p>Subscription is set to be canceled at the end of the billing period.</p>
                                 {% else %}
-                                    <p>{% blocktrans trimmed %}Two-factor authentication is not enabled for your
-                                        account. Enable two-factor authentication for enhanced account
-                                        security.{% endblocktrans %}</p>
-                                    <p><a href="{% url 'two_factor:setup' %}" class="prm-btn btn">
-                                        {% trans "Enable Two-Factor Authentication" %}</a>
-                                    </p>
+                                    <a href="{% url 'subscriptions:CancelSubscriptionView' %}" class="prm-btn btn my-2" id="cancel_subscription" style="background-color: var(--clr-red-purple-1);color:white;">
+                                        Cancel subscription
+                                    </a>
                                 {% endif %}
-                                <p class="small text-muted mt-2">Two-factor authentication adds an additional layer of security to your account by requiring more than just a password to log in.</p>
-                            </div>
-                        </form>
-                        <hr>
-                        <form>
-                            <div class="form-group mb-0">
-                                <label class="d-block">Sessions</label>
-                                <p class="font-size-sm text-secondary">This is a list of devices that have logged into your account. Revoke any sessions that you do not recognize.</p>
-                                <ul class="list-group list-group-sm">
-                                    <li class="list-group-item has-icon">
-                                        <div>
-                                            <h6 class="mb-0">San Francisco City 190.24.335.55</h6>
-                                            <small class="text-muted">Your current session seen in United States</small>
-                                        </div>
-                                        <button class="btn btn-light btn-sm ml-auto" type="button">More info</button>
-                                    </li>
-                                </ul>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="tab-pane" id="notification">
-                        <h6>STORAGE INFORMATION</h6>
-                        <hr>
-                        <div class="col-12 mb-4">
-                            <div class="card card-body bg-white border-light shadow-sm mb-4">
-                                <h2 class="h5 mb-4">Storage information</h2>
-                                <!-- Create a canvas element to display the chart -->
-                                <canvas id="storageUsageChart"></canvas>
-                            </div>
+                            {% empty %}
+                                <p>No active subscriptions found.</p>
+                            {% endfor %}
                         </div>
                     </div>
-                     <div class="tab-pane" id="billing">
-                <h6>BILLING SETTINGS</h6>
-                <hr>
-                <div class="card-body">                <div>
-                  <h5>{{ request.user.get_active_subscriptions.0.plan.product.name }}</h5>
-                  <p>Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
-
-                  <div class="d-flex">
-{#                    <a href="{% url 'ChangeSubscriptionView' %}" class="btn btn-success my-2 me-2">#}
-{#                      Change#}
-{#                    </a>#}
-                    <a href="{% url 'subscriptions:CancelSubscriptionView' %}" class="btn btn-danger my-2">
-                      Cancel subscription
-                    </a>
-                  </div>
                 </div>
-</div>
-                <form>
-                  <div class="form-group">
-                    <label class="d-block mb-0">Payment Method</label>
-                    <div class="small text-muted mb-3">You have not added a payment method</div>
-                    <button class="btn btn-info" type="button">Add Payment Method</button>
-                  </div>
-                  <div class="form-group mb-0">
-                    <label class="d-block">Payment History</label>
-                    <div class="border border-gray-500 bg-gray-200 p-3 text-center font-size-sm">You have not made any payment.</div>
-                  </div>
-                </form>
-              </div>
+                <!-- Billing history card-->
+                <div class="card mb-4">
+                    <div class="card-header">Billing History</div>
+                    <div class="card-body p-0">
+                        <!-- Billing history table-->
+                        <div class="table-responsive table-billing-history">
+                            {% include 'account/invoice_list.html' %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 {% endblock %}
 {% block script %}
-<script type="text/javascript">
+    <script>
+
+        $('#cancel_subscription').on('click', function(e) {
+            e.preventDefault();
+            // Set the modal title
+            $("#confirmModalLabel").text("Cancel Subscription");
+            $("#confirmButton").text("Confirm");
+            $("#dismissButton").text("Discard");
+            $("#confirmModal").attr("data-keyboard", "true");
+            $("#confirmModal").attr("data-backdrop", "dynamic");
+            // Set the modal body with the form
+            var confirmationMessage = "Are you sure you want to cancel your subscription? Your subscription will be canceled at the end of the billing period.";
+            $("#confirmMessage").html(confirmationMessage);
+            // Show the modal
+            $("#confirmModal").modal("show");
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get the active tab from local storage if it exists
+            const activeTab = localStorage.getItem("activeTab");
+
+            // If an active tab is found, add the 'active' class to it
+            if (activeTab) {
+                const activeLink = document.querySelector(`a[href='${activeTab}']`);
+                if (activeLink) {
+                    activeLink.classList.add("active");
+                    const activePane = document.querySelector(activeTab);
+                    if (activePane) {
+                        activePane.classList.add("active");
+                    }
+                }
+            }
+
+            // Add a click event listener to all tab links
+            const tabLinks = document.querySelectorAll(".nav-link");
+            tabLinks.forEach(function(link) {
+                link.addEventListener("click", function(event) {
+                    // Remove the 'active' class from all tab links and tab panes
+                    tabLinks.forEach(function(link) {
+                        link.classList.remove("active");
+                    });
+                    const tabPanes = document.querySelectorAll(".tab-pane");
+                    tabPanes.forEach(function(pane) {
+                        pane.classList.remove("active");
+                    });
+
+                    // Add the 'active' class to the clicked tab link and corresponding tab pane
+                    event.target.classList.add("active");
+                    const activeTab = event.target.getAttribute("href");
+                    const activePane = document.querySelector(activeTab);
+                    if (activePane) {
+                        activePane.classList.add("active");
+                    }
+
+                    // Store the active tab in local storage
+                    localStorage.setItem("activeTab", activeTab);
+                });
+            });
+        });
+    </script>
+    <script type="text/javascript">
         var cropper, imageFile, base64ImageString, cropX, cropY, cropWidth, cropHeight;
 
         enableImageOverlay()

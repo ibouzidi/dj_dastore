@@ -29,7 +29,7 @@ import json
 import base64
 import requests
 from django.core import files
-from djstripe.models import Plan
+from djstripe.models import Plan, Invoice
 from djstripe.models import Product, Price
 
 TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
@@ -286,6 +286,21 @@ def account_view(request, *args, **kwargs):
         context['form'] = form
     context[
         'DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
+    customer = request.user.customer
+    if customer:
+        invoices = Invoice.objects.filter(customer=customer)
+        context['invoices'] = invoices
+
+    storage_used, storage_limit, storage_limit_unit, storage_limit_used \
+        = calculate_storage_usage(account)
+    # Store the values in the context dictionary
+    context['storage_used'] = storage_used
+    context['storage_limit'] = storage_limit
+    context['storage_limit_unit'] = storage_limit_unit
+    context['storage_used_unit'] = storage_limit_used
+
+    context['default_device'] = default_device(
+        request.user) if request.user.is_authenticated else None
     return render(request, "account/account.html", context)
 
 

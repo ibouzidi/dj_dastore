@@ -9,10 +9,10 @@ from djstripe.models import Customer, Plan, Product, Price
 from django.contrib.auth import get_user_model, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from djstripe import webhooks
-from djstripe.models import Subscription
+from djstripe.models import Subscription, Invoice
 from django.contrib import messages
 import stripe
-
+from django.contrib.auth.models import Group
 
 from account.models import Account
 
@@ -151,6 +151,18 @@ class CancelConfirmView(View):
         #     return redirect('subscriptions:CreateCheckoutSession')
 
 
+def move_user_to_group(user, old_group_name, new_group_name):
+    from django.contrib.auth.models import Group
+
+    try:
+        old_group = Group.objects.get(name=old_group_name)
+        new_group = Group.objects.get(name=new_group_name)
+        user.groups.remove(old_group)
+        user.groups.add(new_group)
+    except Group.DoesNotExist:
+        print(f"Group does not exist: {old_group_name} or {new_group_name}")
+
+
 class CancelSubscriptionView(View):
     def get(self, request):
         if len(request.user.get_active_subscriptions) > 0:
@@ -158,7 +170,12 @@ class CancelSubscriptionView(View):
                 request.user.get_active_subscriptions[0].id,
                 cancel_at_period_end=True,
             )
-            messages.success(request, "Subscription will be cancelled at the end of the billing period")
+            # Move user to 'Inactive Subscribers' group
+            move_user_to_group(request.user, 'active_subscribers',
+                               'inactive_subscribers')
+
+            messages.success(request, "Subscription will be cancelled at"
+                                      " the end of the billing period")
         return redirect("account:account_profile")
 
 
@@ -180,6 +197,9 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     plan_id = line['plan']['id']
                     plan = get_object_or_404(Plan, id=plan_id)
                     user.storage_limit = plan.product.metadata["storage_limit"]
+                    # Add the user to the 'Active Subscribers' group
+                    group = Group.objects.get(name='active_subscribers')
+                    user.groups.add(group)
                     user.save()
     return
 
@@ -189,9 +209,18 @@ def subscription_cancelled_event_listener(event, **kwargs):
     subscription_id = event.data["object"]["id"]
     try:
         subscription = Subscription.objects.get(id=subscription_id)
+        user = subscription.user
+        print("subscription.user")
+        print("subscription.user")
+        print("subscription.user")
+        print(user)
         subscription.canceled_at = timezone.now()
         subscription.status = "cancelled"
         subscription.save()
+
+        # Move user to 'Inactive Subscribers' group
+        move_user_to_group(user, 'active_subscribers', 'inactive_ubscribers')
+
     except Subscription.DoesNotExist:
         print("Subscription does not exist in the database")
     return
