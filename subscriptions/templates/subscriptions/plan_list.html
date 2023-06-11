@@ -82,26 +82,72 @@
 {% block script %}
     <script>
         const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";
+function handleSelectPlan(button) {
+    const planId = button.getAttribute("data-id");
+    // Send a POST request to set the selected plan in the Django session
+    fetch("{% url 'subscriptions:set_selected_plan' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        body: JSON.stringify({ plan_id: planId })
+    })
+        .then(response => response.json())
+        .then(data => {
+           if (data.status === 'success') {
+                // The selected plan was successfully set in the Django session
+                // Redirect the user to the registration page or the checkout page as before
+                if (isAuthenticated) {
+                    window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}";
+                } else {
+                    window.location.href = "{% url 'account:RegisterView' %}";
+                }
+            } else {
+                // Handle error
+                console.error("Failed to set selected plan: " + data.error);
+                console.error("Failed to set selected plan:", data);
+            }
+        });
+}
 
-        function handleSelectPlan(button) {
-            const planId = button.getAttribute("data-id");
-            localStorage.setItem("selectedPlan", planId);
-            setCookie("selectedPlan", planId);
-            if (isAuthenticated) {
-                window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}"
-            }else {
-                window.location.href = "{% url 'account:RegisterView' %}"
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
             }
         }
+    }
+    return cookieValue;
+}
 
-        function setCookie(name,value,days) {
-            var expires = "";
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days*24*60*60*1000));
-                expires = "; expires=" + date.toUTCString();
-            }
-            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
-        }
+        {#const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";#}
+        {##}
+        {#function handleSelectPlan(button) {#}
+        {#    const planId = button.getAttribute("data-id");#}
+        {#    localStorage.setItem("selectedPlan", planId);#}
+        {#    setCookie("selectedPlan", planId);#}
+        {#    if (isAuthenticated) {#}
+        {#        window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}"#}
+        {#    }else {#}
+        {#        window.location.href = "{% url 'account:RegisterView' %}"#}
+        {#    }#}
+        {#}#}
+            {##}
+            {#function setCookie(name,value,days) {#}
+            {#    var expires = "";#}
+            {#    if (days) {#}
+            {#        var date = new Date();#}
+            {#        date.setTime(date.getTime() + (days*24*60*60*1000));#}
+            {#        expires = "; expires=" + date.toUTCString();#}
+            {#    }#}
+            {#    document.cookie = name + "=" + (value || "")  + expires + "; path=/";#}
+            {#}#}
     </script>
 {% endblock script %}

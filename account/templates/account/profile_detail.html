@@ -38,7 +38,7 @@
                                 <h5>{{ user.username }}</h5>
                                 <p class="prm-btn btn purple">
                                     {% if request.user.get_active_subscriptions %}
-                                        Subscription Plan : {{ request.user.get_active_subscriptions.0.plan.product.name }}
+                                        Plan : {{ request.user.get_active_subscriptions.0.plan.product.name }}
                                         <p>Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
                                     {% else %}No active subscription</p>
                                     {% endif %}

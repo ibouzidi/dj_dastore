@@ -1,8 +1,11 @@
 import datetime
+import json
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from django.views.generic import View, TemplateView
 from django.http.response import JsonResponse
 from djstripe.models import Customer, Plan, Product, Price
@@ -46,6 +49,33 @@ class SubListView(View):
             "plans": plans
         }
         return render(request, "subscriptions/plan_list.html", context)
+
+@csrf_exempt
+@require_POST
+def set_selected_plan(request):
+    """
+    Store the selected plan ID into Django's session.
+
+    Expect a JSON object in the request body with this format:
+    {
+        "plan_id": "plan_id_here"
+    }
+    """
+    # Parse the JSON request body
+    try:
+        data = json.loads(request.body)
+        plan_id = data.get("plan_id")
+    except (json.JSONDecodeError, TypeError):
+        return JsonResponse({"error": "Invalid JSON request body"}, status=400)
+
+    # Make sure the plan_id is valid
+    if not Plan.objects.filter(id=plan_id).exists():
+        return JsonResponse({"error": "Invalid plan_id"}, status=400)
+
+    # Store the plan_id into Django's session
+    request.session["plan_id"] = plan_id
+
+    return JsonResponse({"status": "success"})
 
 
 class CreateCheckoutSession(View):
@@ -107,12 +137,10 @@ class CreateCheckoutSession(View):
 class SuccessView(View):
     def get(self, request):
         # Clean up the session and cookies after registration
-        if 'user_id' in request.session:
-            del request.session['user_id']
-        if 'plan_id' in request.session:
-            del request.session['plan_id']
+        request.session.pop('user_id', None)
+        request.session.pop('plan_id', None)
         response = redirect("account:login")
-        messages.success(request, "Subscription successfull !")
+        messages.success(request, "Subscription successful!")
         response.delete_cookie('selectedPlan')
         return response
 
@@ -135,10 +163,9 @@ class CancelConfirmView(View):
             # Cancel the subscription
             user.delete()  # Delete the user or disable the account as needed
             # Clean up the session and cookies after registration
-            if 'user_id' in request.session:
-                del request.session['user_id']
-            if 'plan_id' in request.session:
-                del request.session['plan_id']
+            request.session.pop('user_id', None)
+            request.session.pop('plan_id', None)
+            response = redirect("account:login")
             response = redirect("home")
             messages.error(request, "Subscription canceled")
             response.delete_cookie('selectedPlan')

@@ -38,15 +38,12 @@ TEMP_PROFILE_IMAGE_NAME = "temp_profile_image.png"
 class RegisterView(View):
     def get(self, request):
         form = RegistrationForm()
-        plan_id = request.COOKIES.get("selectedPlan")
+        plan_id = request.session.get("plan_id")
 
         if not plan_id:
-            if 'plan_id' in request.session:
-                del request.session['plan_id']
-            messages.info(request, 'Please select a plan before registering.')
+            messages.info(request, 'Please select a plan before '
+                                   'registering.')
             return redirect("home")
-
-        # plan = get_object_or_404(Plan, id=plan_id)
 
         try:
             plan = Plan.objects.get(id=plan_id)
@@ -56,19 +53,12 @@ class RegisterView(View):
 
         # You can still check if the plan's product is active
         if not plan.product.active:
-            messages.error(request,
-                           'The selected plan is not currently available.')
+            messages.error(request, 'The selected plan is not currently '
+                                    'available.')
             return redirect("home")
 
-        # Store the plan_id in the session
-        request.session["plan_id"] = plan_id
-
-        # Delete the cookie
-        response = render(request, 'account/register.html',
-                          {'form': form, 'plan': plan})
-        response.delete_cookie('selectedPlan')
-
-        return response
+        return render(request, 'account/register.html',
+                      {'form': form, 'plan': plan})
 
     def post(self, request):
         form = RegistrationForm(request.POST)
