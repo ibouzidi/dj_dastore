@@ -17,7 +17,7 @@
             <th scope="row">{{ forloop.counter }}</th>
             <td>{{ invoice.number }}</td>
             <td>{{ invoice.customer.email }}</td>
-            <td>{{ invoice.period_start }} - {{ invoice.period_end }}</td>
+            <td>{{ invoice.period_start.date }}</td>
             <td>{{ invoice.total }} {{ invoice.currency|upper }}</td>
             <td>
                 {% if invoice.status == "paid" %}

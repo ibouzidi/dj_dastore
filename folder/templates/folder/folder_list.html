@@ -78,6 +78,7 @@
             </div>
         </div>
         <div class="col-md-10 col-lg-10 main-content">
+        {% if custom_folder_list or backup_list %}
             <!-- Custom Folder List -->
             <div class="row " id="folderContainer">
                 {% if folder_list|length > 0 %}
@@ -106,6 +107,8 @@
                             <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
+{#                            {% empty %}#}
+
                         </div>
                     </div>
                 {% endfor %}
@@ -173,6 +176,9 @@
                     </div>
                 {% endfor %}
             </div>
+        {% else %}
+            <p class="text-center mt-5">This folder is empty.</p>
+        {% endif %}
         </div>
     </div>
     </div>
