@@ -209,6 +209,8 @@ JAZZMIN_SETTINGS = {
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.signed_cookies'
 
+SESSION_COOKIE_AGE = 86400  # 24 hours
+
 LOGIN_URL = 'two_factor:login'
 
 LOGIN_REDIRECT_URL = 'account:account_profile'

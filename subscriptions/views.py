@@ -83,13 +83,18 @@ class CreateCheckoutSession(View):
         user_id = request.session.get("user_id")
         plan_id = request.session.get("plan_id")
 
-        if not user_id and not plan_id and request.user.is_authenticated:
+        if not user_id or not plan_id or request.user.is_authenticated:
             user_id = request.user.id
-            plan_id = request.COOKIES.get("selectedPlan")
-
+            plan_id = request.session.get("plan_id")
+        print("plan_id")
+        print(plan_id)
         # Retrieve the plan
-        plan = stripe.Plan.retrieve(plan_id)
         user = Account.objects.get(id=user_id)
+
+        # Check if the user already has an active subscription
+        if user.get_active_subscriptions:
+            messages.error(request, 'You already have an active subscription.')
+            return redirect("home")  # Or wherever you want to redirect
 
         customer = Customer.objects.filter(subscriber=user).first()
 
@@ -98,9 +103,6 @@ class CreateCheckoutSession(View):
             customer = Customer.sync_from_stripe_data(customer_data)
             customer.subscriber = user
             customer.save()
-
-        # get the trial period
-        # trial_period_days = plan['trial_period_days']
 
         subscription_data = {
             "items": [
@@ -112,16 +114,6 @@ class CreateCheckoutSession(View):
                 "user_id": user.id,
             }
         }
-
-        # if trial_period_days:
-        #     subscription_data.update({
-        #         "trial_period_days": trial_period_days,
-        #         "trial_settings": {
-        #             "end_behavior": {
-        #                 "missing_payment_method": "cancel"
-        #             }
-        #         }
-        #     })
 
         session = stripe.checkout.Session.create(
             customer=customer.id,
@@ -155,27 +147,37 @@ class CancelConfirmView(View):
         return render(request, 'subscriptions/sub_cancel_confirm.html')
 
     def post(self, request):
-        user_id = request.session.get("user_id")
-        user = Account.objects.get(id=user_id)
-        customer, _ = Customer.objects.get_or_create(subscriber=user)
-
         if 'cancel' in request.POST:
-            # Cancel the subscription
-            user.delete()  # Delete the user or disable the account as needed
+            user_id = request.session.get("user_id")
+            if user_id:
+                try:
+                    user = Account.objects.get(id=user_id)
+                    group = Group.objects.get(name='inactive_subscribers')
+                    user.groups.add(group)
+                    messages.error(request, "Subscription canceled")
+                except Account.DoesNotExist:
+                    messages.error(request, "The user does not exist.")
+            else:
+                messages.error(request, "Sorry but the session has expired.")
+
             # Clean up the session and cookies after registration
             request.session.pop('user_id', None)
             request.session.pop('plan_id', None)
-            response = redirect("account:login")
             response = redirect("home")
-            messages.error(request, "Subscription canceled")
             response.delete_cookie('selectedPlan')
+            return response
+
+        elif 'return_checkout' in request.POST:
+            user_id = request.session.get("user_id")
+            plan_id = request.session.get("plan_id")
+            if user_id and plan_id:
+                return redirect('subscriptions:CreateCheckoutSession')
+            else:
+                messages.error(request,
+                               "Sorry but the session has expired.")
+                return redirect("home")
+        else:
             return redirect("home")
-        # else:
-        #     # Update the session with the free plan ID and
-        #     # redirect to the CreateCheckoutSession view
-        #     free_plan_id = 'price_1N1TMcJWztZpQABxdveM1RvB'
-        #     request.session['plan_id'] = free_plan_id
-        #     return redirect('subscriptions:CreateCheckoutSession')
 
 
 def move_user_to_group(user, old_group_name, new_group_name):

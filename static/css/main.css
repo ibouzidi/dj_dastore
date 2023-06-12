@@ -16,7 +16,7 @@ Variables
     --clr-dark-1: #1C1C1C;
     --clr-shark: #1c1e1e;
     --clr-dark-2: #3c3c3c;
-    --clr-purple-1: #5f43b2;
+    --clr-purple-1: #875bff;
     --clr-purple-2: #deacf5;
     --clr-purple-3: #9754cb;
     --clr-red-purple-1: #bd2e95;
@@ -76,7 +76,7 @@ a:focus {
 p {
     font-size: 1rem;
     padding: 0;
-    color: var(--clr-grey-5);
+    color: var(--clr-dark-purple);
 }
 
 ul {

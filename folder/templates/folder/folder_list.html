@@ -78,82 +78,82 @@
             </div>
         </div>
         <div class="col-md-10 col-lg-10 main-content">
-        {% if custom_folder_list or backup_list %}
-            <!-- Custom Folder List -->
-            <div class="row " id="folderContainer">
-                {% if folder_list|length > 0 %}
-                    <p>Custom Folder</p>
-                {% endif %}
-                {% for custom_folder in custom_folder_list %}
-                    <div class="col-6 col-md-4 col-lg-2 mb-3">
-                        <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
-                            <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
-                                <div class="card-body text-center">
+            {% if custom_folder_list or backup_list %}
+                <!-- Custom Folder List -->
+                <div class="row " id="folderContainer">
+                    {% if folder_list|length > 0 %}
+                        <p>Custom Folder</p>
+                    {% endif %}
+                    {% for custom_folder in custom_folder_list %}
+                        <div class="col-6 col-md-4 col-lg-2 mb-3">
+                            <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
+                                <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
+                                    <div class="card-body text-center">
 
-                                    <i class="fas fa-folder fa-3x mb-3"></i>
-                                    <p class="card-title mb-0">{{ custom_folder.name }}</p>
-
-                                </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton">
-                                <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'folder:delete_folder_view' folder_id=custom_folder.pk %}">
-                                    <span class="fas fa-trash-alt mr-2"></span>Delete
-                                </a>
-                                <a href="#" class="dropdown-item rename-custom-folder"
-                                   data-folder-id="{{ custom_folder.pk }}" data-form-url="{% url 'folder:folder_rename' pk=custom_folder.pk %}">
-                                    <span class="fas fa-edit mr-2"></span>Rename
-                                </a>
-                            </div>
-                            <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
-{#                            {% empty %}#}
-
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-            <!-- File List -->
-            <div class="row" id="folderContainer">
-                {% if file_list|length > 0 %}
-                    <p>Your Backup</p>
-                {% endif %}
-                {% for backup in backup_list %}
-                    <div class="col-6 col-md-4 col-lg-2 mb-3">
-                        <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
-                            <a href="{% url 'extbackup:view_zip_content' backup.0  %}" class="text-decoration-none">
-                                <div class="card-body text-center">
-                                    <div class="icon-container">
                                         <i class="fas fa-folder fa-3x mb-3"></i>
+                                        <p class="card-title mb-0">{{ custom_folder.name }}</p>
 
-                                        <span class="font-weight-normal">
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton">
+                                    <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'folder:delete_folder_view' folder_id=custom_folder.pk %}">
+                                        <span class="fas fa-trash-alt mr-2"></span>Delete
+                                    </a>
+                                    <a href="#" class="dropdown-item rename-custom-folder"
+                                       data-folder-id="{{ custom_folder.pk }}" data-form-url="{% url 'folder:folder_rename' pk=custom_folder.pk %}">
+                                        <span class="fas fa-edit mr-2"></span>Rename
+                                    </a>
+                                </div>
+                                <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                {#                            {% empty %}#}
+
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <!-- File List -->
+                <div class="row" id="folderContainer">
+                    {% if file_list|length > 0 %}
+                        <p>Your Backup</p>
+                    {% endif %}
+                    {% for backup in backup_list %}
+                        <div class="col-6 col-md-4 col-lg-2 mb-3">
+                            <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
+                                <a href="{% url 'extbackup:view_zip_content' backup.0  %}" class="text-decoration-none">
+                                    <div class="card-body text-center">
+                                        <div class="icon-container">
+                                            <i class="fas fa-folder fa-3x mb-3"></i>
+
+                                            <span class="font-weight-normal">
                                 <i id="hash-check-icon-{{ backup.0 }}" class="fa fa-question-circle text-warning" data-toggle="tooltip" data-placement="top" title="Integrity check: pending" style="display: none"></i>
                                 {{backup.1}}
                                 <i id="hash-check-spinner-{{ backup.0 }}" class="fa fa-spinner fa-spin d-none"></i>
                             </span>
+                                        </div>
                                     </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton" id="menu-{{ backup.0 }}">
+                                    <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' backup.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
+                                    <a class="dropdown-item text-info check-hash" href="#" data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
+                                        <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>Check Integrity
+                                    </a>
+                                    <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
+                                        <span class="fas fa-info-circle mr-2"></span>Detail
+                                    </a>
+                                    <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_file_view' file_id=backup.0 %}">
+                                        <span class="fas fa-trash-alt mr-2"></span>Delete
+                                    </a>
                                 </div>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton" id="menu-{{ backup.0 }}">
-                                <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' backup.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
-                                <a class="dropdown-item text-info check-hash" href="#" data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
-                                    <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>Check Integrity
-                                </a>
-                                <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
-                                    <span class="fas fa-info-circle mr-2"></span>Detail
-                                </a>
-                                <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_file_view' file_id=backup.0 %}">
-                                    <span class="fas fa-trash-alt mr-2"></span>Delete
-                                </a>
-                            </div>
-                            <div id="detail-backup" class="d-none">
-                                <div class="row">
-                                    <div class="col-4 font-weight-bold">Name:</div>
-                                    <div class="col-8"><span id="file-name-{{ backup.1 }}">{{ backup.1 }}</span></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-4 font-weight-bold">Description:</div>
-                                    <div class="col-8">
+                                <div id="detail-backup" class="d-none">
+                                    <div class="row">
+                                        <div class="col-4 font-weight-bold">Name:</div>
+                                        <div class="col-8"><span id="file-name-{{ backup.1 }}">{{ backup.1 }}</span></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 font-weight-bold">Description:</div>
+                                        <div class="col-8">
                             <span id="file-description-{{ backup.2 }}">
                                 {% if backup.2|default_if_none:"" == "" %}
                                     No description for this Backup.
@@ -161,24 +161,24 @@
                                     {{ backup.2 }}
                                 {% endif %}
                             </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4 font-weight-bold">Size:</div>
+                                        <div class="col-8"><span id="file-size-{{ backup.4 }}">{{ backup.4|sizify }}</span></div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-4 font-weight-bold">Size:</div>
-                                    <div class="col-8"><span id="file-size-{{ backup.4 }}">{{ backup.4|sizify }}</span></div>
-                                </div>
-                            </div>
 
-                            <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v"></i>
-                            </button>
+                                <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% else %}
-            <p class="text-center mt-5">This folder is empty.</p>
-        {% endif %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="text-center mt-5">This folder is empty.</p>
+            {% endif %}
         </div>
     </div>
     </div>
@@ -247,6 +247,11 @@
                 }
                 // Show the modal
                 $("#confirmModal").modal("show");
+
+                // Add event listener to the discard button
+                $("#dismissButton, .btn-close").on("click", function() {
+                    location.reload(); // Refresh the page
+                });
             });
 
             /**

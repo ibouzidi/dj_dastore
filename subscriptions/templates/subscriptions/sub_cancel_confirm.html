@@ -21,15 +21,23 @@
 
 
 {% block content %}
-     <section class="py-5">
+    <section class="py-5">
         <div class="container">
-    <h2>Cancel Subscription</h2>
-    <p>Are you sure you want to cancel your subscription?</p>
-    <form method="post" action="{% url 'subscriptions:CancelConfirmView' %}">
-        {% csrf_token %}
-        <button type="submit" name="cancel" class="prm-btn btn" style="background-color: var(--clr-red-purple-1);color:white;">Yes, cancel subscription</button>
-{#        <button type="submit" name="free_plan" class="btn btn-secondary">Try the free plan.</button>#}
-    </form>
+            <h2>Cancel Subscription</h2>
+            <p>Are you sure you want to cancel your subscription?</p>
+            <p>
+                Please note that if you cancel your checkout process now,
+                you will have 24 hours to complete your payment.
+                If your payment is not received within this period,
+                your account will be deactivated and potentially removed.
+                Please ensure you complete your payment within the next 24 hours
+                if you wish to continue using our services.
+            </p>
+            <form method="post" action="{% url 'subscriptions:CancelConfirmView' %}">
+                {% csrf_token %}
+                <button type="submit" name="cancel" class="prm-btn btn" style="background-color: var(--clr-red-purple-1);color:white;">Yes, cancel subscription</button>
+                <button type="submit" name="return_checkout" class="prm-btn btn mx-2">Return to checkout</button>
+            </form>
         </div>
-     </section>
+    </section>
 {% endblock %}

@@ -145,16 +145,17 @@
                         }
                         if ( xhr.status === 200 ) {
                             isUploadComplete = true
-                            s.message( response.message + ' <a href="' + url + '">Click here to upload again</a>.', 0, dropElement, xhr.responseText, s );
+                            s.message( response.message, 0, dropElement, xhr.responseText, s );
+                            {#s.message( response.message + ' <a href="' + url + '">Click here to upload again</a>.', 0, dropElement, xhr.responseText, s );#}
                             dropElement.setAttribute( 'data-response', xhr.responseText );
-                            dropElement.querySelector('input[type="file"]').setAttribute('disabled', 'disabled');
-                            $(".dragAndUpload ").css("cursor", "default");
-                            $(".dragAndUploadTextSmall a").css("cursor", "pointer");
+                            {#dropElement.querySelector('input[type="file"]').setAttribute('disabled', 'disabled');#}
+                            {#$(".dragAndUpload ").css("cursor", "default");#}
+                            {#$(".dragAndUploadTextSmall a").css("cursor", "pointer");#}
                         } else if ( xhr.status === 400 ) {
-                            s.message( response.message + ' <a href="' + url + '">Click here to upload again</a>.', 1, dropElement, xhr.responseText, s );
-                            dropElement.querySelector('input[type="file"]').setAttribute('disabled', 'disabled');
-                            $(".dragAndUpload ").css("cursor", "default");
-                            $(".dragAndUploadTextSmall a").css("cursor", "pointer");
+                            s.message( response.message, 1, dropElement, xhr.responseText, s );
+                            {#dropElement.querySelector('input[type="file"]').setAttribute('disabled', 'disabled');#}
+                            {#$(".dragAndUpload ").css("cursor", "default");#}
+                            {#$(".dragAndUploadTextSmall a").css("cursor", "pointer");#}
                         } else {
                             s.message( 'Upload failed with status ' + xhr.status + '.', 1, dropElement, xhr.responseText, s );
                         }

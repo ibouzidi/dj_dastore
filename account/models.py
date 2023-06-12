@@ -74,8 +74,6 @@ class Account(AbstractBaseUser, PermissionsMixin):
     plan_id = models.CharField(max_length=255, null=True, blank=True)
     request_counts = models.PositiveIntegerField(default=0)
     last_request_timestamp = models.DateTimeField(null=True, blank=True)
-    subscription = models.ForeignKey(Subscription, on_delete=models.SET_NULL,
-                                     null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
