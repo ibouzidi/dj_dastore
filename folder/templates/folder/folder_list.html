@@ -72,7 +72,7 @@
                 <a href="#" class="nav-link action-btn mx-2 add-file-button" title="Upload">
                     <i class="material-symbols-outlined">cloud_upload</i>
                 </a>
-                <a href="#" class="nav-link action-btn mx-2" title="Download">
+                <a id="download_selected_mobile" class="nav-link action-btn mx-2" title="Download Selected">
                     <i class="material-symbols-outlined">cloud_download</i>
                 </a>
             </div>
@@ -232,7 +232,7 @@
         {#    form.appendTo('body').submit();#}
         {#});#}
 
-            $('#download_selected').on('click', function(e) {
+            $('#download_selected, #download_selected_mobile').on('click', function(e) {
                 e.preventDefault();
 
                 $('#bulkDeleteForm').attr('action', "{% url 'extbackup:bulk_download' %}");
