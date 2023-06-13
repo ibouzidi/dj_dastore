@@ -103,6 +103,27 @@ h6 {
     color: var(--clr-white);
 }
 
+.checkbox-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 10px;
+}
+
+.form-check-input[type="checkbox"] {
+    transform: scale(0.8)!important;
+}
+
+[data-aos] {
+  pointer-events: none;
+}
+.aos-animate {
+  pointer-events: auto;
+}
+.aos-init[data-aos][data-aos].aos-animate {
+  transform: unset;
+}
+
 .prm-btn {
     background-color: var(--clr-purple-1);
     color: var(--clr-white);

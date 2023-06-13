@@ -77,116 +77,183 @@
                 </a>
             </div>
         </div>
+
         <div class="col-md-10 col-lg-10 main-content">
+            <!-- Select all checkbox -->
             {% if custom_folder_list or backup_list %}
-                <!-- Custom Folder List -->
-                <div class="row " id="folderContainer">
-                    {% if folder_list|length > 0 %}
-                        <p>Custom Folder</p>
-                    {% endif %}
-                    {% for custom_folder in custom_folder_list %}
-                        <div class="col-6 col-md-4 col-lg-2 mb-3">
-                            <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
-                                <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
-                                    <div class="card-body text-center">
+                <form method="post" action="{% url 'extbackup:bulk_delete_view' %}" id="bulkDeleteForm">
+                    {% csrf_token %}
+                    <div class="form-check d-flex justify-content-end align-items-center mb-3">
+                        <input class="form-check-input mt-0" type="checkbox" id="selectAllCheckboxes" style="height:1.5em;width:1.5em;">
+                        <label class="form-check-label mx-2" for="selectAllCheckboxes">
 
-                                        <i class="fas fa-folder fa-3x mb-3"></i>
-                                        <p class="card-title mb-0">{{ custom_folder.name }}</p>
+                        </label>
+                        <button id="delete_selected" class="btn btn-danger" title="Delete Selected"><i class="icofont-delete-alt"> Delete All</i></button>
+                    </div>
+                    <!-- Custom Folder List -->
+                    <div class="row " id="folderContainer">
+                        {% if folder_list|length > 0 %}
+                            <p>Custom Folder</p>
+                        {% endif %}
+                        {% for custom_folder in custom_folder_list %}
+                            <div class="col-6 col-md-4 col-lg-2 mb-3">
+                                <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
+                                    <a href="{{ custom_folder.get_list_url }}?id={{ custom_folder.pk }}" class="text-decoration-none">
+                                        <div class="card-body text-center">
 
-                                    </div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton">
-                                    <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'folder:delete_folder_view' folder_id=custom_folder.pk %}">
-                                        <span class="fas fa-trash-alt mr-2"></span>Delete
-                                    </a>
-                                    <a href="#" class="dropdown-item rename-custom-folder"
-                                       data-folder-id="{{ custom_folder.pk }}" data-form-url="{% url 'folder:folder_rename' pk=custom_folder.pk %}">
-                                        <span class="fas fa-edit mr-2"></span>Rename
-                                    </a>
-                                </div>
-                                <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                                {#                            {% empty %}#}
-
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                <!-- File List -->
-                <div class="row" id="folderContainer">
-                    {% if file_list|length > 0 %}
-                        <p>Your Backup</p>
-                    {% endif %}
-                    {% for backup in backup_list %}
-                        <div class="col-6 col-md-4 col-lg-2 mb-3">
-                            <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
-                                <a href="{% url 'extbackup:view_zip_content' backup.0  %}" class="text-decoration-none">
-                                    <div class="card-body text-center">
-                                        <div class="icon-container">
                                             <i class="fas fa-folder fa-3x mb-3"></i>
+                                            <p class="card-title mb-0">{{ custom_folder.name }}</p>
+                                            <!-- Checkbox for bulk deletion -->
+                                            <div class="checkbox-container">
+                                                <input class="form-check-input mt-0 select-item " type="checkbox" name="folder_ids[]" value="{{ custom_folder.pk }}" data-name="{{ custom_folder.name }}" style="height:1.5em;width:1.5em;">
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton">
+                                        <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'folder:delete_folder_view' folder_id=custom_folder.pk %}">
+                                            <span class="fas fa-trash-alt mr-2"></span>Delete
+                                        </a>
+                                        <a href="#" class="dropdown-item rename-custom-folder"
+                                           data-folder-id="{{ custom_folder.pk }}" data-form-url="{% url 'folder:folder_rename' pk=custom_folder.pk %}">
+                                            <span class="fas fa-edit mr-2"></span>Rename
+                                        </a>
+                                    </div>
+                                    <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <!-- File List -->
+                    <div class="row" id="folderContainer">
+                        {% if file_list|length > 0 %}
+                            <p>Your Backup</p>
+                        {% endif %}
+                        {% for backup in backup_list %}
+                            <div class="col-6 col-md-4 col-lg-2 mb-3">
+                                <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
 
-                                            <span class="font-weight-normal">
+                                    <!-- Checkbox for bulk deletion -->
+                                    <div class="checkbox-container">
+                                        <input class="form-check-input mt-0 select-item" type="checkbox" name="file_ids[]" value="{{ backup.0 }}" data-name="{{ backup.1 }}" style="height:1.5em;width:1.5em;">
+                                    </div>
+
+                                    <a href="{% url 'extbackup:view_zip_content' backup.0  %}" class="text-decoration-none">
+                                        <div class="card-body text-center">
+                                            <div class="icon-container">
+                                                <i class="fas fa-folder fa-3x mb-3"></i>
+
+                                                <span class="font-weight-normal">
                                 <i id="hash-check-icon-{{ backup.0 }}" class="fa fa-question-circle text-warning" data-toggle="tooltip" data-placement="top" title="Integrity check: pending" style="display: none"></i>
                                 {{backup.1}}
                                 <i id="hash-check-spinner-{{ backup.0 }}" class="fa fa-spinner fa-spin d-none"></i>
                             </span>
+                                            </div>
+                                        </div>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-left position-absolute"aria-labelledby="dropdownMenuButton" id="menu-{{ backup.0 }}">
+                                        <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' backup.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
+                                        <a class="dropdown-item text-info check-hash" href="#" data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
+                                            <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>Check Integrity
+                                        </a>
+                                        <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
+                                            <span class="fas fa-info-circle mr-2"></span>Detail
+                                        </a>
+                                        <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_file_view' file_id=backup.0 %}">
+                                            <span class="fas fa-trash-alt mr-2"></span>Delete
+                                        </a>
+                                    </div>
+                                    <div id="detail-backup" class="d-none">
+                                        <div class="row">
+                                            <div class="col-4 font-weight-bold">Name:</div>
+                                            <div class="col-8"><span id="file-name-{{ backup.1 }}">{{ backup.1 }}</span></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 font-weight-bold">Description:</div>
+                                            <div class="col-8">
+                                                <span id="file-description-{{ backup.2 }}">
+                                                    {% if backup.2|default_if_none:"" == "" %}
+                                                        No description for this Backup.
+                                                    {% else %}
+                                                        {{ backup.2 }}
+                                                    {% endif %}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4 font-weight-bold">Size:</div>
+                                            <div class="col-8"><span id="file-size-{{ backup.4 }}">{{ backup.4|sizify }}</span></div>
                                         </div>
                                     </div>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton" id="menu-{{ backup.0 }}">
-                                    <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' backup.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
-                                    <a class="dropdown-item text-info check-hash" href="#" data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
-                                        <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>Check Integrity
-                                    </a>
-                                    <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
-                                        <span class="fas fa-info-circle mr-2"></span>Detail
-                                    </a>
-                                    <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_file_view' file_id=backup.0 %}">
-                                        <span class="fas fa-trash-alt mr-2"></span>Delete
-                                    </a>
-                                </div>
-                                <div id="detail-backup" class="d-none">
-                                    <div class="row">
-                                        <div class="col-4 font-weight-bold">Name:</div>
-                                        <div class="col-8"><span id="file-name-{{ backup.1 }}">{{ backup.1 }}</span></div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4 font-weight-bold">Description:</div>
-                                        <div class="col-8">
-                            <span id="file-description-{{ backup.2 }}">
-                                {% if backup.2|default_if_none:"" == "" %}
-                                    No description for this Backup.
-                                {% else %}
-                                    {{ backup.2 }}
-                                {% endif %}
-                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-4 font-weight-bold">Size:</div>
-                                        <div class="col-8"><span id="file-size-{{ backup.4 }}">{{ backup.4|sizify }}</span></div>
-                                    </div>
-                                </div>
 
-                                <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
+                                    <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    {% endfor %}
-                </div>
+                        {% endfor %}
+                    </div>
+                </form>
             {% else %}
                 <p class="text-center mt-5">This folder is empty.</p>
             {% endif %}
         </div>
     </div>
-    </div>
-    </div>
     {% include 'extbackup/upload_from.html' %}
 {% endblock content%}
 
 {% block script %}
+    <script>
+
+        $('#delete_selected').on('click', function(e) {
+            e.preventDefault();
+
+            // Set the modal title
+            $("#confirmModalLabel").text("Delete Confirmation");
+            $("#confirmButton").text("Confirm");
+            $("#dismissButton").text("Discard");
+            $("#confirmModal").attr("data-keyboard", "true");
+            $("#confirmModal").attr("data-backdrop", "dynamic");
+
+            // Set the modal body with the form
+            var confirmationMessage = '';
+            var selectedItems = $('.select-item:checked').map(function() {
+                return '<li>' + $(this).data('name') + '</li>'; // Wrap each item name in <li> tags
+            }).get();
+
+             if (selectedItems.length > 0) {
+                 $("#confirmButton").text("Confirm").show();
+                if(selectedItems.length > 10){
+                    confirmationMessage = '<p>Are you sure you want to delete the following ' + selectedItems.length + ' items?</p> <h6 style="color: red;">This action is irreversible.<p>';
+                }else{
+                confirmationMessage = 'Are you sure you want to delete these items? This action is irreversible. <ul>' + selectedItems.join('') + '</ul>';
+                }
+            } else {
+                confirmationMessage = 'No items selected for deletion.';
+                $("#confirmButton").text("Confirm").hide();
+            }
+            $("#confirmMessage").html(confirmationMessage);
+            // Show the modal
+            $("#confirmModal").modal("show");
+            // Submit the form when the confirm button is clicked
+            $("#confirmButton").on('click', function(e) {
+                e.preventDefault();
+                $("#bulkDeleteForm").submit();
+            });
+        });
+        $(document).ready(function() {
+            $('#selectAllCheckboxes').click(function() {
+                var isChecked = $(this).is(':checked');
+                $('.select-item').prop('checked', isChecked);
+            });
+
+            $('.select-item').click(function() {
+                var isAllChecked = $('.select-item:checked').length === $('.select-item').length;
+                $('#selectAllCheckboxes').prop('checked', isAllChecked);
+            });
+        });
+    </script>
     <script type="text/javascript">
         const urlParams = new URLSearchParams(window.location.search);
         var parentFolderId = urlParams.get("id") == undefined ? '' : urlParams.get("id").trim();

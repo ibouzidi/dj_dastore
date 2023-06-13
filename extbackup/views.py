@@ -314,6 +314,48 @@ class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
         file.delete()
 
 
+class BulkDeleteBackupsView(View):
+    def post(self, request, *args, **kwargs):
+        file_ids = self.request.POST.getlist('file_ids[]')
+        folder_ids = self.request.POST.getlist('folder_ids[]')
+
+        files = File.objects.filter(id__in=file_ids, user=request.user)
+        folders = Folder.objects.filter(id__in=folder_ids, user=request.user)
+
+        ftp_storage = default_storage
+        deleted_items = []
+
+        for file in files:
+            self.delete_file(file, ftp_storage)
+            deleted_items.append(file.name)
+
+        for folder in folders:
+            self.delete_folder(folder, ftp_storage, deleted_items)
+
+        if deleted_items:
+            messages.success(request, f"Items deleted successfully")
+
+        return HttpResponseRedirect(reverse('folder:folder_list'))
+
+    def delete_folder(self, folder, storage, deleted_items):
+        for child_folder in folder.children.all():
+            self.delete_folder(child_folder, storage, deleted_items)
+        for file in folder.files.all():
+            self.delete_file(file, storage)
+        deleted_items.append(folder.name)
+        folder.delete()
+
+    def delete_file(self, file, storage):
+        folder_path = f'uploads/upload_{file.user.username}/{file.file.name}/'
+        folder_files = storage.listdir(folder_path)[1]
+        for folder_file in folder_files:
+            storage.delete(f'{folder_path}{folder_file}')
+        storage.delete(folder_path)
+        file.user.storage_usage -= file.size
+        file.user.save()
+        file.delete()
+
+
 @login_required
 def view_zip_content(request, file_id):
     try:

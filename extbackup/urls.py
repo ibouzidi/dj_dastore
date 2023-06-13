@@ -15,4 +15,6 @@ urlpatterns = [
     path('refresh/', views.backup_refresh, name='backup_refresh'),
     path('check_file_hashes/<int:file_id>/', views.check_file_hashes,
          name='check_file_hashes'),
+    path('delete_selected/', views.BulkDeleteBackupsView.as_view(),
+         name='bulk_delete_view'),
 ]
