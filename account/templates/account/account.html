@@ -58,21 +58,21 @@
         </div>
         <div class="tab-pane" id="account">
             ????
-{#            <h6>ACCOUNT SETTINGS ????</h6>#}
-{#            <hr>#}
-{#            <form>#}
-{#                <div class="form-group">#}
-{#                    <label for="username">Username</label>#}
-{#                    <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Enter your username" value="kennethvaldez">#}
-{#                    <small id="usernameHelp" class="form-text text-muted">After changing your username, your old username becomes available for anyone else to claim.</small>#}
-{#                </div>#}
-{#                <hr>#}
-{#                <div class="form-group">#}
-{#                    <label class="d-block text-danger">Delete Account</label>#}
-{#                    <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>#}
-{#                </div>#}
-{#                <button class="btn btn-danger" type="button">Delete Account</button>#}
-{#            </form>#}
+            {#            <h6>ACCOUNT SETTINGS ????</h6>#}
+            {#            <hr>#}
+            {#            <form>#}
+            {#                <div class="form-group">#}
+            {#                    <label for="username">Username</label>#}
+            {#                    <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" placeholder="Enter your username" value="kennethvaldez">#}
+            {#                    <small id="usernameHelp" class="form-text text-muted">After changing your username, your old username becomes available for anyone else to claim.</small>#}
+            {#                </div>#}
+            {#                <hr>#}
+            {#                <div class="form-group">#}
+            {#                    <label class="d-block text-danger">Delete Account</label>#}
+            {#                    <p class="text-muted font-size-sm">Once you delete your account, there is no going back. Please be certain.</p>#}
+            {#                </div>#}
+            {#                <button class="btn btn-danger" type="button">Delete Account</button>#}
+            {#            </form>#}
         </div>
 
         <div class="tab-pane" id="security">
@@ -207,56 +207,56 @@
             $("#confirmModal").modal("show");
         });
 
-// On page load, get the activeTab from local storage
-document.addEventListener("DOMContentLoaded", function() {
-    let activeTab = localStorage.getItem("activeTab");
-    if (!activeTab) {
-        // If there is no activeTab in local storage, set a default tab
-        activeTab = "#profile";
-        localStorage.setItem("activeTab", activeTab);
-    }
+        // On page load, get the activeTab from local storage
+        document.addEventListener("DOMContentLoaded", function() {
+            let activeTab = localStorage.getItem("activeTab");
+            if (!activeTab) {
+                // If there is no activeTab in local storage, set a default tab
+                activeTab = "#profile";
+                localStorage.setItem("activeTab", activeTab);
+            }
 
-    // Activate the tab from local storage
-    activateTab(activeTab);
-});
+            // Activate the tab from local storage
+            activateTab(activeTab);
+        });
 
-// Add a click event listener to all tab links
-const tabLinks = document.querySelectorAll(".nav-link");
-tabLinks.forEach(function(link) {
-    link.addEventListener("click", function(event) {
-        // Remove the 'active' class from all tab links and tab panes
-        deactivateTabs();
+        // Add a click event listener to all tab links
+        const tabLinks = document.querySelectorAll(".nav-link");
+        tabLinks.forEach(function(link) {
+            link.addEventListener("click", function(event) {
+                // Remove the 'active' class from all tab links and tab panes
+                deactivateTabs();
 
-        // Add the 'active' class to the clicked tab link and corresponding tab pane
-        activateTab(event.target.getAttribute("href"));
+                // Add the 'active' class to the clicked tab link and corresponding tab pane
+                activateTab(event.target.getAttribute("href"));
 
-        // Store the active tab in local storage
-        localStorage.setItem("activeTab", event.target.getAttribute("href"));
-    });
-});
+                // Store the active tab in local storage
+                localStorage.setItem("activeTab", event.target.getAttribute("href"));
+            });
+        });
 
-// Function to deactivate all tabs
-function deactivateTabs() {
-    const tabLinks = document.querySelectorAll(".nav-link");
-    const tabPanes = document.querySelectorAll(".tab-pane");
+        // Function to deactivate all tabs
+        function deactivateTabs() {
+            const tabLinks = document.querySelectorAll(".nav-link");
+            const tabPanes = document.querySelectorAll(".tab-pane");
 
-    tabLinks.forEach(link => link.classList.remove("active"));
-    tabPanes.forEach(pane => pane.classList.remove("active"));
-}
+            tabLinks.forEach(link => link.classList.remove("active"));
+            tabPanes.forEach(pane => pane.classList.remove("active"));
+        }
 
-// Function to activate a specific tab
-function activateTab(tab) {
-    const tabLink = document.querySelector(`.nav-link[href="${tab}"]`);
-    const tabPane = document.querySelector(tab);
+        // Function to activate a specific tab
+        function activateTab(tab) {
+            const tabLink = document.querySelector(`.nav-link[href="${tab}"]`);
+            const tabPane = document.querySelector(tab);
 
-    if (tabLink) {
-        tabLink.classList.add("active");
-    }
+            if (tabLink) {
+                tabLink.classList.add("active");
+            }
 
-    if (tabPane) {
-        tabPane.classList.add("active");
-    }
-}
+            if (tabPane) {
+                tabPane.classList.add("active");
+            }
+        }
     </script>
     <script type="text/javascript">
         var cropper, imageFile, base64ImageString, cropX, cropY, cropWidth, cropHeight;
