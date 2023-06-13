@@ -56,7 +56,7 @@
                             <a href="#" class="nav-link action-btn my-2 add-file-button" title="Upload">
                                 <i class="material-symbols-outlined">cloud_upload</i>
                             </a>
-                            <a href="#" class="nav-link action-btn my-2" title="Download">
+                            <a id="download_selected" class="nav-link action-btn my-2" title="Download Selected">
                                 <i class="material-symbols-outlined">cloud_download</i>
                             </a>
                         </div>
@@ -130,6 +130,7 @@
                         {% if file_list|length > 0 %}
                             <p>Your Backup</p>
                         {% endif %}
+
                         {% for backup in backup_list %}
                             <div class="col-6 col-md-4 col-lg-2 mb-3">
                                 <div class="card border-0 rounded-0 shadow position-relative" data-aos="fade-left" data-aos-delay="200">
@@ -205,54 +206,92 @@
 
 {% block script %}
     <script>
+        {#$('#download_selected').on('click', function(e) {#}
+        {#    e.preventDefault();#}
+        {##}
+        {#    var selectedFiles = $('.select-item[name="file_ids[]"]:checked').map(function() {#}
+        {#        return this.value;#}
+        {#    }).get();#}
+        {##}
+        {#    var selectedFolders = $('.select-item[name="folder_ids[]"]:checked').map(function() {#}
+        {#        return this.value;#}
+        {#    }).get();#}
+        {##}
+        {#    console.log("download ok");#}
+        {#    console.log("selectedFiles:", selectedFiles);#}
+        {#    console.log("selectedFolders:", selectedFolders);#}
+        {##}
+        {#    var form = $('<form></form>').attr('action', "{% url 'extbackup:bulk_download' %}").attr('method', 'post');#}
+        {#    form.append($('<input>').attr('type', 'hidden').attr('name', 'csrfmiddlewaretoken').attr('value', '{{ csrf_token }}'));#}
+        {#    $.each(selectedFiles, function(i, val) {#}
+        {#        form.append($('<input>').attr('type', 'hidden').attr('name', 'file_ids[]').attr('value', val));#}
+        {#    });#}
+        {#    $.each(selectedFolders, function(i, val) {#}
+        {#        form.append($('<input>').attr('type', 'hidden').attr('name', 'folder_ids[]').attr('value', val));#}
+        {#    });#}
+        {#    form.appendTo('body').submit();#}
+        {#});#}
 
-        $('#delete_selected').on('click', function(e) {
-            e.preventDefault();
-
-            // Set the modal title
-            $("#confirmModalLabel").text("Delete Confirmation");
-            $("#confirmButton").text("Confirm");
-            $("#dismissButton").text("Discard");
-            $("#confirmModal").attr("data-keyboard", "true");
-            $("#confirmModal").attr("data-backdrop", "dynamic");
-
-            // Set the modal body with the form
-            var confirmationMessage = '';
-            var selectedItems = $('.select-item:checked').map(function() {
-                return '<li>' + $(this).data('name') + '</li>'; // Wrap each item name in <li> tags
-            }).get();
-
-             if (selectedItems.length > 0) {
-                 $("#confirmButton").text("Confirm").show();
-                if(selectedItems.length > 10){
-                    confirmationMessage = '<p>Are you sure you want to delete the following ' + selectedItems.length + ' items?</p> <h6 style="color: red;">This action is irreversible.<p>';
-                }else{
-                confirmationMessage = 'Are you sure you want to delete these items? This action is irreversible. <ul>' + selectedItems.join('') + '</ul>';
-                }
-            } else {
-                confirmationMessage = 'No items selected for deletion.';
-                $("#confirmButton").text("Confirm").hide();
-            }
-            $("#confirmMessage").html(confirmationMessage);
-            // Show the modal
-            $("#confirmModal").modal("show");
-            // Submit the form when the confirm button is clicked
-            $("#confirmButton").on('click', function(e) {
+            $('#download_selected').on('click', function(e) {
                 e.preventDefault();
-                $("#bulkDeleteForm").submit();
-            });
-        });
-        $(document).ready(function() {
-            $('#selectAllCheckboxes').click(function() {
-                var isChecked = $(this).is(':checked');
-                $('.select-item').prop('checked', isChecked);
+
+                $('#bulkDeleteForm').attr('action', "{% url 'extbackup:bulk_download' %}");
+                $('#bulkDeleteForm').attr('id', 'bulkDownloadForm');
+                $('#bulkDownloadForm').submit();
+
+                // Reset form attributes back to delete after submitting
+                $('#bulkDownloadForm').attr('action', "{% url 'extbackup:bulk_delete_view' %}");
+                $('#bulkDownloadForm').attr('id', 'bulkDeleteForm');
             });
 
-            $('.select-item').click(function() {
-                var isAllChecked = $('.select-item:checked').length === $('.select-item').length;
-                $('#selectAllCheckboxes').prop('checked', isAllChecked);
+
+            $('#delete_selected').on('click', function(e) {
+                e.preventDefault();
+
+                // Set the modal title
+                $("#confirmModalLabel").text("Delete Confirmation");
+                $("#confirmButton").text("Confirm");
+                $("#dismissButton").text("Discard");
+                $("#confirmModal").attr("data-keyboard", "true");
+                $("#confirmModal").attr("data-backdrop", "dynamic");
+
+                // Set the modal body with the form
+                var confirmationMessage = '';
+                var selectedItems = $('.select-item:checked').map(function() {
+                    return '<li>' + $(this).data('name') + '</li>'; // Wrap each item name in <li> tags
+                }).get();
+
+                if (selectedItems.length > 0) {
+                    $("#confirmButton").text("Confirm").show();
+                    if(selectedItems.length > 10){
+                        confirmationMessage = '<p>Are you sure you want to delete the following ' + selectedItems.length + ' items?</p> <h6 style="color: red;">This action is irreversible.<p>';
+                    }else{
+                        confirmationMessage = 'Are you sure you want to delete these items? This action is irreversible. <ul>' + selectedItems.join('') + '</ul>';
+                    }
+                } else {
+                    confirmationMessage = 'No items selected for deletion.';
+                    $("#confirmButton").text("Confirm").hide();
+                }
+                $("#confirmMessage").html(confirmationMessage);
+                // Show the modal
+                $("#confirmModal").modal("show");
+                // Submit the form when the confirm button is clicked
+                $("#confirmButton").on('click', function(e) {
+                    e.preventDefault();
+                    $("#bulkDeleteForm").submit();
+                });
             });
-        });
+            $(document).ready(function() {
+                $('#selectAllCheckboxes').click(function() {
+                    var isChecked = $(this).is(':checked');
+                    $('.select-item').prop('checked', isChecked);
+                });
+
+                $('.select-item').click(function() {
+                    var isAllChecked = $('.select-item:checked').length === $('.select-item').length;
+                    $('#selectAllCheckboxes').prop('checked', isAllChecked);
+                });
+            });
     </script>
     <script type="text/javascript">
         const urlParams = new URLSearchParams(window.location.search);

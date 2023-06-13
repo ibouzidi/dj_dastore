@@ -234,6 +234,84 @@ def download_zip_file(request, file_id):
         return HttpResponse("folder not found")
 
 
+class BulkDownloadView(View):
+    def post(self, request, *args, **kwargs):
+        file_ids = self.request.POST.getlist('file_ids[]')
+        folder_ids = self.request.POST.getlist('folder_ids[]')
+
+        ftp_storage = default_storage
+        user_folder_path = f'uploads/upload_{request.user.username}/'
+
+        fernet = Fernet(key)
+        new_zip_file = BytesIO()
+
+        with zipfile.ZipFile(new_zip_file, mode='w') as new_zf:
+            for file_id in file_ids:
+                self.download_file(file_id, new_zf, ftp_storage,
+                                   user_folder_path, fernet)
+
+            for folder_id in folder_ids:
+                folder = get_object_or_404(Folder, pk=folder_id)
+                self.download_folder(folder, new_zf, ftp_storage,
+                                     user_folder_path, fernet)
+
+        new_zip_file.seek(0)
+        # Check if any files were added to the zip
+        with zipfile.ZipFile(new_zip_file) as zf:
+            if not zf.filelist:
+                # No files were added to the zip file. Return an appropriate response.
+                messages.error(request,
+                               "This folder is empty.")
+                return HttpResponseRedirect(reverse('folder:folder_list'))
+        new_zip_file.seek(0)
+
+        response = FileResponse(new_zip_file, content_type='application/zip')
+        response[
+            'Content-Disposition'] = f'attachment; filename=backup_files.zip'
+        return response
+
+    def download_file(self, file_id, new_zf, ftp_storage, user_folder_path, fernet, folder_structure=""):
+        file = File.objects.get(pk=file_id)
+        folder_name = file.file
+
+        if ftp_storage.exists(user_folder_path + str(folder_name)):
+            _, files = ftp_storage.listdir(user_folder_path + str(folder_name))
+            for encrypted_file_name in files:
+                encrypted_file_path = os.path.join(user_folder_path,
+                                                   str(folder_name),
+                                                   encrypted_file_name)
+                if ftp_storage.exists(encrypted_file_path):
+                    with ftp_storage.open(encrypted_file_path,
+                                          'rb') as encrypted_file:
+                        encrypted_data = encrypted_file.read()
+                        decrypted = fernet.decrypt(encrypted_data)
+
+                    new_file_name = folder_structure + encrypted_file_name.replace(
+                        '_encrypted', '')
+                    new_zf.writestr(new_file_name, decrypted,
+                                    compress_type=zipfile.ZIP_DEFLATED)
+                else:
+                    print(
+                        f"Skipping file {encrypted_file_name}"
+                        f"(not found in file tree)")
+
+    def download_folder(self, folder, new_zf, ftp_storage, user_folder_path, fernet, folder_structure=""):
+        # First, check if the folder is empty
+        if not folder.files.exists() and not folder.children.exists():
+            print(f"Skipping folder {folder.name} (it's empty)")
+            return
+        # First, download all files in this folder
+        new_folder_structure = folder_structure + folder.name + "/"
+        for file in folder.files.all():
+            self.download_file(file.pk, new_zf, ftp_storage, user_folder_path,
+                               fernet, new_folder_structure)
+
+        for child_folder in folder.children.all():
+            self.download_folder(child_folder, new_zf, ftp_storage,
+                                 user_folder_path, fernet,
+                                 new_folder_structure)
+
+
 # def traverse_content_tree(content, parent_path=""):
 #     for name, node in content.items():
 #         path = parent_path + "/" + name if parent_path else name

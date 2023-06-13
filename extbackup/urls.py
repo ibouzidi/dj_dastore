@@ -17,4 +17,6 @@ urlpatterns = [
          name='check_file_hashes'),
     path('delete_selected/', views.BulkDeleteBackupsView.as_view(),
          name='bulk_delete_view'),
+    path('bulk_download/', views.BulkDownloadView.as_view(), name='bulk_download'),
+
 ]
