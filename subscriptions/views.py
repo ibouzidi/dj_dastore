@@ -1,7 +1,9 @@
 import datetime
 import json
 
+import djstripe
 from django.conf import settings
+from django.db import transaction
 from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +19,7 @@ from django.contrib import messages
 import stripe
 from django.contrib.auth.models import Group
 
-from account.models import Account
+from account.models import Account, Team, Membership, RoleChoices
 
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
@@ -86,15 +88,21 @@ class CreateCheckoutSession(View):
         if not user_id or not plan_id or request.user.is_authenticated:
             user_id = request.user.id
             plan_id = request.session.get("plan_id")
-        print("plan_id")
-        print(plan_id)
-        # Retrieve the plan
+
+        # Retrieve the price
+        price = Price.objects.select_related('product').get(id=plan_id)
+
+        # Get the metadata from the related product
+        metadata = price.product.metadata
+        is_enterprise = metadata.get('is_enterprise', False)
+
+        # Retrieve the user
         user = Account.objects.get(id=user_id)
 
         # Check if the user already has an active subscription
         if user.get_active_subscriptions:
             messages.error(request, 'You already have an active subscription.')
-            return redirect("home")  # Or wherever you want to redirect
+            return redirect("home")
 
         customer = Customer.objects.filter(subscriber=user).first()
 
@@ -123,6 +131,15 @@ class CreateCheckoutSession(View):
             success_url="http://localhost:8000/subscriptions/success/",
             cancel_url="http://localhost:8000/subscriptions/cancelled/",
         )
+
+        if is_enterprise:
+            # Ensures that the creation of both Team and Membership is atomic
+            with transaction.atomic():
+                team = Team.objects.create(team_name=f"{user.username}'s Team")
+                Membership.objects.create(user=user,
+                                          team=team,
+                                          role=RoleChoices.LEADER.value)
+
         return redirect(session.url)
 
 
@@ -152,7 +169,7 @@ class CancelConfirmView(View):
             if user_id:
                 try:
                     user = Account.objects.get(id=user_id)
-                    group = Group.objects.get(name='inactive_subscribers')
+                    group = Group.objects.get(name='G_INACTIVE_SUBSCRIBERS')
                     user.groups.add(group)
                     messages.error(request, "Subscription canceled")
                 except Account.DoesNotExist:
@@ -200,8 +217,8 @@ class CancelSubscriptionView(View):
                 cancel_at_period_end=True,
             )
             # Move user to 'Inactive Subscribers' group
-            move_user_to_group(request.user, 'active_subscribers',
-                               'inactive_subscribers')
+            move_user_to_group(request.user, 'G_ACTIVE_SUBSCRIBERS',
+                               'G_INACTIVE_SUBSCRIBERS')
 
             messages.success(request, "Subscription will be cancelled at"
                                       " the end of the billing period")
@@ -210,27 +227,64 @@ class CancelSubscriptionView(View):
 
 @webhooks.handler("payment_intent.succeeded")
 def payment_intent_succeeded_event_listener(event, **kwargs):
+    # Get invoice data
     invoice_id = event.data["object"]["invoice"]
 
+    # Retrieve the invoice from Stripe
     invoice = stripe.Invoice.retrieve(invoice_id)
-    lines = invoice.get("lines", [])
 
-    if lines:
-        for line in lines['data']:
-            if line['type'] == 'subscription':
-                user_id = line["metadata"].get("user_id", None)
-                user = Account.objects.filter(id=user_id).first()
-                if user:
-                    user.is_active = True
-                    # Retrieve the plan and set the user's storage limit
-                    plan_id = line['plan']['id']
-                    plan = get_object_or_404(Plan, id=plan_id)
-                    user.storage_limit = plan.product.metadata["storage_limit"]
-                    # Add the user to the 'Active Subscribers' group
-                    group = Group.objects.get(name='active_subscribers')
-                    user.groups.add(group)
-                    user.save()
+    # Get the Stripe subscription ID from the invoice
+    subscription_id = invoice["subscription"]
+
+    # Retrieve the subscription and customer objects from Stripe
+    stripe_subscription = stripe.Subscription.retrieve(subscription_id)
+    stripe_customer = stripe.Customer.retrieve(invoice["customer"])
+
+    # Sync subscription and customer data with djstripe models
+    subscription = djstripe.models.Subscription.sync_from_stripe_data(stripe_subscription)
+    customer = djstripe.models.Customer.sync_from_stripe_data(stripe_customer)
+
+    # Get user associated with the customer
+    user = customer.subscriber
+
+    # Get the plan data from the invoice
+    plan_id = invoice["lines"]["data"][0]["plan"]["id"]
+    plan = get_object_or_404(Plan, id=plan_id)
+
+    # Set user status to active and set their storage limit
+    user.is_active = True
+    user.storage_limit = plan.product.metadata["storage_limit"]
+    user.save()
+
+    # Add the user to the 'Active Subscribers' group
+    group = Group.objects.get(name='G_ACTIVE_SUBSCRIBERS')
+    user.groups.add(group)
+
+    # If this is an enterprise subscription
+    is_enterprise = plan.product.metadata.get("is_enterprise", False)
+    if is_enterprise:
+        # Get the user's team
+        membership = Membership.objects.filter(user=user, role=RoleChoices.LEADER.LEADER).first()
+
+        if membership:
+            team = membership.team
+            # Update the team's subscription
+            team.subscription = subscription
+            team.save()
+
+            # Update the membership's customer
+            membership.customer = customer
+            membership.save()
+
+            # For each member in the team, including the leader,
+            # add them to the 'G_ACTIVE_SUBSCRIBERS' group and adjust their storage limit
+            for member in team.team_members.all():
+                member.user.groups.add(group)
+                member.user.storage_limit = plan.product.metadata["storage_limit"]
+                member.user.save()
+
     return
+
 
 
 @webhooks.handler("customer.subscription.deleted")
@@ -248,7 +302,7 @@ def subscription_cancelled_event_listener(event, **kwargs):
         subscription.save()
 
         # Move user to 'Inactive Subscribers' group
-        move_user_to_group(user, 'active_subscribers', 'inactive_ubscribers')
+        move_user_to_group(user, 'G_ACTIVE_SUBSCRIBERS', 'inactive_ubscribers')
 
     except Subscription.DoesNotExist:
         print("Subscription does not exist in the database")

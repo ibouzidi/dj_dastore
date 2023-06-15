@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from account.models import Account
+from account.models import Account, Team, Membership
 
 
 class AccountAdmin(UserAdmin):
@@ -34,7 +34,26 @@ class AccountAdmin(UserAdmin):
         ('Storage', {
             'fields': ('storage_usage', 'storage_limit',)
         }),
+        # ('Teams', {
+        #     'fields': ('member_teams',)
+        # }),
+
     )
+
+class MembershipInline(admin.TabularInline):
+    model = Membership
+    extra = 1
+
+class TeamAdmin(admin.ModelAdmin):
+    inlines = (MembershipInline,)
+    list_display = ('team_name',)
+    search_fields = ('team_name',)
+
+class MembershipAdmin(admin.ModelAdmin):
+    list_display = ('team', 'user', 'role', 'customer')
+    search_fields = ('team__name', 'user__username')
 
 
 admin.site.register(Account, AccountAdmin)
+admin.site.register(Team, TeamAdmin)
+admin.site.register(Membership, MembershipAdmin)

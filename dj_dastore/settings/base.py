@@ -232,3 +232,4 @@ DJSTRIPE_USE_NATIVE_JSONFIELD = True
 
 #stripe listen --forward-to localhost:8000/stripe/webhook/
 #python manage.py djstripe_sync_models
+#python manage.py djstripe_sync_plans_from_stripe

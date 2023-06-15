@@ -1,0 +1,38 @@
+<h2 class="h5 mb-4">Manage your team
+    <a href="{% url 'account:add_member' %}" class="btn btn-info">Add Member</a>
+</h2>
+
+
+{% if team %}
+    <table>
+        <thead>
+        <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for member in team_members  %}
+            <tr>
+                <td>{{ member.user.username }}</td>
+                <td>{{ member.user.email }}</td>
+                <td>{{ member.get_role_display }}</td>
+                <td>
+                    <button class="btn btn-warning">Edit</button> |
+                    <button class="btn btn-danger">Delete</button>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You do not lead a team.</p>
+{% endif %}
+
+
+
+
+
+

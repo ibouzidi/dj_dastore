@@ -9,7 +9,8 @@ from account.views import (
     account_view,
     # edit_account_view,
     crop_image,
-    CustomPasswordChangeView
+    CustomPasswordChangeView,
+    add_member_to_team
 )
 
 urlpatterns = [
@@ -22,5 +23,7 @@ urlpatterns = [
 
     path('password_change/', CustomPasswordChangeView.as_view(),
          name='password_change'),
+
+    path('add_member/', add_member_to_team, name='add_member'),
 
 ]

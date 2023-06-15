@@ -48,6 +48,23 @@ def get_default_profile_image():
     return "dastore/default_user_icon.png"
 
 
+class Team(models.Model):
+    """
+    A Team, with members.
+    """
+    team_name = models.CharField(max_length=100)
+    member_accounts = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        through='Membership',
+        through_fields=('team', 'user'),
+        related_name='member_teams'
+    )
+    subscription = models.ForeignKey(
+        'djstripe.Subscription', null=True, blank=True, on_delete=models.SET_NULL,
+        help_text="The team's Stripe Subscription object, if it exists"
+    )
+
+
 class Account(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     username = models.CharField(max_length=30, unique=True)
@@ -74,6 +91,13 @@ class Account(AbstractBaseUser, PermissionsMixin):
     plan_id = models.CharField(max_length=255, null=True, blank=True)
     request_counts = models.PositiveIntegerField(default=0)
     last_request_timestamp = models.DateTimeField(null=True, blank=True)
+
+    teams = models.ManyToManyField(
+        'Team',
+        through='Membership',
+        through_fields=('user', 'team'),
+        related_name='memberships'  # added related_name here
+    )
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -155,4 +179,28 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def is_team_leader(self):
+        return self.user_teams.filter(role=RoleChoices.LEADER.value).exists()
+
+
+class RoleChoices(models.TextChoices):
+    LEADER = 'LEADER', 'Leader'
+    MEMBER = 'MEMBER', 'Member'
+
+
+class Membership(models.Model):
+    """
+    A user's team membership
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,
+                             related_name='user_teams')
+    team = models.ForeignKey(Team, on_delete=models.CASCADE,
+                             related_name='team_members')
+    role = models.CharField(max_length=100, choices=RoleChoices.choices)
+    customer = models.ForeignKey(
+        'djstripe.Customer', null=True, blank=True, on_delete=models.SET_NULL,
+        help_text="The member's Stripe Customer object for this team, if it exists"
+    )
 

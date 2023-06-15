@@ -18,8 +18,8 @@ from two_factor.signals import user_verified
 from two_factor.utils import default_device
 from django.views import View
 from account.forms import RegistrationForm, AccountAuthenticationForm, \
-    AccountUpdateForm
-from account.models import Account
+    AccountUpdateForm, AddMemberForm
+from account.models import Account, Team, Membership, RoleChoices
 from .calc_storage_limit import calculate_storage_usage
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
@@ -290,7 +290,55 @@ def account_view(request, *args, **kwargs):
 
     context['default_device'] = default_device(
         request.user) if request.user.is_authenticated else None
+
+
+    # Retrieve the current user's team
+    user = request.user
+    try:
+        membership = Membership.objects.get(user=user)
+        team = membership.team
+        team_members = Membership.objects.filter(team=team).exclude(user=user)
+
+        context['team'] = team
+        context['team_members'] = team_members
+    except Membership.DoesNotExist:
+        pass  # user is not part of a team
+
     return render(request, "account/account.html", context)
+
+
+def add_member_to_team(request):
+    if request.method == 'POST':
+        form = AddMemberForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data.get('email')
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password1')
+            try:
+                new_member = Account.objects.get(email=email)
+            except Account.DoesNotExist:
+                new_member = Account.objects.create_user(email=email,
+                                                         username=username,
+                                                         password=password)
+            membership = Membership.objects.filter(user=request.user, role=RoleChoices.LEADER).first()
+            if membership:
+                team = membership.team
+                # Retrieve storage limit from leader's subscription
+                leader_active_subscriptions = request.user.get_active_subscriptions
+                if leader_active_subscriptions.exists():
+                    leader_plan = leader_active_subscriptions[0].plan
+                    new_member.storage_limit = leader_plan.product.metadata["storage_limit"]
+                    new_member.save()
+                    Membership.objects.create(user=new_member, team=team, role=RoleChoices.MEMBER)
+                messages.success(request, 'User has been successfully added to your team.')
+            else:
+                messages.error(request, 'You are not a team leader.')
+            return redirect('account:account_profile')
+    else:
+        form = AddMemberForm()
+    return render(request, 'account/teams/add_member.html', {'form': form})
+
+
 
 
 @method_decorator(login_required, name='dispatch')
@@ -316,3 +364,22 @@ class CustomPasswordChangeView(PasswordChangeView):
             return JsonResponse(form.errors, status=400)
         else:
             return response
+
+
+# @login_required
+# def team_list(request):
+#     # Retrieve the current user's team
+#     user = request.user
+#     membership = Membership.objects.get(user=user, role=RoleChoices.LEADER)
+#     print("membership")
+#     print(membership)
+#     team = membership.team
+#     team_members = Membership.objects.filter(team=team).exclude(user=user)
+#
+#     context = {
+#         'team': team,
+#         'team_members': team_members,
+#     }
+#
+#     return render(request, 'account/account.html', context)
+
