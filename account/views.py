@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -18,8 +18,8 @@ from two_factor.signals import user_verified
 from two_factor.utils import default_device
 from django.views import View
 from account.forms import RegistrationForm, AccountAuthenticationForm, \
-    AccountUpdateForm, AddMemberForm
-from account.models import Account, Team, Membership, RoleChoices
+    AccountUpdateForm, AddMemberForm, AddTeamForm
+from account.models import Account, Team, Membership, RoleChoices, Invitation
 from .calc_storage_limit import calculate_storage_usage
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
@@ -74,6 +74,66 @@ class RegisterView(View):
             request.session["user_id"] = account.id
             return redirect('subscriptions:CreateCheckoutSession')
         return render(request, 'account/register.html', {'form': form})
+
+
+class GuestRegisterView(View):
+    def get(self, request, code):
+        form = RegistrationForm()
+        try:
+            invitation = Invitation.objects.get(code=code, status=Invitation.InvitationStatusChoices.PENDING)
+            request.session['invitation_id'] = invitation.id
+            return render(request, 'account/guest_register.html', {'form': form})
+        except Invitation.DoesNotExist:
+            messages.error(request, 'Invalid or expired invitation code.')
+            return redirect('home')
+
+    def post(self, request, code):
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            try:
+                invitation = Invitation.objects.get(
+                    id=request.session['invitation_id'])
+                # Retrieve storage limit from leader's subscription
+                leader_membership = Membership.objects.filter(
+                    team=invitation.team, role=RoleChoices.LEADER).first()
+                leader_active_subscriptions = leader_membership.user.get_active_subscriptions
+                if leader_active_subscriptions.exists():
+                    leader_plan = leader_active_subscriptions[0].plan
+                    storage_limit = leader_plan.product.metadata[
+                        "storage_limit"]
+                else:
+                    storage_limit = 0  # Default storage limit, adjust as needed
+
+                # Create user account with specified storage limit
+                account = Account.objects.create_user(
+                    email=form.cleaned_data.get('email').lower(),
+                    password=form.cleaned_data.get('password1'),
+                    username=form.cleaned_data.get('username'),
+                )
+                # storage_limit is str class
+                if isinstance(storage_limit, str):
+                    try:
+                        account.storage_limit = int(storage_limit)
+                    except ValueError:
+                        account.storage_limit = 0
+                else:
+                    account.storage_limit = 0
+                account.is_active = True
+                account.save()
+
+                # Create membership and update invitation status
+                Membership.objects.create(user=account, team=invitation.team,
+                                          role=RoleChoices.MEMBER)
+                invitation.status = Invitation.InvitationStatusChoices.ACCEPTED
+                invitation.save()
+                del request.session['invitation_id']
+
+                messages.success(request,
+                                 'Registration and team joining successful.')
+            except Invitation.DoesNotExist:
+                messages.error(request, 'Problem in accepting the invitation.')
+            return redirect('account:login')
+        return render(request, 'account/guest_register.html', {'form': form})
 
 
 @login_required
@@ -292,53 +352,191 @@ def account_view(request, *args, **kwargs):
         request.user) if request.user.is_authenticated else None
 
 
-    # Retrieve the current user's team
+    # Retrieve all the teams of the current user
     user = request.user
-    try:
-        membership = Membership.objects.get(user=user)
+    memberships = Membership.objects.filter(user=user)
+
+    context['teams'] = []
+
+    for membership in memberships:
         team = membership.team
         team_members = Membership.objects.filter(team=team).exclude(user=user)
-
-        context['team'] = team
-        context['team_members'] = team_members
-    except Membership.DoesNotExist:
-        pass  # user is not part of a team
+        context['teams'].append({
+            'team': team,
+            'team_members': team_members
+        })
 
     return render(request, "account/account.html", context)
 
 
-def add_member_to_team(request):
+def create_team(request):
     if request.method == 'POST':
-        form = AddMemberForm(request.POST)
+        form = AddTeamForm(request.POST)
         if form.is_valid():
-            email = form.cleaned_data.get('email')
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            try:
-                new_member = Account.objects.get(email=email)
-            except Account.DoesNotExist:
-                new_member = Account.objects.create_user(email=email,
-                                                         username=username,
-                                                         password=password)
-            membership = Membership.objects.filter(user=request.user, role=RoleChoices.LEADER).first()
-            if membership:
-                team = membership.team
-                # Retrieve storage limit from leader's subscription
-                leader_active_subscriptions = request.user.get_active_subscriptions
-                if leader_active_subscriptions.exists():
-                    leader_plan = leader_active_subscriptions[0].plan
-                    new_member.storage_limit = leader_plan.product.metadata["storage_limit"]
-                    new_member.save()
-                    Membership.objects.create(user=new_member, team=team, role=RoleChoices.MEMBER)
-                messages.success(request, 'User has been successfully added to your team.')
-            else:
-                messages.error(request, 'You are not a team leader.')
+            team_name = form.cleaned_data.get('team_name')
+            team_id = form.cleaned_data.get('team_id')
+
+            # Create a new team
+            new_team = Team(team_name=team_name, team_id=team_id)
+
+            # Retrieve the active subscription of the leader
+            leader_subscriptions = request.user.get_active_subscriptions
+
+            if leader_subscriptions:
+                new_team.subscription = leader_subscriptions[0]
+
+            # Save the new team instance
+            new_team.save()
+
+            # Create a new membership for the team leader
+            Membership.objects.create(user=request.user, team=new_team, role=RoleChoices.LEADER)
+
+            messages.success(request,
+                             'Team has been successfully created and '
+                             'leader\'s subscription assigned to the team.')
             return redirect('account:account_profile')
     else:
-        form = AddMemberForm()
-    return render(request, 'account/teams/add_member.html', {'form': form})
+        form = AddTeamForm()
+    return render(request, 'account/teams/create_team.html',
+                  {'form': form})
 
 
+def team_detail(request, team_id):
+    team = get_object_or_404(Team, team_id=team_id)
+    if request.method == 'POST':
+        form = AddTeamForm(request.POST, instance=team)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Team has been successfully updated.')
+            return redirect('account:team_detail', team_id=team_id)
+    else:
+        form = AddTeamForm(instance=team)
+
+    # Get team members
+    team_members = team.team_members.all()
+
+    invitations = team.invitations.all()
+
+    pending_invitations = invitations.filter(
+        status=Invitation.InvitationStatusChoices.PENDING)
+    # cancelled_invitations_member = invitations.filter(
+    #     status=Invitation.InvitationStatusChoices.CANCELLED_MEMBER)
+    # cancelled_invitations_leader = invitations.filter(
+    #     status=Invitation.InvitationStatusChoices.CANCELLED_LEADER)
+    # accepted_invitations = invitations.filter(
+    #     status=Invitation.InvitationStatusChoices.ACCEPTED)
+
+    return render(request, 'account/teams/detail_team.html', {
+        'form': form,
+        'team_members': team_members,
+        'team': team,
+        'pending_invitations': pending_invitations,
+    })
+
+@login_required
+def cancel_invitation(request, code):
+    invitation = get_object_or_404(Invitation, code=code)
+    if request.user.is_team_leader and \
+            invitation.status == Invitation.InvitationStatusChoices.PENDING:
+        invitation.status = Invitation.InvitationStatusChoices.CANCELLED_LEADER
+        invitation.save()
+        messages.success(request, 'Invitation cancelled.')
+    else:
+        messages.error(request, 'You do not have permission to do that or '
+                                'the invitation is not pending.')
+    return redirect('account:team_detail', team_id=invitation.team.team_id)
+
+# def add_member_to_team(request):
+#     if request.method == 'POST':
+#         form = AddMemberForm(request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data.get('email')
+#             username = form.cleaned_data.get('username')
+#             password = form.cleaned_data.get('password1')
+#             try:
+#                 new_member = Account.objects.get(email=email)
+#             except Account.DoesNotExist:
+#                 new_member = Account.objects.create_user(email=email,
+#                                                          username=username,
+#                                                          password=password)
+#             membership = Membership.objects.filter(user=request.user, role=RoleChoices.LEADER).first()
+#             if membership:
+#                 team = membership.team
+#                 # Retrieve storage limit from leader's subscription
+#                 leader_active_subscriptions = request.user.get_active_subscriptions
+#                 if leader_active_subscriptions.exists():
+#                     leader_plan = leader_active_subscriptions[0].plan
+#                     new_member.storage_limit = leader_plan.product.metadata["storage_limit"]
+#                     new_member.save()
+#                     Membership.objects.create(user=new_member, team=team, role=RoleChoices.MEMBER)
+#                 messages.success(request, 'User has been successfully added to your team.')
+#             else:
+#                 messages.error(request, 'You are not a team leader.')
+#             return redirect('account:account_profile')
+#     else:
+#         form = AddMemberForm()
+#     return render(request, 'account/teams/add_member.html', {'form': form})
+
+
+def send_invitation(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        selected_team_id = request.POST.get('team_id')
+
+        team = Team.objects.filter(team_id=selected_team_id).first()
+        membership = Membership.objects.filter(user=request.user, team=team,
+                                               role=RoleChoices.LEADER).first()
+
+        if membership:
+            print("yes")
+            existing_invitation = Invitation.objects.filter(
+                email=email, team=team,
+                status=Invitation.InvitationStatusChoices.ACCEPTED).first()
+            if existing_invitation:
+                messages.error(
+                    request,
+                    'An invitation to this email has already been sent.')
+            else:
+                invitation = Invitation.objects.create(email=email, team=team)
+                signup_link = request.build_absolute_uri(reverse(
+                    'account:guest_register', args=[invitation.code]))
+                leader_email = membership.user.email
+                send_mail(
+                    'Invitation to join a Team',
+                    f'You are invited by {leader_email} to join the team : '
+                    f'{team.team_name}.'
+                    f'Click here to accept the invitation: sign up here: '
+                    f'{signup_link}',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                )
+                messages.success(request, 'Invitation sent.')
+        else:
+            messages.error(request, 'You are not a team leader.')
+    return render(request, 'account/account.html')
+
+
+@login_required
+def accept_invitation(request, code):
+    invitation = get_object_or_404(Invitation, code=code)
+    if request.method == 'POST':
+        if 'cancel' in request.POST:
+            if invitation.status == Invitation.InvitationStatusChoices.PENDING:
+                invitation.status = Invitation.InvitationStatusChoices.CANCELLED_MEMBER
+                invitation.save()
+                messages.success(request, 'Invitation cancelled.')
+            else:
+                messages.error(request, 'This invitation cannot be cancelled.')
+    else:
+        if invitation.status == Invitation.InvitationStatusChoices.PENDING:
+            Membership.objects.create(user=request.user, team=invitation.team,
+                                      role=RoleChoices.MEMBER)
+            invitation.status = Invitation.InvitationStatusChoices.ACCEPTED
+            invitation.save()
+            messages.success(request, 'Invitation accepted.')
+        else:
+            messages.error(request, 'This invitation cannot be accepted.')
+    return redirect('account:account_profile')
 
 
 @method_decorator(login_required, name='dispatch')

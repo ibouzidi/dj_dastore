@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
@@ -53,6 +55,7 @@ class Team(models.Model):
     A Team, with members.
     """
     team_name = models.CharField(max_length=100)
+    team_id = models.CharField(max_length=15, unique=True, null=True)
     member_accounts = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through='Membership',
@@ -63,6 +66,10 @@ class Team(models.Model):
         'djstripe.Subscription', null=True, blank=True, on_delete=models.SET_NULL,
         help_text="The team's Stripe Subscription object, if it exists"
     )
+
+    def is_leader(self, user):
+        return self.memberships.filter(user=user,
+                                       role=RoleChoices.LEADER).exists()
 
 
 class Account(AbstractBaseUser, PermissionsMixin):
@@ -199,8 +206,25 @@ class Membership(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE,
                              related_name='team_members')
     role = models.CharField(max_length=100, choices=RoleChoices.choices)
-    customer = models.ForeignKey(
-        'djstripe.Customer', null=True, blank=True, on_delete=models.SET_NULL,
-        help_text="The member's Stripe Customer object for this team, if it exists"
-    )
+    # customer = models.ForeignKey(
+    #     'djstripe.Customer', null=True, blank=True, on_delete=models.SET_NULL,
+    #     help_text="The member's Stripe Customer object for this team, if it exists"
+    # )
 
+
+class Invitation(models.Model):
+    email = models.EmailField()
+    code = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    team = models.ForeignKey(Team, on_delete=models.CASCADE,
+                             related_name='invitations')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class InvitationStatusChoices(models.TextChoices):
+        PENDING = 'PENDING', 'Pending'
+        ACCEPTED = 'ACCEPTED', 'Accepted'
+        CANCELLED_MEMBER = 'CANCELLED_MEMBER', 'Cancelled by Member'
+        CANCELLED_LEADER = 'CANCELLED_LEADER', 'Cancelled by Leader'
+
+    status = models.CharField(max_length=20,
+                              choices=InvitationStatusChoices.choices,
+                              default=InvitationStatusChoices.PENDING)

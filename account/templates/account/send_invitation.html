@@ -1,0 +1,11 @@
+{% extends "../sub_base.html" %}
+
+{% block content %}
+  <h2>Send an invitation</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="email">Email:</label><br>
+    <input type="email" id="email" name="email"><br>
+    <input type="submit" value="Submit">
+  </form>
+{% endblock %}

@@ -5,7 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from captcha.fields import ReCaptchaField
-from account.models import Account
+from account.models import Account, Team
 
 
 class RegistrationForm(UserCreationForm):
@@ -150,3 +150,16 @@ class AddMemberForm(forms.ModelForm):
 			user.save()
 
 		return user
+
+
+class AddTeamForm(forms.ModelForm):
+	class Meta:
+		model = Team
+		fields = ['team_name', 'team_id']
+
+	def clean_identifier(self):
+		team_id = self.cleaned_data.get('team_id').lower()
+		if Team.objects.filter(team_id=team_id).exists():
+			raise forms.ValidationError(
+				'A team with this identifier already exists.')
+		return team_id

@@ -1,35 +1,52 @@
-<h2 class="h5 mb-4">Manage your team
-    <a href="{% url 'account:add_member' %}" class="btn btn-info">Add Member</a>
-</h2>
+<h2 class="h5 mb-4">My Teams</h2>
+
+<a class="btn btn-primary my-2 col-2 me-2" href="{% url 'account:create_team' %}">Create your team</a>
 
 
-{% if team %}
-    <table>
-        <thead>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th:first-child {
+        width: 80%; /* Adjust the width as needed */
+    }
+    th:last-child {
+        text-align: left;
+    }
+</style>
+
+<table class="table">
+    <thead>
         <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
+            <th scope="col">Name</th>
+            <th scope="col">Actions</th>
         </tr>
-        </thead>
-        <tbody>
-        {% for member in team_members  %}
-            <tr>
-                <td>{{ member.user.username }}</td>
-                <td>{{ member.user.email }}</td>
-                <td>{{ member.get_role_display }}</td>
-                <td>
-                    <button class="btn btn-warning">Edit</button> |
-                    <button class="btn btn-danger">Delete</button>
-                </td>
-            </tr>
+    </thead>
+    <tbody>
+        {% for team in teams %}
+        <tr>
+            <td scope="row">{{ team.team.team_name }}</td>
+            <td>
+                <a href="{% url 'account:team_detail' team.team.team_id%}" class="btn btn-warning">Edit</a> |
+                <a href="#" class="btn btn-danger">Delete</a>
+            </td>
+        </tr>
         {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    <p>You do not lead a team.</p>
-{% endif %}
+    </tbody>
+</table>
+
+
+
+{#{% for team in teams %}#}
+{#    <h2>{{ team.team.team_name }}</h2>#}
+{#    <ul>#}
+{#        {% for member in team.team_members %}#}
+{#            <li>{{ member.user.username }}</li>#}
+{#        {% endfor %}#}
+{#    </ul>#}
+{#{% endfor %}#}
 
 
 
