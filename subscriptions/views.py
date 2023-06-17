@@ -214,7 +214,7 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
 
     invoice = stripe.Invoice.retrieve(invoice_id)
     lines = invoice.get("lines", [])
-
+    print("payment")
     if lines:
         for line in lines['data']:
             if line['type'] == 'subscription':
@@ -248,7 +248,7 @@ def subscription_cancelled_event_listener(event, **kwargs):
         subscription.save()
 
         # Move user to 'Inactive Subscribers' group
-        move_user_to_group(user, 'active_subscribers', 'inactive_ubscribers')
+        move_user_to_group(user, 'active_subscribers', 'inactive_subscribers')
 
     except Subscription.DoesNotExist:
         print("Subscription does not exist in the database")
