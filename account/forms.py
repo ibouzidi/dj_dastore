@@ -157,12 +157,23 @@ class AddTeamForm(forms.ModelForm):
 		model = Team
 		fields = ['team_name', 'team_id']
 
-	def clean_identifier(self):
+	def clean_team_id(self):
 		team_id = self.cleaned_data.get('team_id').lower()
+		if not re.match(r'^[a-z0-9_-]+$', team_id):
+			raise forms.ValidationError(
+				'Team ID should only contain lowercase letters, numbers, '
+				'underscores, and hyphens.')
 		if Team.objects.filter(team_id=team_id).exists():
 			raise forms.ValidationError(
 				'A team with this identifier already exists.')
 		return team_id
+
+	def clean_team_name(self):
+		team_name = self.cleaned_data.get('team_name')
+		if not re.match(r'^[a-zA-Z0-9\s]+$', team_name):
+			raise forms.ValidationError(
+				'Team name should only contain letters, numbers, and spaces.')
+		return team_name
 
 
 # class InvitationForm(forms.ModelForm):

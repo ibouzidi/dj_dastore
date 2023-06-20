@@ -46,44 +46,36 @@
     <div class="card-body tab-content">
         <h6>Edit Team : {{ team.team_name }}</h6>
         <hr>
-
-
-        <div id="team_detail" class="col-md-9" data-aos="fade-left" data-aos-delay="200">
-            <div class="card">
-                <div class="card-header border-bottom mb-3 d-flex d-md-none">
-                    {% include 'account/profile_tab_mobile.html' %}
-                </div>
-                <div class="card-body tab-content">
-                    <h6 class="mb-3">Team Details</h6>
+        <div id="teamDetail" data-aos="fade-left" data-aos-delay="200">
+            <div class="card-body tab-content">
+                <div class="col-6">
                     <form method="post">
                         {% csrf_token %}
-
-                        <table>
-
-                            <div class="form-group mb-4">
-                                <label for="{{ form.team_name.id_for_label }}">Team Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-user-friends"></span></span>
-                                    {% render_field form.team_name class="form-control" placeholder="Team Name"%}
-                                </div>
-                                {{ form.team_name.errors }}
+                        <div class="form-group mb-4">
+                            <label for="{{ form.team_name.id_for_label }}">Team Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-user-friends"></span></span>
+                                {% render_field form.team_name class="form-control" placeholder="Team Name"%}
                             </div>
-                            <div class="form-group mb-3">
-                                <label for="{{ form.team_id.id_for_label }}">Team ID</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-hashtag"></span></span>
-                                    {% render_field form.team_id class="form-control" placeholder="Team ID"%}
-                                </div>
-                                {{ form.team_id.errors }}
+                            {{ form.team_name.errors }}
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="{{ form.team_id.id_for_label }}">Team ID</label>
+                            <div class="input-group">
+                                <span class="input-group-text" id="basic-addon3"><span class="fas fa-hashtag"></span></span>
+                                {% render_field form.team_id class="form-control" placeholder="Team ID"%}
                             </div>
-                        </table>
+                            {{ form.team_id.errors }}
+                        </div>
 
                         <button type="submit" class="btn custom-button">
                             <i class="fas fa-check"></i> Save Team
                         </button>
                     </form>
-                    <hr>
-                    <h6>Team Members:</h6>
+                </div>
+                <hr>
+                <h6>Team Members</h6>
+                <div class="table-responsive">
                     <table class="table">
                         <tr>
                             <th>Username</th>
@@ -98,25 +90,26 @@
                             </tr>
                         {% endfor %}
                     </table>
-                    <hr>
-                    <h6 class="mb-3">Invite Team Members</h6>
-                    <form method="post" action="{% url 'account:send_invitation' %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="team_id" value="{{ team.team_id }}">
+                </div>
+                <hr>
+                <h6 class="mb-3">Invite Team Members</h6>
+                <form method="post" action="{% url 'account:send_invitation' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="team_id" value="{{ team.team_id }}">
 
-                        <div class="col-8 invite-email">
-                            <div class="input-group mb-3 w-75">
-                                <input type="email" name="email" class="form-control" placeholder="example@company.com" aria-label="Recipient's username" aria-describedby="button-addon2" required>
-                                <div class="input-group-append">
-                                    <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>Invite</button>
-                                </div>
+                    <div class="col-8 invite-email">
+                        <div class="input-group mb-3 w-75">
+                            <input type="email" name="email" class="form-control" placeholder="example@company.com" aria-label="Recipient's username" aria-describedby="button-addon2" required>
+                            <div class="input-group-append">
+                                <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>Invite</button>
                             </div>
                         </div>
-                    </form>
-                    {% if pending_invitations %}
-                        <hr>
-
-                        <h6>Pending invitation</h6>
+                    </div>
+                </form>
+                {% if pending_invitations %}
+                    <hr>
+                    <h6>Pending invitation</h6>
+                    <div class="table-responsive">
                         <table class="table">
                             <tr>
                                 <th>Email</th>
@@ -131,10 +124,9 @@
                                 </tr>
                             {% endfor %}
                         </table>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>
-
 {% endblock %}
