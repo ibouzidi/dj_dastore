@@ -8,15 +8,16 @@
 {% block breadcrumbs %}
     <div class="breadcrumb-container">
         <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-12 col-md-6 col-lg-5">
                 <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
                     <ol class="breadcrumb mb-4">
                         {% url 'account:account_profile' as account_url %}
+                        {% url 'account:team_list' as team_list_url %}
                         {% url 'home' as home_url %}
                         {% breadcrumb "Home" home_url %}
                         {% breadcrumb "Profile" account_url%}
-                        {% breadcrumb "Teams" account_url%}
-                        {% breadcrumb "Add member" %}
+                        {% breadcrumb "Teams" team_list_url%}
+                        {% breadcrumb "Edit Team" %}
                     </ol>
                 </nav>
             </div>
@@ -35,56 +36,51 @@
             outline: none;
             box-shadow: none;
         }
+        .invite-email input:focus{
+            border-color:var(--clr-purple-1)!important;
+            border-style: solid!important;
+            border-width: 1px;
+        }
     </style>
-    <div class="row gutters-sm">
-        <div class="col-md-3 d-none d-md-block" data-aos="fade-left" data-aos-delay="300">
-            <div class="card">
-                <div class="card-body">
-                    {% include 'account/profile_tab.html' %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-9" data-aos="fade-left" data-aos-delay="200">
+
+    <div class="card-body tab-content">
+        <h6>Edit Team : {{ team.team_name }}</h6>
+        <hr>
+
+
+        <div id="team_detail" class="col-md-9" data-aos="fade-left" data-aos-delay="200">
             <div class="card">
                 <div class="card-header border-bottom mb-3 d-flex d-md-none">
                     {% include 'account/profile_tab_mobile.html' %}
                 </div>
                 <div class="card-body tab-content">
-                    <h6>Team Details</h6>
+                    <h6 class="mb-3">Team Details</h6>
                     <form method="post">
                         {% csrf_token %}
 
                         <table>
-                            {% for field in form %}
-                                <tr>
-                                    <td>
-                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                    </td>
-                                    <td>
-                                        {% render_field field class="form-control" %}
-                                        <div class="{% if field.errors %}invalid{% endif %}">
-                                            {% for error in field.errors %}
-                                                <p class="help-block">{{ error }}</p>
-                                            {% endfor %}
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
 
-                            {% if form.non_field_errors %}
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="alert alert-danger">
-                                            {% for error in form.non_field_errors %}
-                                                {{ error }}
-                                            {% endfor %}
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endif %}
+                            <div class="form-group mb-4">
+                                <label for="{{ form.team_name.id_for_label }}">Team Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-user-friends"></span></span>
+                                    {% render_field form.team_name class="form-control" placeholder="Team Name"%}
+                                </div>
+                                {{ form.team_name.errors }}
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="{{ form.team_id.id_for_label }}">Team ID</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-hashtag"></span></span>
+                                    {% render_field form.team_id class="form-control" placeholder="Team ID"%}
+                                </div>
+                                {{ form.team_id.errors }}
+                            </div>
                         </table>
 
-                        <input type="submit" class="prm-btn btn" value="Save Team">
+                        <button type="submit" class="btn custom-button">
+                            <i class="fas fa-check"></i> Save Team
+                        </button>
                     </form>
                     <hr>
                     <h6>Team Members:</h6>
@@ -103,22 +99,23 @@
                         {% endfor %}
                     </table>
                     <hr>
-                    <h6>Invite Team Members</h6>
+                    <h6 class="mb-3">Invite Team Members</h6>
                     <form method="post" action="{% url 'account:send_invitation' %}">
                         {% csrf_token %}
                         <input type="hidden" name="team_id" value="{{ team.team_id }}">
-                        <div class="row d-flex my-2 pr-2 pr-md-5 div1">
-                            <div class="col-4">
-                                <input type="email" name="email" class="form-control py-3" id="inp1" placeholder="Enter email address">
-                            </div>
-                            <div class="col-3 px-0">
-                                <button type="submit" class="btn btn-primary px-4 py-2"> OK </button>
+
+                        <div class="col-8 invite-email">
+                            <div class="input-group mb-3 w-75">
+                                <input type="email" name="email" class="form-control" placeholder="example@company.com" aria-label="Recipient's username" aria-describedby="button-addon2" required>
+                                <div class="input-group-append">
+                                    <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>Invite</button>
+                                </div>
                             </div>
                         </div>
                     </form>
-
-                    <hr>
                     {% if pending_invitations %}
+                        <hr>
+
                         <h6>Pending invitation</h6>
                         <table class="table">
                             <tr>
@@ -138,6 +135,6 @@
                 </div>
             </div>
         </div>
-
     </div>
+
 {% endblock %}

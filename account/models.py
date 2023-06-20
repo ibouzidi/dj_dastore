@@ -56,6 +56,7 @@ class Team(models.Model):
     """
     team_name = models.CharField(max_length=100)
     team_id = models.CharField(max_length=15, unique=True, null=True)
+    total_members = models.IntegerField(default=0)
     member_accounts = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through='Membership',
@@ -70,6 +71,12 @@ class Team(models.Model):
     def is_leader(self, user):
         return self.memberships.filter(user=user,
                                        role=RoleChoices.LEADER).exists()
+
+    def member_count(self):
+        return Membership.objects.filter(team=self).count()
+
+    def __str__(self):
+        return self.team_name
 
 
 class Account(AbstractBaseUser, PermissionsMixin):
@@ -114,6 +121,10 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+    @property
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
     def get_profile_image_filename(self):
         return str(self.profile_image)[str(self.profile_image).index(
             'profile_images/' + str(self.pk) + "/"):]
@@ -139,7 +150,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
-    # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
+    # Does this user have permission to view this app
     def has_module_perms(self, app_label):
         return True
 
@@ -161,34 +172,39 @@ class Account(AbstractBaseUser, PermissionsMixin):
     @property
     def customer(self):
         try:
-            customer = Customer.objects.get(subscriber=self)
-            return customer
-        except:
+            return Customer.objects.get(subscriber=self)
+        except Customer.DoesNotExist:
             return None
 
     @property
     def get_active_subscriptions(self):
-        try:
-            customer = Customer.objects.get(subscriber=self)
-            return customer.active_subscriptions
-        except:
-            return []
+        customer = self.customer
+        return customer.active_subscriptions if customer else []
 
     @property
     def get_active_plan(self):
-        try:
-            customer = Customer.objects.get(subscriber=self)
-            return customer.active_subscriptions[0].plan
-        except:
-            return None
-
-    @property
-    def get_full_name(self):
-        return f"{self.first_name} {self.last_name}"
+        customer = self.customer
+        return customer.active_subscriptions[
+            0].plan if customer and customer.active_subscriptions else None
 
     @property
     def is_team_leader(self):
         return self.user_teams.filter(role=RoleChoices.LEADER.value).exists()
+
+    def limit_users(self):
+        active_subscriptions = self.get_active_subscriptions
+        if active_subscriptions:
+            plan = active_subscriptions[0].plan
+            return plan.product.metadata["limit_users"]
+        else:
+            return 0  # Default limit_users
+
+    @property
+    def total_members_all_teams(self):
+        memberships = self.user_teams.filter(role=RoleChoices.LEADER.value)
+        total_members = sum(
+            membership.team.member_count() for membership in memberships)
+        return total_members
 
 
 class RoleChoices(models.TextChoices):
@@ -206,6 +222,9 @@ class Membership(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE,
                              related_name='team_members')
     role = models.CharField(max_length=100, choices=RoleChoices.choices)
+
+    def __str__(self):
+        return f'{self.user.username} - {self.team.team_name} - {self.get_role_display()}'
     # customer = models.ForeignKey(
     #     'djstripe.Customer', null=True, blank=True, on_delete=models.SET_NULL,
     #     help_text="The member's Stripe Customer object for this team, if it exists"
@@ -218,6 +237,7 @@ class Invitation(models.Model):
     team = models.ForeignKey(Team, on_delete=models.CASCADE,
                              related_name='invitations')
     created_at = models.DateTimeField(auto_now_add=True)
+    expiry_date = models.DateTimeField(null=True, blank=True)
 
     class InvitationStatusChoices(models.TextChoices):
         PENDING = 'PENDING', 'Pending'

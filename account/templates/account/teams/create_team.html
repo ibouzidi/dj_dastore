@@ -12,10 +12,11 @@
                 <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
                     <ol class="breadcrumb mb-4">
                         {% url 'account:account_profile' as account_url %}
+                        {% url 'account:team_list' as team_list_url %}
                         {% url 'home' as home_url %}
                         {% breadcrumb "Home" home_url %}
                         {% breadcrumb "Profile" account_url%}
-                        {% breadcrumb "Teams" account_url%}
+                        {% breadcrumb "Teams" team_list_url%}
                         {% breadcrumb "Add member" %}
                     </ol>
                 </nav>
@@ -25,59 +26,43 @@
 {% endblock %}
 
 {% block sub_content %}
-    <div class="row gutters-sm">
-        <div class="col-md-3 d-none d-md-block" data-aos="fade-left" data-aos-delay="300">
-            <div class="card">
-                <div class="card-body">
-                    {% include 'account/profile_tab.html' %}
-                </div>
-            </div>
-        </div>
-        <div class="col-md-9" data-aos="fade-left" data-aos-delay="200">
-            <div class="card">
-                <div class="card-header border-bottom mb-3 d-flex d-md-none">
-                    {% include 'account/profile_tab_mobile.html' %}
-                </div>
-                <div class="card-body tab-content">
-                    <h6>Add a team</h6>
+    <div class="card-body tab-content">
+        <h6>Add a team</h6>
+        <hr>
+        <form method="post">
+            {% csrf_token %}
 
-                    <form method="post">
-                        {% csrf_token %}
+            <table>
+                {% for field in form %}
+                    <tr>
+                        <td>
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        </td>
+                        <td>
+                            {% render_field field class="form-control" %}
+                            <div class="{% if field.errors %}invalid{% endif %}">
+                                {% for error in field.errors %}
+                                    <p class="help-block">{{ error }}</p>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
 
-                        <table>
-                            {% for field in form %}
-                                <tr>
-                                    <td>
-                                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                    </td>
-                                    <td>
-                                        {% render_field field class="form-control" %}
-                                        <div class="{% if field.errors %}invalid{% endif %}">
-                                            {% for error in field.errors %}
-                                                <p class="help-block">{{ error }}</p>
-                                            {% endfor %}
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                {% if form.non_field_errors %}
+                    <tr>
+                        <td colspan="2">
+                            <div class="alert alert-danger">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
 
-                            {% if form.non_field_errors %}
-                                <tr>
-                                    <td colspan="2">
-                                        <div class="alert alert-danger">
-                                            {% for error in form.non_field_errors %}
-                                                {{ error }}
-                                            {% endfor %}
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endif %}
-                        </table>
-
-                        <input type="submit" class="prm-btn btn" value="Add member">
-                    </form>
-                </div>
-            </div>
-        </div>
+            <input type="submit" class="custom-button btn" value="Add member">
+        </form>
     </div>
 {% endblock %}

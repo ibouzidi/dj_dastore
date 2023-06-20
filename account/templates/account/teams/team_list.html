@@ -1,9 +1,32 @@
-<h2 class="h5 mb-4">My Teams</h2>
+{% extends "../../sub_base.html" %}
+{% load static %}
+{% load breadcrumb %}
 
-<a class="btn btn-primary my-2 col-2 me-2" href="{% url 'account:create_team' %}">Create your team</a>
 
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url%}
+                        {% breadcrumb "Teams Detail" %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
+{% block sub_content %}
+    <div class="card-body tab-content">
+        <h6>Teams Detail</h6>
+        <hr>
 
+<a class="custom-button btn" href="{% url 'account:create_team' %}"><i class="fa fa-plus"></i>Create Team</a>
 <style>
     table {
         width: 100%;
@@ -29,8 +52,8 @@
         <tr>
             <td scope="row">{{ team.team.team_name }}</td>
             <td>
-                <a href="{% url 'account:team_detail' team.team.team_id%}" class="btn btn-warning">Edit</a> |
-                <a href="#" class="btn btn-danger">Delete</a>
+                <a href="{% url 'account:team_detail' team.team.team_id%}" class="custom-button btn"><i class="fa fa-edit"></i>Edit</a> |
+                <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash"></i> Delete</a>
             </td>
         </tr>
         {% endfor %}
@@ -38,7 +61,7 @@
 </table>
 
 
-
+{% endblock %}
 {#{% for team in teams %}#}
 {#    <h2>{{ team.team.team_name }}</h2>#}
 {#    <ul>#}

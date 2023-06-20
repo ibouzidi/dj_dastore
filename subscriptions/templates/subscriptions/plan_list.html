@@ -61,6 +61,7 @@
                                 <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_one }}</p>
                                 <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_two }}</p>
                                 <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_three }}</p>
+                                <p><i class="material-symbols-outlined">check_circle</i>Limit Users : {{ plan.metadata.limit_users }}</p>
                             </div>
                         </div>
 
@@ -80,7 +81,7 @@
 {% endblock content %}
 
 {% block script %}
-    <script>
+    <script type="text/javascript">
         const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";
 function handleSelectPlan(button) {
     const planId = button.getAttribute("data-id");

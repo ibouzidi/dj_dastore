@@ -43,6 +43,7 @@ class AccountAdmin(UserAdmin):
 class MembershipInline(admin.TabularInline):
     model = Membership
     extra = 1
+    can_delete = False
 
 class TeamAdmin(admin.ModelAdmin):
     inlines = (MembershipInline,)

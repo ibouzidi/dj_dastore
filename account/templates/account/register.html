@@ -1,4 +1,4 @@
-{% extends "sub_base.html" %}
+{% extends "base.html" %}
 {% load static %}
 {% load breadcrumb %}
 
@@ -21,7 +21,7 @@
     </div>
 {% endblock %}
 
-{% block sub_content %}
+{% block content %}
     <!-- Section -->
     <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
         <div class="container">
@@ -95,7 +95,7 @@
                                 </div>
 {#                                {{ form.captcha }}#}
                             </div>
-                            <button type="submit" class="prm-btn btn btn-block">Sign in</button>
+                            <button type="submit" class="custom-button btn btn-block">Sign in</button>
                             {% for field in form %}
                                 {% for error in field.errors %}
                                     <p class="py-2" style="color: red">{{ field.label }}: {{ error }}</p>

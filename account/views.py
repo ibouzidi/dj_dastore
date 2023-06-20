@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -80,9 +82,14 @@ class GuestRegisterView(View):
     def get(self, request, code):
         form = RegistrationForm()
         try:
-            invitation = Invitation.objects.get(code=code, status=Invitation.InvitationStatusChoices.PENDING)
+            invitation = Invitation.objects.get(
+                code=code, status=Invitation.InvitationStatusChoices.PENDING)
+            if invitation.expiry_date < datetime.now():
+                messages.error(request, 'This invitation has expired.')
+                return redirect('home')
             request.session['invitation_id'] = invitation.id
-            return render(request, 'account/guest_register.html', {'form': form})
+            return render(request, 'account/guest_register.html',
+                          {'form': form})
         except Invitation.DoesNotExist:
             messages.error(request, 'Invalid or expired invitation code.')
             return redirect('home')
@@ -93,16 +100,31 @@ class GuestRegisterView(View):
             try:
                 invitation = Invitation.objects.get(
                     id=request.session['invitation_id'])
-                # Retrieve storage limit from leader's subscription
+
                 leader_membership = Membership.objects.filter(
                     team=invitation.team, role=RoleChoices.LEADER).first()
-                leader_active_subscriptions = leader_membership.user.get_active_subscriptions
+
+                # Added this check
+                if leader_membership.user.is_team_leader:
+                    limit_users = leader_membership.user.limit_users()
+
+                    # Check total members across all teams lead by the user
+                    total_members_all_teams = leader_membership.user.total_members_all_teams
+
+                    if total_members_all_teams >= int(limit_users):
+                        messages.error(request,
+                                       'The team is already at capacity.')
+                        return redirect('account:login')
+
+                leader_active_subscriptions = \
+                    leader_membership.user.get_active_subscriptions
+
                 if leader_active_subscriptions.exists():
                     leader_plan = leader_active_subscriptions[0].plan
                     storage_limit = leader_plan.product.metadata[
                         "storage_limit"]
                 else:
-                    storage_limit = 0  # Default storage limit, adjust as needed
+                    storage_limit = 0
 
                 # Create user account with specified storage limit
                 account = Account.objects.create_user(
@@ -127,6 +149,10 @@ class GuestRegisterView(View):
                 invitation.status = Invitation.InvitationStatusChoices.ACCEPTED
                 invitation.save()
                 del request.session['invitation_id']
+
+                # Update the total_members count of the team
+                invitation.team.total_members += 1
+                invitation.team.save()
 
                 messages.success(request,
                                  'Registration and team joining successful.')
@@ -288,6 +314,7 @@ def crop_image(request, *args, **kwargs):
             payload['exception'] = str(e)
     return HttpResponse(json.dumps(payload), content_type="application/json")
 
+
 @login_required
 def account_view(request, *args, **kwargs):
     if not request.user.is_authenticated:
@@ -335,10 +362,6 @@ def account_view(request, *args, **kwargs):
         context['form'] = form
     context[
         'DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
-    customer = request.user.customer
-    if customer:
-        invoices = Invoice.objects.filter(customer=customer)
-        context['invoices'] = invoices
 
     storage_used, storage_limit, storage_limit_unit, storage_limit_used \
         = calculate_storage_usage(account)
@@ -348,10 +371,31 @@ def account_view(request, *args, **kwargs):
     context['storage_limit_unit'] = storage_limit_unit
     context['storage_used_unit'] = storage_limit_used
 
-    context['default_device'] = default_device(
-        request.user) if request.user.is_authenticated else None
+    return render(request, "account/account.html", context)
 
 
+@login_required
+def account_security(request, *args, **kwargs):
+    context = {'default_device': default_device(
+        request.user) if request.user.is_authenticated else None}
+
+    return render(request, 'account/account_security.html', context)
+
+
+@login_required
+def account_billing(request, *args, **kwargs):
+    context = {}
+    customer = request.user.customer
+    if customer:
+        invoices = Invoice.objects.filter(customer=customer)
+        context['invoices'] = invoices
+
+    return render(request, 'account/account_billing.html', context)
+
+
+@login_required
+def team_list(request, *args, **kwargs):
+    context = {}
     # Retrieve all the teams of the current user
     user = request.user
     memberships = Membership.objects.filter(user=user)
@@ -366,8 +410,7 @@ def account_view(request, *args, **kwargs):
             'team_members': team_members
         })
 
-    return render(request, "account/account.html", context)
-
+    return render(request, 'account/teams/team_list.html', context)
 
 def create_team(request):
     if request.method == 'POST':
@@ -433,6 +476,7 @@ def team_detail(request, team_id):
         'pending_invitations': pending_invitations,
     })
 
+
 @login_required
 def cancel_invitation(request, code):
     invitation = get_object_or_404(Invitation, code=code)
@@ -488,16 +532,34 @@ def send_invitation(request):
                                                role=RoleChoices.LEADER).first()
 
         if membership:
-            print("yes")
+            if membership.user.is_team_leader:
+                limit_users = membership.user.limit_users()
+                # Total members across all teams
+                total_members_all_teams = \
+                    membership.user.total_members_all_teams
+
+                print("total_members_all_teams")
+                print(total_members_all_teams)
+                # Check if total members across all teams exceeds the limit
+                if total_members_all_teams >= int(limit_users):
+                    messages.error(request, 'The team is already at capacity.')
+                    return render(request, 'account/account.html')
+
             existing_invitation = Invitation.objects.filter(
                 email=email, team=team,
                 status=Invitation.InvitationStatusChoices.ACCEPTED).first()
+
             if existing_invitation:
                 messages.error(
                     request,
                     'An invitation to this email has already been sent.')
             else:
-                invitation = Invitation.objects.create(email=email, team=team)
+                # All checks pass, send invitation
+                # Define the expiry date
+                expiry_date = datetime.now() + timedelta(hours=24)
+                # Create the invitation
+                invitation = Invitation.objects.create(email=email, team=team,
+                                                       expiry_date=expiry_date)
                 signup_link = request.build_absolute_uri(reverse(
                     'account:guest_register', args=[invitation.code]))
                 leader_email = membership.user.email

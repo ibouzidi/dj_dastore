@@ -16,14 +16,19 @@ from account.views import (
     create_team,
     team_detail,
     GuestRegisterView,
-    cancel_invitation
+    cancel_invitation,
+account_security,
+account_billing,
+team_list
 )
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='RegisterView'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
-    path('profiles/', account_view, name="account_profile"),
+    path('profile/', account_view, name="account_profile"),
+    path('security/', account_security, name="account_security"),
+    path('billing/', account_billing, name="account_billing"),
     # path('edit/<user_id>/', edit_account_view, name="account_edit"),
     path('edit/cropImage/', crop_image, name="account_crop_image"),
 
@@ -34,8 +39,9 @@ urlpatterns = [
     path('send_invitation/', send_invitation, name='send_invitation'),
     path('accept_invitation/<uuid:code>/', accept_invitation,
          name='accept_invitation'),
-    path('create_team/', create_team, name='create_team'),
-    path('team_detail/<str:team_id>/', team_detail, name='team_detail'),
+    path('teams/', team_list, name='team_list'),
+    path('teams/create_team/', create_team, name='create_team'),
+    path('teams/<str:team_id>/detail/', team_detail, name='team_detail'),
     path('guest_register/<uuid:code>/', GuestRegisterView.as_view(),
          name='guest_register'),
     path('cancel_invitation/<uuid:code>/', cancel_invitation, name='cancel_invitation'),

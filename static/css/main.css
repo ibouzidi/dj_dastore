@@ -124,30 +124,49 @@ h6 {
   transform: unset;
 }
 
-.prm-btn {
+
+.custom-button {
+    font-family: Roboto, sans-serif;
+    font-weight: 0;
+    font-size: 14px;
+    color: #8a6aff;
+    background-color: #0066cc00;
+    border: solid #8359ff 2px;
+    cursor: pointer;
+}
+.custom-button:hover{
     background-color: var(--clr-purple-1);
     color: var(--clr-white);
-    letter-spacing: 1px;
+}
+.custom-button i {
+    margin-right: 7px;
 }
 
-.prm-btn:hover {
-    color: var(--clr-cyan-1);
-}
-.prm-btn.btn:active{
-    transform: translate(0px, 5px);
-    -webkit-transform: translate(0px, 5px);
-    /*box-shadow: 0px 1px 0px 0px var(--clr-purple-3)!important;*/
-    color: var(--clr-cyan-1);
-}
+/*.custom-button {*/
+/*    background-color: var(--clr-purple-1);*/
+/*    color: var(--clr-white);*/
+/*    letter-spacing: 1px;*/
+/*}*/
 
-.prm-btn:focus,
-.prm-btn:active,
-.prm-btn:active:focus,
-.prm-btn.active:focus {
-    outline: none;
-    box-shadow: none;
-    color: var(--clr-cyan-1);
-}
+/*.custom-button:hover {*/
+/*    color: var(--clr-cyan-1);*/
+/*}*/
+/*.custom-button.btn:active{*/
+/*    transform: translate(0px, 5px);*/
+/*    -webkit-transform: translate(0px, 5px);*/
+/*    !*box-shadow: 0px 1px 0px 0px var(--clr-purple-3)!important;*!*/
+/*    color: var(--clr-cyan-1);*/
+/*}*/
+
+/*.custom-button:focus,*/
+/*.custom-button:active,*/
+/*.custom-button:active:focus,*/
+/*.custom-button.active:focus {*/
+/*    outline: none;*/
+/*    box-shadow: none;*/
+/*    color: var(--clr-cyan-1);*/
+/*}*/
+
 
 .container-fluid {
   max-width: 1440px; /* Adjust the value as per your requirement */

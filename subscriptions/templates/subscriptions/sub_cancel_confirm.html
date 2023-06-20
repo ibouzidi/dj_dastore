@@ -35,8 +35,8 @@
             </p>
             <form method="post" action="{% url 'subscriptions:CancelConfirmView' %}">
                 {% csrf_token %}
-                <button type="submit" name="cancel" class="prm-btn btn" style="background-color: var(--clr-red-purple-1);color:white;">Yes, cancel subscription</button>
-                <button type="submit" name="return_checkout" class="prm-btn btn mx-2">Return to checkout</button>
+                <button type="submit" name="cancel" class="custom-button btn" style="background-color: var(--clr-red-purple-1);color:white;">Yes, cancel subscription</button>
+                <button type="submit" name="return_checkout" class="custom-button btn mx-2">Return to checkout</button>
             </form>
         </div>
     </section>

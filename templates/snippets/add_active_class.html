@@ -1,7 +1,7 @@
-<script>
+<script type="text/javascript">
 $(document).ready(function() {
     // Create a mapping of paths to CSS selectors
-    var pathMap = {
+    var pathMapHeader = {
         'subscriptions': 'a[href="{% url 'subscriptions:SubListView' %}"]',
         'folder': 'a[href="{% url 'folder:folder_list' %}"]',
         'account': 'a[href="{% url 'account:account_profile' %}"], a[href="{% url 'account:login' %}"]',
@@ -12,9 +12,9 @@ $(document).ready(function() {
     console.log("currentPath");
     console.log(currentPath);
     // If the current path is in the mapping
-    if (currentPath in pathMap) {
+    if (currentPath in pathMapHeader) {
         // Get the CSS selector associated with the current path
-        var currentSelector = pathMap[currentPath];
+        var currentSelector = pathMapHeader[currentPath];
 
         // Remove 'active' class from all nav items
         $("#nav-header .nav-menu ul li").removeClass('active');
