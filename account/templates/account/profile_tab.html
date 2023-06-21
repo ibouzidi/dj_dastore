@@ -22,6 +22,7 @@
         </svg>
         Security
     </a>
+{% if request.user.get_active_subscriptions %}
     <a href="{% url 'account:account_billing' %}"
        class="nav-item nav-link has-icon nav-link-faded" data-id="billing">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -33,6 +34,7 @@
         </svg>
         Billing
     </a>
+{% endif %}
     {% if request.user.get_active_subscriptions.0.plan.product.name == 'Entreprise' %}
         <a href="{% url 'account:team_list' %}"
            class="nav-item nav-link has-icon nav-link-faded" data-id="teams">

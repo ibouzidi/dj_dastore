@@ -230,6 +230,9 @@ DJSTRIPE_WEBHOOK_SECRET = 'whsec_56d7c095da9b777a89840d2b4ec445f19c4a5c42e51d735
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 
-#stripe listen --forward-to localhost:8000/stripe/webhook/
-#python manage.py djstripe_sync_models
-#python manage.py djstripe_sync_plans_from_stripe
+# stripe listen --forward-to localhost:8000/stripe/webhook/
+# python manage.py djstripe_sync_models
+# python manage.py djstripe_sync_plans_from_stripe
+
+# LOAD Fixtures
+# python manage.py loaddata <fixturename>

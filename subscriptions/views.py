@@ -152,7 +152,7 @@ class CancelConfirmView(View):
             if user_id:
                 try:
                     user = Account.objects.get(id=user_id)
-                    group = Group.objects.get(name='G_INACTIVE_SUBSCRIBERS')
+                    group = Group.objects.get(name='g_')
                     user.groups.add(group)
                     messages.error(request, "Subscription canceled")
                 except Account.DoesNotExist:
