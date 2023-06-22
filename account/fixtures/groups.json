@@ -7,7 +7,7 @@
             "permissions": []
         }
     },
-        {
+    {
         "model": "auth.group",
         "pk": 2,
         "fields": {
@@ -19,7 +19,7 @@
         "model": "auth.group",
         "pk": 3,
         "fields": {
-            "name": "g_leader",
+            "name": "g_team_leader",
             "permissions": []
         }
     },
@@ -36,6 +36,22 @@
         "pk": 5,
         "fields": {
             "name": "g_guest",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 5,
+        "fields": {
+            "name": "inactive_subscribers",
+            "permissions": []
+        }
+    },
+    {
+        "model": "auth.group",
+        "pk": 5,
+        "fields": {
+            "name": "active_subscribers",
             "permissions": []
         }
     }

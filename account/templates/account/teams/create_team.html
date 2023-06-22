@@ -17,7 +17,7 @@
                         {% breadcrumb "Home" home_url %}
                         {% breadcrumb "Profile" account_url%}
                         {% breadcrumb "Team Detail" team_list_url%}
-                        {% breadcrumb "Add member" %}
+                        {% breadcrumb "Create Team" %}
                     </ol>
                 </nav>
             </div>
@@ -49,7 +49,7 @@
                 {{ form.team_id.errors }}
             </div>
                 </div>
-            <input type="submit" class="custom-button btn" value="Add member">
+            <button type="submit" class="custom-button btn" value="Add Team"><i class="fa fa-check"></i>Add Team</button>
         </form>
     </div>
 {% endblock %}
