@@ -152,7 +152,7 @@ class CancelConfirmView(View):
             if user_id:
                 try:
                     user = Account.objects.get(id=user_id)
-                    group = Group.objects.get(name='g_')
+                    group = Group.objects.get(name='inactive_subscribers')
                     user.groups.add(group)
                     messages.error(request, "Subscription canceled")
                 except Account.DoesNotExist:
@@ -200,8 +200,8 @@ class CancelSubscriptionView(View):
                 cancel_at_period_end=True,
             )
             # Move user to 'Inactive Subscribers' group
-            move_user_to_group(request.user, 'G_ACTIVE_SUBSCRIBERS',
-                               'G_INACTIVE_SUBSCRIBERS')
+            move_user_to_group(request.user, 'active_subscribers',
+                               'inactive_subscribers')
 
             messages.success(request, "Subscription will be cancelled at"
                                       " the end of the billing period")
@@ -214,7 +214,7 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
 
     invoice = stripe.Invoice.retrieve(invoice_id)
     lines = invoice.get("lines", [])
-
+    print("payment")
     if lines:
         for line in lines['data']:
             if line['type'] == 'subscription':
@@ -227,7 +227,7 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     plan = get_object_or_404(Plan, id=plan_id)
                     user.storage_limit = plan.product.metadata["storage_limit"]
                     # Add the user to the 'Active Subscribers' group
-                    group = Group.objects.get(name='G_ACTIVE_SUBSCRIBERS')
+                    group = Group.objects.get(name='active_subscribers')
                     user.groups.add(group)
                     user.save()
     return
@@ -248,7 +248,7 @@ def subscription_cancelled_event_listener(event, **kwargs):
         subscription.save()
 
         # Move user to 'Inactive Subscribers' group
-        move_user_to_group(user, 'G_ACTIVE_SUBSCRIBERS', 'inactive_ubscribers')
+        move_user_to_group(user, 'active_subscribers', 'inactive_subscribers')
 
     except Subscription.DoesNotExist:
         print("Subscription does not exist in the database")

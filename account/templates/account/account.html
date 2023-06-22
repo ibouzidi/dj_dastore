@@ -227,6 +227,8 @@
             </form>
         </div>
     </div>
+    </div>
+    </div>
 {% endblock %}
 {% block script %}
     <script type="text/javascript">
@@ -447,7 +449,9 @@
             if (storageUsedUnit == "GB") {
                 storageUsed *= 1024;
             }
-            let usedPercentage = Math.round((storageUsed / (storageLimit * 1024)) * 100);
+            let usedPercentage = Math.round((storageUsed / (storageLimit * 1024)) * 100)+ 0.001;
+            // if used percentage equal to 0 the pie chart is not displayed
+            // so we add 0.001 which doesnt change the displayed value
             let availablePercentage = 100 - usedPercentage;
 
             {#console.log("storageUsed", storageUsed);#}
@@ -486,8 +490,8 @@
                                         return 'Used: ' + (storageUsed).toFixed(2) + ' ' + storageUsedUnit;
                                     }
                                 } else {
-                                    let avaiblable = (storageLimit * 1024 - storageUsed).toFixed(2)
-                                    if (avaiblable < 1000){
+                                    let available = (storageLimit * 1024 - storageUsed).toFixed(2)
+                                    if (available < 1000){
                                         return 'Available: ' + (storageLimit * 1024 - storageUsed).toFixed(2) + ' ' + 'MB';
                                     }else{
                                         return 'Available: ' + (storageLimit - storageUsed /1024).toFixed(2) + ' ' + storageLimitUnit;
@@ -501,6 +505,3 @@
             });
     </script>
 {% endblock %}
-
-
-
