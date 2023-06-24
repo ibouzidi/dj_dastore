@@ -194,9 +194,15 @@ class Account(AbstractBaseUser, PermissionsMixin):
     @property
     def is_company(self):
         active_plan = self.get_active_plan
+        print("active_plan")
+        print(active_plan)
+        print("active_plan")
+        print(active_plan.product.name)
         if active_plan and active_plan.product.name == 'Entreprise':
+            print("true")
             return True
         else:
+            print("false")
             return False
 
     def limit_users(self):

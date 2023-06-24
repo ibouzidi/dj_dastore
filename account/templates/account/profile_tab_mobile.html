@@ -34,7 +34,7 @@
         </a>
     </li>
     <li class="nav-item">
-    {% if request.user.get_active_subscriptions.0.plan.product.name == 'Entreprise' %}
+    {% if request.user.is_company or request.user.is_superuser %}
         <a href="{% url 'account:team_list' %}"
            class="nav-link has-icon" data-id="teams">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
