@@ -22,7 +22,8 @@ from django.views import View
 from account.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm, AddMemberForm, AddTeamForm
 from account.models import Account, Team, Membership, RoleChoices, Invitation
-from dj_dastore.decorator import user_is_subscriber, user_is_leader
+from dj_dastore.decorator import user_is_subscriber, user_is_company, \
+    user_is_active_subscriber
 from .calc_storage_limit import calculate_storage_usage
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
@@ -263,7 +264,32 @@ def account_security(request, *args, **kwargs):
     return render(request, 'account/account_security.html', context)
 
 
-@user_passes_test(user_is_subscriber)
+@method_decorator(login_required, name='dispatch')
+class CustomPasswordChangeView(PasswordChangeView):
+    # template_name = 'account/password_change.html'
+
+    def clean_old_password(self):
+        old_password = super().clean_old_password()
+        print('Old password cleaned data:', old_password)
+        return old_password
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        if self.request.is_ajax():
+            return JsonResponse({'result': 'success'}, status=200)
+        else:
+            return response
+
+    def form_invalid(self, form):
+        print('Form errors:', form.errors)
+        response = super().form_invalid(form)
+        if self.request.is_ajax():
+            return JsonResponse(form.errors, status=400)
+        else:
+            return response
+
+
+@user_is_active_subscriber
 def account_billing(request, *args, **kwargs):
     context = {}
     customer = request.user.customer
@@ -274,7 +300,7 @@ def account_billing(request, *args, **kwargs):
     return render(request, 'account/account_billing.html', context)
 
 
-
+@user_is_company
 def team_list(request, *args, **kwargs):
     context = {}
     # Retrieve all the teams of the current user
@@ -294,7 +320,7 @@ def team_list(request, *args, **kwargs):
     return render(request, 'account/teams/team_list.html', context)
 
 
-
+@user_is_company
 def create_team(request):
     if request.method == 'POST':
         form = AddTeamForm(request.POST)
@@ -327,7 +353,7 @@ def create_team(request):
                   {'form': form})
 
 
-
+@user_is_company
 def team_detail(request, team_id):
     team = get_object_or_404(Team, team_id=team_id)
     if request.method == 'POST':
@@ -361,7 +387,7 @@ def team_detail(request, team_id):
     })
 
 
-
+@user_is_company
 def cancel_invitation(request, code):
     invitation = get_object_or_404(Invitation, code=code)
     if request.user.is_team_leader and \
@@ -375,7 +401,7 @@ def cancel_invitation(request, code):
     return redirect('account:team_detail', team_id=invitation.team.team_id)
 
 
-
+@user_is_company
 def send_invitation(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -514,57 +540,3 @@ class GuestRegisterView(View):
                 messages.error(request, 'Problem in accepting the invitation.')
             return redirect('account:login')
         return render(request, 'account/guest_register.html', {'form': form})
-
-
-# @login_required
-# def accept_invitation(request, code):
-#     invitation = get_object_or_404(Invitation, code=code)
-#     team = invitation.team
-#     if Membership.objects.filter(user=request.user, team=team).exists():
-#         messages.error(request, 'You are already a member of this team.')
-#         return redirect('account:account_profile')
-#
-#     if request.method == 'POST':
-#         if 'cancel' in request.POST:
-#             if invitation.status == Invitation.InvitationStatusChoices.PENDING:
-#                 invitation.status = Invitation.InvitationStatusChoices.CANCELLED_MEMBER
-#                 invitation.save()
-#                 messages.success(request, 'Invitation cancelled.')
-#             else:
-#                 messages.error(request, 'This invitation cannot be cancelled.')
-#     else:
-#         if invitation.status == Invitation.InvitationStatusChoices.PENDING:
-#             Membership.objects.create(user=request.user, team=invitation.team, role=RoleChoices.MEMBER)
-#             invitation.status = Invitation.InvitationStatusChoices.ACCEPTED
-#             invitation.save()
-#             messages.success(request, 'Invitation accepted.')
-#         else:
-#             messages.error(request, 'This invitation cannot be accepted.')
-#     return redirect('account:account_profile')
-
-
-@method_decorator(login_required, name='dispatch')
-class CustomPasswordChangeView(PasswordChangeView):
-    # template_name = 'account/password_change.html'
-
-    def clean_old_password(self):
-        old_password = super().clean_old_password()
-        print('Old password cleaned data:', old_password)
-        return old_password
-
-    def form_valid(self, form):
-        response = super().form_valid(form)
-        if self.request.is_ajax():
-            return JsonResponse({'result': 'success'}, status=200)
-        else:
-            return response
-
-    def form_invalid(self, form):
-        print('Form errors:', form.errors)
-        response = super().form_invalid(form)
-        if self.request.is_ajax():
-            return JsonResponse(form.errors, status=400)
-        else:
-            return response
-
-

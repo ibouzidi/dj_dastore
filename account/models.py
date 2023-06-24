@@ -191,6 +191,14 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def is_team_leader(self):
         return self.user_teams.filter(role=RoleChoices.LEADER.value).exists()
 
+    @property
+    def is_company(self):
+        active_plan = self.get_active_plan
+        if active_plan and active_plan.product.name == 'Entreprise':
+            return True
+        else:
+            return False
+
     def limit_users(self):
         active_subscriptions = self.get_active_subscriptions
         if active_subscriptions:

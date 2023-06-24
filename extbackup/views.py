@@ -12,7 +12,8 @@ from django.shortcuts import render, redirect, HttpResponse, get_object_or_404
 from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
-from dj_dastore.decorator import dev, user_is_subscriber
+from dj_dastore.decorator import dev, user_is_subscriber, \
+    user_is_active_subscriber
 from extbackup.forms import FileForm
 from extbackup.models import File
 from django.core.files.storage import default_storage
@@ -30,7 +31,7 @@ from io import BytesIO
 from .key import key
 
 
-@method_decorator(user_passes_test(user_is_subscriber), name='dispatch')
+@method_decorator(user_is_active_subscriber, name='dispatch')
 class BackupUploadView(View):
     def post(self, request):
         form = FileForm(request.POST, request.FILES)
@@ -99,22 +100,22 @@ class BackupUploadView(View):
         return JsonResponse({'message': 'Form is not valid'}, status=400)
 
 
-@method_decorator(user_passes_test(user_is_subscriber), name='dispatch')
-class BackupDashboardView(View):
-    def get(self, request):
-        try:
-            folders = File.objects.filter(user=request.user) \
-                .order_by('-uploaded_at') \
-                .values_list('id', 'file', 'description', 'uploaded_at', 'size')
-        except Exception as e:
-            messages.error("An error occurred: {}".format(str(e)))
-            return render(request, 'extbackup/backup_dashboard.html',
-                          {'folders': folders})
-        return render(request, 'extbackup/backup_dashboard.html',
-                      {'folders': folders})
+# @method_decorator(user_is_active_subscriber, name='dispatch')
+# class BackupDashboardView(View):
+#     def get(self, request):
+#         try:
+#             folders = File.objects.filter(user=request.user) \
+#                 .order_by('-uploaded_at') \
+#                 .values_list('id', 'file', 'description', 'uploaded_at', 'size')
+#         except Exception as e:
+#             messages.error("An error occurred: {}".format(str(e)))
+#             return render(request, 'extbackup/backup_dashboard.html',
+#                           {'folders': folders})
+#         return render(request, 'extbackup/backup_dashboard.html',
+#                       {'folders': folders})
 
 
-@user_passes_test(user_is_subscriber)
+@user_is_active_subscriber
 def check_file_hashes(request, file_id):
     user = request.user
 
@@ -194,7 +195,7 @@ def check_file_hashes(request, file_id):
         return HttpResponse("folder not found")
 
 
-@user_passes_test(user_is_subscriber)
+@user_is_active_subscriber
 def download_zip_file(request, file_id):
     ftp_storage = default_storage
     folder_path = f'uploads/upload_{request.user.username}/'
@@ -235,7 +236,7 @@ def download_zip_file(request, file_id):
         return HttpResponse("folder not found")
 
 
-@method_decorator(user_passes_test(user_is_subscriber), name='dispatch')
+@method_decorator(user_is_active_subscriber, name='dispatch')
 class BulkDownloadView(View):
     def post(self, request, *args, **kwargs):
         file_ids = self.request.POST.getlist('file_ids[]')
@@ -325,7 +326,7 @@ class BulkDownloadView(View):
 #         else:
 #             yield from traverse_content_tree(node, path)
 
-@method_decorator(user_passes_test(user_is_subscriber), name='dispatch')
+@method_decorator(user_is_active_subscriber, name='dispatch')
 class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
     # We'll set the model dynamically based on the item to delete.
     model = None
@@ -397,7 +398,7 @@ class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
         file.delete()
 
 
-@method_decorator(user_passes_test(user_is_subscriber), name='dispatch')
+@method_decorator(user_is_active_subscriber, name='dispatch')
 class BulkDeleteBackupsView(View):
     def post(self, request, *args, **kwargs):
         file_ids = self.request.POST.getlist('file_ids[]')
@@ -440,7 +441,7 @@ class BulkDeleteBackupsView(View):
         file.delete()
 
 
-@method_decorator(user_passes_test(user_is_subscriber), name='dispatch')
+@method_decorator(user_is_active_subscriber, name='dispatch')
 def view_zip_content(request, file_id):
     try:
         file = File.objects.get(pk=file_id)

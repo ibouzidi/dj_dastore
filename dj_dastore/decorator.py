@@ -1,3 +1,4 @@
+from functools import wraps
 from django.core.exceptions import PermissionDenied
 
 
@@ -28,10 +29,10 @@ def user_is_subscriber(user):
     raise PermissionDenied
 
 
-def user_is_leader(user):
+def user_is_company(user):
     if user.is_authenticated and \
             user.get_active_subscriptions and \
-            "g_leader" in user.groups.values_list('name', flat=True):
+            "g_company" in user.groups.values_list('name', flat=True):
         return True
     elif user.is_authenticated and \
             "g_admin" in user.groups.values_list('name', flat=True):
@@ -41,6 +42,32 @@ def user_is_leader(user):
         return True
     raise PermissionDenied
 
+
+def user_is_active_subscriber(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        user = request.user
+        active_plan = user.get_active_plan
+        if active_plan:
+            return view_func(request, *args, **kwargs)
+        elif user.is_superuser:
+            return view_func(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
+    return _wrapped_view
+
+
+def user_is_company(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        user = request.user
+        if user.is_company:
+            return view_func(request, *args, **kwargs)
+        elif user.is_superuser:
+            return view_func(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
+    return _wrapped_view
 # def group_required(group_name):
 #     def decorator(view_func):
 #         def _wrapped_view(request, *args, **kwargs):

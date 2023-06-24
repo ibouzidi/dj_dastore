@@ -227,7 +227,7 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     plan = get_object_or_404(Plan, id=plan_id)
                     user.storage_limit = plan.product.metadata["storage_limit"]
                     # Add the user to the 'Active Subscribers' group
-                    group = Group.objects.get(name='active_subscribers')
+                    group = Group.objects.get(name='g_active_subscribers')
                     user.groups.add(group)
                     user.save()
     return
