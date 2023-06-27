@@ -196,9 +196,12 @@ class Account(AbstractBaseUser, PermissionsMixin):
         active_plan = self.get_active_plan
         print("active_plan")
         print(active_plan)
-        print("active_plan")
+        print("active_plan_name")
         print(active_plan.product.name)
-        if active_plan and active_plan.product.name == 'Entreprise':
+        # if active_plan and active_plan.product.name == 'Entreprise':
+        limit_users = active_plan.product.metadata["limit_users"]
+        print(limit_users)
+        if active_plan and int(limit_users) > 1:
             print("true")
             return True
         else:

@@ -152,7 +152,7 @@ class CancelConfirmView(View):
             if user_id:
                 try:
                     user = Account.objects.get(id=user_id)
-                    group = Group.objects.get(name='inactive_subscribers')
+                    group = Group.objects.get(name='g_inactive_subscribers')
                     user.groups.add(group)
                     messages.error(request, "Subscription canceled")
                 except Account.DoesNotExist:
@@ -200,8 +200,8 @@ class CancelSubscriptionView(View):
                 cancel_at_period_end=True,
             )
             # Move user to 'Inactive Subscribers' group
-            move_user_to_group(request.user, 'active_subscribers',
-                               'inactive_subscribers')
+            move_user_to_group(request.user, 'g_active_subscribers',
+                               'ing_active_subscribers')
 
             messages.success(request, "Subscription will be cancelled at"
                                       " the end of the billing period")
@@ -226,8 +226,12 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     plan_id = line['plan']['id']
                     plan = get_object_or_404(Plan, id=plan_id)
                     user.storage_limit = plan.product.metadata["storage_limit"]
+                    print("storage limit ="+user.storage_limit)
+                    plan = get_object_or_404(Plan, id=plan_id)
+                    limit_users = plan.product.metadata["limit_users"]
+                    print("limit_users"+limit_users)
                     # Add the user to the 'Active Subscribers' group
-                    group = Group.objects.get(name='g_active_subscribers')
+                    group = Group.objects.get(name='g_g_active_subscribers')
                     user.groups.add(group)
                     user.save()
     return
