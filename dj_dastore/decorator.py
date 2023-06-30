@@ -61,9 +61,10 @@ def user_is_company(view_func):
     @wraps(view_func)
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
-        if user.is_company:
-            return view_func(request, *args, **kwargs)
-        elif user.is_superuser:
+        print("user")
+        print("user")
+        print(user)
+        if user.is_company or user.is_superuser:
             return view_func(request, *args, **kwargs)
         else:
             raise PermissionDenied

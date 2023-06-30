@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, \
     PermissionsMixin
@@ -9,6 +7,7 @@ import os
 from django.utils import timezone
 import datetime
 from djstripe.models import Customer, Subscription
+from team.models import RoleChoices
 
 
 class MyAccountManager(BaseUserManager):
@@ -50,35 +49,6 @@ def get_default_profile_image():
     return "dastore/default_user_icon.png"
 
 
-class Team(models.Model):
-    """
-    A Team, with members.
-    """
-    team_name = models.CharField(max_length=100)
-    team_id = models.CharField(max_length=15, unique=True, null=True)
-    total_members = models.IntegerField(default=0)
-    member_accounts = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        through='Membership',
-        through_fields=('team', 'user'),
-        related_name='member_teams'
-    )
-    subscription = models.ForeignKey(
-        'djstripe.Subscription', null=True, blank=True, on_delete=models.SET_NULL,
-        help_text="The team's Stripe Subscription object, if it exists"
-    )
-
-    def is_leader(self, user):
-        return self.memberships.filter(user=user,
-                                       role=RoleChoices.LEADER).exists()
-
-    def member_count(self):
-        return Membership.objects.filter(team=self).count()
-
-    def __str__(self):
-        return self.team_name
-
-
 class Account(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     username = models.CharField(max_length=30, unique=True)
@@ -107,10 +77,10 @@ class Account(AbstractBaseUser, PermissionsMixin):
     last_request_timestamp = models.DateTimeField(null=True, blank=True)
 
     teams = models.ManyToManyField(
-        'Team',
-        through='Membership',
+        'team.Team',  # updated to reference the 'team' app
+        through='team.Membership',
         through_fields=('user', 'team'),
-        related_name='memberships'  # added related_name here
+        related_name='account_memberships'  # updated related_name here
     )
 
     USERNAME_FIELD = 'email'
@@ -194,11 +164,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     @property
     def is_company(self):
         active_plan = self.get_active_plan
-        print("active_plan")
-        print(active_plan)
-        print("active_plan")
-        print(active_plan.product.name)
-        if active_plan and active_plan.product.name == 'Entreprise':
+        if active_plan is not None and active_plan.product.name == 'Enterprise':
             print("true")
             return True
         else:
@@ -219,46 +185,3 @@ class Account(AbstractBaseUser, PermissionsMixin):
         total_members = sum(
             membership.team.member_count() for membership in memberships)
         return total_members
-
-
-class RoleChoices(models.TextChoices):
-    LEADER = 'LEADER', 'Leader'
-    MEMBER = 'MEMBER', 'Member'
-
-
-class Membership(models.Model):
-    """
-    A user's team membership
-    """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE,
-                             related_name='user_teams')
-    team = models.ForeignKey(Team, on_delete=models.CASCADE,
-                             related_name='team_members')
-    role = models.CharField(max_length=100, choices=RoleChoices.choices)
-
-    def __str__(self):
-        return f'{self.user.username} - {self.team.team_name} - {self.get_role_display()}'
-    # customer = models.ForeignKey(
-    #     'djstripe.Customer', null=True, blank=True, on_delete=models.SET_NULL,
-    #     help_text="The member's Stripe Customer object for this team, if it exists"
-    # )
-
-
-class Invitation(models.Model):
-    email = models.EmailField()
-    code = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    team = models.ForeignKey(Team, on_delete=models.CASCADE,
-                             related_name='invitations')
-    created_at = models.DateTimeField(auto_now_add=True)
-    expiry_date = models.DateTimeField(null=True, blank=True)
-
-    class InvitationStatusChoices(models.TextChoices):
-        PENDING = 'PENDING', 'Pending'
-        ACCEPTED = 'ACCEPTED', 'Accepted'
-        CANCELLED_MEMBER = 'CANCELLED_MEMBER', 'Cancelled by Member'
-        CANCELLED_LEADER = 'CANCELLED_LEADER', 'Cancelled by Leader'
-
-    status = models.CharField(max_length=20,
-                              choices=InvitationStatusChoices.choices,
-                              default=InvitationStatusChoices.PENDING)

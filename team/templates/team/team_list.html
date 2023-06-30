@@ -1,4 +1,4 @@
-{% extends "../../sub_base.html" %}
+{% extends "../sub_base.html" %}
 {% load static %}
 {% load breadcrumb %}
 
@@ -26,7 +26,7 @@
         <h6>Teams Detail</h6>
         <hr>
 
-<a class="custom-button btn" href="{% url 'account:create_team' %}"><i class="fa fa-plus"></i>Create Team</a>
+<a class="custom-button btn" href="{% url 'team:create_team' %}"><i class="fa fa-plus"></i>Create Team</a>
 <style>
     table {
         width: 100%;
@@ -62,7 +62,7 @@
 
 
 {% endblock %}
-{#{% for team in teams %}#}
+{#{% for team in team %}#}
 {#    <h2>{{ team.team.team_name }}</h2>#}
 {#    <ul>#}
 {#        {% for member in team.team_members %}#}

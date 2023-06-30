@@ -18,14 +18,4 @@ urlpatterns = [
 
     # Subscriptions Management
     path('billing/', views.account_billing, name="account_billing"),
-
-    # Teams & Memeber Management
-    path('send_invitation/', views.send_invitation, name='send_invitation'),
-    path('teams/', views.team_list, name='team_list'),
-    path('teams/create_team/', views.create_team, name='create_team'),
-    path('teams/<str:team_id>/detail/', views.team_detail, name='team_detail'),
-    path('guest_register/<uuid:code>/', views.GuestRegisterView.as_view(),
-         name='guest_register'),
-    path('cancel_invitation/<uuid:code>/', views.cancel_invitation,
-         name='cancel_invitation'),
 ]

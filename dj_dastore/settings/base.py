@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
+    'team.apps.TeamConfig',
     'app.apps.AppConfig',
     'extbackup.apps.ExtbackupConfig',
     'folder.apps.FolderConfig',
