@@ -1,3 +1,5 @@
+from hashlib import sha256
+
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -16,25 +18,21 @@ from team.models import Membership, Team, Invitation, RoleChoices
 
 @user_is_company
 def team_list(request, *args, **kwargs):
+    context = {}
     user = request.user
-    memberships = Membership.objects.filter(user=user)
-
-    teams = []
-
-    for membership in memberships:
-        team = membership.team
-        team_members = Membership.objects.filter(team=team).exclude(user=user)
-        teams.append({
+    if hasattr(user, 'membership'):
+        team = user.membership.team
+        context = {
             'team': team,
-            'team_members': team_members
-        })
-
-    context = {'teams': teams}
+        }
     return render(request, 'team/team_list.html', context)
 
 
 @user_is_company
 def create_team(request):
+    if hasattr(request.user, 'membership'):
+        messages.error(request, 'You can only create one team.')
+        return redirect('team:team_list')
     if request.method == 'POST':
         form = AddTeamForm(request.POST)
         if form.is_valid():
@@ -79,7 +77,7 @@ def team_detail(request, team_id):
     else:
         form = AddTeamForm(instance=team)
 
-    team_members = team.team_members.all()
+    team_members = team.memberships.all()  # updated line
     invitations = team.invitations.all()
     pending_invitations = invitations.filter(
         status=Invitation.InvitationStatusChoices.PENDING)
@@ -97,25 +95,11 @@ def team_detail(request, team_id):
 @method_decorator(user_is_only_team_member, name='dispatch')
 class MembershipDetailView(View):
     def get(self, request):
-        memberships = request.user.user_teams.all()
+        membership = Membership.objects.get(user=request.user)  # updated line
         context = {
-            'memberships': memberships
+            'membership': membership
         }
         return render(request, 'team/membership_detail.html', context)
-
-
-@user_is_company
-def cancel_invitation(request, code):
-    invitation = get_object_or_404(Invitation, code=code)
-    if request.user.is_team_leader and \
-            invitation.status == Invitation.InvitationStatusChoices.PENDING:
-        invitation.status = Invitation.InvitationStatusChoices.CANCELLED_LEADER
-        invitation.save()
-        messages.success(request, 'Invitation cancelled.')
-    else:
-        messages.error(request, 'You do not have permission to do that or '
-                                'the invitation is not pending.')
-    return redirect('team:team_detail', team_id=invitation.team.team_id)
 
 
 @user_is_company
@@ -189,25 +173,21 @@ def send_invitation(request):
 class InvitationLandingView(View):
     def get(self, request, code):
         try:
-            invitation = Invitation.objects.get(
-                code=code, status=Invitation.InvitationStatusChoices.PENDING)
-            if invitation.expiry_date < datetime.now():
-                messages.error(request, 'This invitation has expired.')
-                return redirect('home')
-            return render(request, 'team/invitation_landing.html',
-                          {'invitation': invitation})
+            invitation = Invitation.objects.get(code=code, status=Invitation.InvitationStatusChoices.PENDING)
+            # Store the invitation ID in the session
+            request.session['invitation_id'] = invitation.id
+            return render(request, 'team/invitation_landing.html', {'invitation': invitation})
         except Invitation.DoesNotExist:
             messages.error(request, 'Invalid or expired invitation code.')
             return redirect('home')
 
     def post(self, request, code):
         try:
-            invitation = Invitation.objects.get(
-                code=code, status=Invitation.InvitationStatusChoices.PENDING)
-            if invitation.expiry_date < datetime.now():
-                messages.error(request, 'This invitation has expired.')
+            invitation_id = request.session.get('invitation_id')
+            invitation = Invitation.objects.get(id=invitation_id, status=Invitation.InvitationStatusChoices.PENDING)
+            if invitation.code != code:
+                messages.error(request, 'Invalid session.')
                 return redirect('home')
-            request.session['invitation_id'] = invitation.id
             return redirect('team:guest_register', code=code)
         except Invitation.DoesNotExist:
             messages.error(request, 'Invalid or expired invitation code.')
@@ -218,15 +198,14 @@ class GuestRegisterView(View):
     def get(self, request, code):
         form = RegistrationForm()
         try:
-            invitation = Invitation.objects.get(
-                id=request.session.get('invitation_id'))
-
+            invitation_id = request.session.get('invitation_id')
+            invitation = Invitation.objects.get(id=invitation_id, code=code,
+                                                status=Invitation.InvitationStatusChoices.PENDING)
             if invitation.expiry_date < datetime.now():
                 messages.error(request, 'This invitation has expired.')
                 return redirect('home')
             form = RegistrationForm(initial={'email': invitation.email})
-            return render(request, 'team/guest_register.html',
-                          {'form': form})
+            return render(request, 'team/guest_register.html', {'form': form})
         except Invitation.DoesNotExist:
             messages.error(request, 'Invalid or expired invitation code.')
             return redirect('home')
@@ -236,7 +215,8 @@ class GuestRegisterView(View):
         if form.is_valid():
             try:
                 invitation = Invitation.objects.get(
-                    id=request.session['invitation_id'])
+                    code=code,
+                    status=Invitation.InvitationStatusChoices.PENDING)
 
                 # Ensure the email matches the invitation
                 if form.cleaned_data.get('email').lower() != invitation.email:
@@ -303,3 +283,17 @@ class GuestRegisterView(View):
                 messages.error(request, 'Problem in accepting the invitation.')
             return redirect('account:login')
         return render(request, 'team/guest_register.html', {'form': form})
+
+
+@user_is_company
+def cancel_invitation(request, code):
+    invitation = get_object_or_404(Invitation, code=code)
+    if request.user.is_team_leader and \
+            invitation.status == Invitation.InvitationStatusChoices.PENDING:
+        invitation.status = Invitation.InvitationStatusChoices.CANCELLED_LEADER
+        invitation.save()
+        messages.success(request, 'Invitation cancelled.')
+    else:
+        messages.error(request, 'You do not have permission to do that or '
+                                'the invitation is not pending.')
+    return redirect('team:team_detail', team_id=invitation.team.team_id)

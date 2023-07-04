@@ -98,3 +98,26 @@ def user_is_company(view_func):
 #                 raise PermissionDenied
 #         return _wrapped_view
 #     return decorator
+
+
+# def email_matches_invitation(view_func):
+#     @wraps(view_func)
+#     def _wrapped_view(request, *args, **kwargs):
+#         if request.method == 'POST':
+#             form = RegistrationForm(request.POST)
+#             if form.is_valid():
+#                 provided_email = form.cleaned_data.get('email').lower()
+#                 invitation_id = request.session.get('invitation_id')
+#                 try:
+#                     invitation = Invitation.objects.get(
+#                         id=invitation_id,
+#                         status=Invitation.InvitationStatusChoices.PENDING)
+#                     if provided_email != invitation.email:
+#                         return HttpResponseForbidden('The provided email '
+#                                                      'does not match the '
+#                                                      'invitation.')
+#                 except Invitation.DoesNotExist:
+#                     return HttpResponseForbidden('No valid invitation found '
+#                                                  'for provided email.')
+#         return view_func(request, *args, **kwargs)
+#     return _wrapped_view

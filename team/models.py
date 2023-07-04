@@ -15,12 +15,6 @@ class Team(models.Model):
     team_name = models.CharField(max_length=100)
     team_id = models.CharField(max_length=15, unique=True, null=True)
     total_members = models.IntegerField(default=0)
-    member_accounts = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        through='Membership',
-        through_fields=('team', 'user'),
-        related_name='member_teams'
-    )
     subscription = models.ForeignKey(
         'djstripe.Subscription', null=True, blank=True, on_delete=models.SET_NULL,
         help_text="The team's Stripe Subscription object, if it exists"
@@ -31,7 +25,7 @@ class Team(models.Model):
                                        role=RoleChoices.LEADER).exists()
 
     def member_count(self):
-        return Membership.objects.filter(team=self).count()
+        return self.memberships.count()
 
     def __str__(self):
         return self.team_name
@@ -41,11 +35,11 @@ class Membership(models.Model):
     """
     A user's team membership
     """
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
                              on_delete=models.CASCADE,
-                             related_name='user_teams')
+                             related_name='membership')
     team = models.ForeignKey(Team, on_delete=models.CASCADE,
-                             related_name='team_members')
+                             related_name='memberships')
     role = models.CharField(max_length=100, choices=RoleChoices.choices)
 
     def __str__(self):

@@ -23,42 +23,48 @@
 
 {% block sub_content %}
     <div class="card-body tab-content">
-        <h6>Teams Detail</h6>
-        <hr>
+    <h6>Teams Detail</h6>
+    <hr>
 
-<a class="custom-button btn" href="{% url 'team:create_team' %}"><i class="fa fa-plus"></i>Create Team</a>
-<style>
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    th:first-child {
-        width: 80%; /* Adjust the width as needed */
-    }
-    th:last-child {
-        text-align: left;
-    }
-</style>
+    <a class="custom-button btn" href="{% url 'team:create_team' %}"><i class="fa fa-plus"></i>Create Team</a>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th:first-child {
+            width: 80%; /* Adjust the width as needed */
+        }
+        th:last-child {
+            text-align: left;
+        }
+    </style>
 
-<table class="table">
-    <thead>
+    <table class="table">
+        <thead>
         <tr>
             <th scope="col">Name</th>
             <th scope="col">Actions</th>
         </tr>
-    </thead>
-    <tbody>
-        {% for team in teams %}
-        <tr>
-            <td scope="row">{{ team.team.team_name }}</td>
-            <td>
-                <a href="{% url 'team:team_detail' team.team.team_id %}" class="custom-button btn"><i class="fa fa-edit"></i>Edit</a> |
-                <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash"></i> Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        {% if team %}
+            <tr>
+                <td scope="row">{{ team.team_name }}</td>
+                <td>
+                    <a href="{% url 'team:team_detail' team.team_id %}" class="custom-button btn"><i class="fa fa-edit"></i>Edit</a> |
+                    <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash"></i> Delete</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="2">No team found.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+
 
 
 {% endblock %}

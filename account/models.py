@@ -159,7 +159,15 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_team_leader(self):
-        return self.user_teams.filter(role=RoleChoices.LEADER.value).exists()
+        if hasattr(self, 'membership'):
+            return self.membership.role == RoleChoices.LEADER.value
+        return False
+
+    @property
+    def total_members_all_teams(self):
+        if hasattr(self, 'membership') and self.is_team_leader:
+            return self.membership.team.member_count()
+        return 0
 
     @property
     def is_company(self):
@@ -178,10 +186,3 @@ class Account(AbstractBaseUser, PermissionsMixin):
             return plan.product.metadata["limit_users"]
         else:
             return 0  # Default limit_users
-
-    @property
-    def total_members_all_teams(self):
-        memberships = self.user_teams.filter(role=RoleChoices.LEADER.value)
-        total_members = sum(
-            membership.team.member_count() for membership in memberships)
-        return total_members
