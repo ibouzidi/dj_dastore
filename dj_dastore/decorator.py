@@ -29,18 +29,18 @@ def user_is_subscriber(user):
     raise PermissionDenied
 
 
-def user_is_company(user):
-    if user.is_authenticated and \
-            user.get_active_subscriptions and \
-            "g_company" in user.groups.values_list('name', flat=True):
-        return True
-    elif user.is_authenticated and \
-            "g_admin" in user.groups.values_list('name', flat=True):
-        return True
-    elif user.is_authenticated and \
-            "g_dev" in user.groups.values_list('name', flat=True):
-        return True
-    raise PermissionDenied
+# def user_is_company(user):
+#     if user.is_authenticated and \
+#             user.get_active_subscriptions and \
+#             "g_company" in user.groups.values_list('name', flat=True):
+#         return True
+#     elif user.is_authenticated and \
+#             "g_admin" in user.groups.values_list('name', flat=True):
+#         return True
+#     elif user.is_authenticated and \
+#             "g_dev" in user.groups.values_list('name', flat=True):
+#         return True
+#     raise PermissionDenied
 
 
 def user_is_active_subscriber(view_func):
@@ -48,7 +48,25 @@ def user_is_active_subscriber(view_func):
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
         active_plan = user.get_active_plan
-        if active_plan:
+        member_of_any_team = user.user_teams is not None
+        print("member_of_any_team")
+        print(member_of_any_team)
+        if active_plan or member_of_any_team:
+            return view_func(request, *args, **kwargs)
+        elif user.is_superuser:
+            return view_func(request, *args, **kwargs)
+        else:
+            raise PermissionDenied
+    return _wrapped_view
+
+
+def user_is_only_team_member(view_func):
+    @wraps(view_func)
+    def _wrapped_view(request, *args, **kwargs):
+        user = request.user
+        active_plan = user.get_active_plan
+        member_of_any_team = user.user_teams is not None
+        if member_of_any_team and not active_plan:
             return view_func(request, *args, **kwargs)
         elif user.is_superuser:
             return view_func(request, *args, **kwargs)

@@ -12,7 +12,7 @@
                 <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
                     <ol class="breadcrumb mb-4">
                         {% url 'account:account_profile' as account_url %}
-                        {% url 'account:team_list' as team_list_url %}
+                        {% url 'team:team_list' as team_list_url %}
                         {% url 'home' as home_url %}
                         {% breadcrumb "Home" home_url %}
                         {% breadcrumb "Profile" account_url%}
@@ -93,7 +93,7 @@
                 </div>
                 <hr>
                 <h6 class="mb-3">Invite Team Members</h6>
-                <form method="post" action="{% url 'account:send_invitation' %}">
+                <form method="post" action="{% url 'team:send_invitation' %}">
                     {% csrf_token %}
                     <input type="hidden" name="team_id" value="{{ team.team_id }}">
 
@@ -120,7 +120,7 @@
                                 <tr>
                                     <td>{{ invitation.email }}</td>
                                     <td>{{ invitation.get_status_display }}</td>
-                                    <td> <a href="{% url 'account:cancel_invitation' invitation.code %}">Cancel Invitation</a></td>
+                                    <td> <a href="{% url 'team:cancel_invitation' invitation.code %}">Cancel Invitation</a></td>
                                 </tr>
                             {% endfor %}
                         </table>

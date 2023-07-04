@@ -43,7 +43,9 @@ class AddTeamForm(forms.ModelForm):
             raise forms.ValidationError(
                 'Team ID should only contain lowercase letters, numbers, '
                 'underscores, and hyphens.')
-        if Team.objects.filter(team_id=team_id).exists():
+
+        if self.instance.team_id != team_id and Team.objects.filter(
+                team_id=team_id).exists():
             raise forms.ValidationError(
                 'A team with this identifier already exists.')
         return team_id

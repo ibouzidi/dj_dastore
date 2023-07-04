@@ -52,7 +52,7 @@
         <tr>
             <td scope="row">{{ team.team.team_name }}</td>
             <td>
-                <a href="{% url 'account:team_detail' team.team.team_id%}" class="custom-button btn"><i class="fa fa-edit"></i>Edit</a> |
+                <a href="{% url 'team:team_detail' team.team.team_id %}" class="custom-button btn"><i class="fa fa-edit"></i>Edit</a> |
                 <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash"></i> Delete</a>
             </td>
         </tr>

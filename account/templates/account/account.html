@@ -82,8 +82,12 @@
                                             {% if request.user.get_active_subscriptions %}
                                                 Plan : {{ request.user.get_active_subscriptions.0.plan.product.name }}
                                                 <p>Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
-                                            {% else %}No active subscription</p>
+                                            {% elif request.user.user_teams is not None %}
+                                                Member of team : {{ request.user.user_teams.first.team.team_name }}
+                                            {% else %}
+                                                No active subscription
                                             {% endif %}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

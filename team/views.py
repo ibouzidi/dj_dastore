@@ -4,31 +4,32 @@ from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime, timedelta
 from django.urls import reverse
+from django.utils.decorators import method_decorator
 from django.views import View
 from account.forms import RegistrationForm
 from account.models import Account
-from dj_dastore.decorator import user_is_company
+from dj_dastore.decorator import user_is_company, user_is_active_subscriber, \
+    user_is_only_team_member
 from team.forms import AddTeamForm
 from team.models import Membership, Team, Invitation, RoleChoices
 
 
 @user_is_company
 def team_list(request, *args, **kwargs):
-    context = {}
-    # Retrieve all the team of the current user
     user = request.user
     memberships = Membership.objects.filter(user=user)
 
-    context['team'] = []
+    teams = []
 
     for membership in memberships:
         team = membership.team
         team_members = Membership.objects.filter(team=team).exclude(user=user)
-        context['team'].append({
+        teams.append({
             'team': team,
             'team_members': team_members
         })
 
+    context = {'teams': teams}
     return render(request, 'team/team_list.html', context)
 
 
@@ -53,12 +54,12 @@ def create_team(request):
             new_team.save()
 
             # Create a new membership for the team leader
-            Membership.objects.create(user=request.user, team=new_team, role=RoleChoices.LEADER)
+            Membership.objects.create(user=request.user, team=new_team,
+                                      role=RoleChoices.LEADER)
 
             messages.success(request,
-                             'Team has been successfully created and '
-                             'leader\'s subscription assigned to the team.')
-            return redirect('account:account_profile')
+                             'Team has been successfully created.')
+            return redirect('team:team_list')
     else:
         form = AddTeamForm()
     return render(request, 'team/create_team.html',
@@ -68,35 +69,39 @@ def create_team(request):
 @user_is_company
 def team_detail(request, team_id):
     team = get_object_or_404(Team, team_id=team_id)
+
     if request.method == 'POST':
         form = AddTeamForm(request.POST, instance=team)
         if form.is_valid():
             form.save()
             messages.success(request, 'Team has been successfully updated.')
-            return redirect('account:team_detail', team_id=team_id)
+            return redirect('team:team_detail', team_id=team_id)
     else:
         form = AddTeamForm(instance=team)
 
-    # Get team members
     team_members = team.team_members.all()
-
     invitations = team.invitations.all()
-
     pending_invitations = invitations.filter(
         status=Invitation.InvitationStatusChoices.PENDING)
-    # cancelled_invitations_member = invitations.filter(
-    #     status=Invitation.InvitationStatusChoices.CANCELLED_MEMBER)
-    # cancelled_invitations_leader = invitations.filter(
-    #     status=Invitation.InvitationStatusChoices.CANCELLED_LEADER)
-    # accepted_invitations = invitations.filter(
-    #     status=Invitation.InvitationStatusChoices.ACCEPTED)
 
-    return render(request, 'team/detail_team.html', {
+    context = {
         'form': form,
         'team_members': team_members,
         'team': team,
         'pending_invitations': pending_invitations,
-    })
+    }
+
+    return render(request, 'team/detail_team.html', context)
+
+
+@method_decorator(user_is_only_team_member, name='dispatch')
+class MembershipDetailView(View):
+    def get(self, request):
+        memberships = request.user.user_teams.all()
+        context = {
+            'memberships': memberships
+        }
+        return render(request, 'team/membership_detail.html', context)
 
 
 @user_is_company
@@ -110,7 +115,7 @@ def cancel_invitation(request, code):
     else:
         messages.error(request, 'You do not have permission to do that or '
                                 'the invitation is not pending.')
-    return redirect('account:team_detail', team_id=invitation.team.team_id)
+    return redirect('team:team_detail', team_id=invitation.team.team_id)
 
 
 @user_is_company
@@ -120,10 +125,16 @@ def send_invitation(request):
         selected_team_id = request.POST.get('team_id')
 
         team = Team.objects.filter(team_id=selected_team_id).first()
+        print("team")
+        print("team")
+        print(team)
         membership = Membership.objects.filter(user=request.user, team=team,
                                                role=RoleChoices.LEADER).first()
-
+        print("membership")
+        print("membership")
+        print(membership)
         if membership:
+            print("yes if membership")
             if membership.user.is_team_leader:
                 limit_users = membership.user.limit_users()
                 # Total members across all team
@@ -135,25 +146,29 @@ def send_invitation(request):
                 # Check if total members across all team exceeds the limit
                 if total_members_all_teams >= int(limit_users):
                     messages.error(request, 'The team is already at capacity.')
-                    return render(request, 'account/account.html')
+                    return redirect('team:team_detail', team_id=team.team_id)
 
             existing_invitation = Invitation.objects.filter(
                 email=email, team=team,
-                status=Invitation.InvitationStatusChoices.ACCEPTED).first()
-
+                status__in=[Invitation.InvitationStatusChoices.PENDING,
+                            Invitation.InvitationStatusChoices.ACCEPTED]).first()
             if existing_invitation:
-                messages.error(
-                    request,
-                    'An invitation to this email has already been sent.')
+                messages.error(request,
+                               'An invitation to this email has already '
+                               'been sent or accepted.')
+                return redirect('team:team_detail', team_id=team.team_id)
             else:
                 # All checks pass, send invitation
                 # Define the expiry date
                 expiry_date = datetime.now() + timedelta(hours=24)
                 # Create the invitation
-                invitation = Invitation.objects.create(email=email, team=team,
-                                                       expiry_date=expiry_date)
+                invitation = Invitation.objects.create(email=email,
+                                                       team=team,
+                                                       expiry_date=expiry_date,
+                                                       sender=request.user
+                                                       )
                 signup_link = request.build_absolute_uri(reverse(
-                    'account:guest_register', args=[invitation.code]))
+                    'team:invitation_landing', args=[invitation.code]))
                 leader_email = membership.user.email
                 send_mail(
                     'Invitation to join a Team',
@@ -165,14 +180,27 @@ def send_invitation(request):
                     [email],
                 )
                 messages.success(request, 'Invitation sent.')
+                return redirect('team:team_detail', team_id=team.team_id)
         else:
             messages.error(request, 'You are not a team leader.')
     return render(request, 'account/account.html')
 
 
-class GuestRegisterView(View):
+class InvitationLandingView(View):
     def get(self, request, code):
-        form = RegistrationForm()
+        try:
+            invitation = Invitation.objects.get(
+                code=code, status=Invitation.InvitationStatusChoices.PENDING)
+            if invitation.expiry_date < datetime.now():
+                messages.error(request, 'This invitation has expired.')
+                return redirect('home')
+            return render(request, 'team/invitation_landing.html',
+                          {'invitation': invitation})
+        except Invitation.DoesNotExist:
+            messages.error(request, 'Invalid or expired invitation code.')
+            return redirect('home')
+
+    def post(self, request, code):
         try:
             invitation = Invitation.objects.get(
                 code=code, status=Invitation.InvitationStatusChoices.PENDING)
@@ -180,7 +208,24 @@ class GuestRegisterView(View):
                 messages.error(request, 'This invitation has expired.')
                 return redirect('home')
             request.session['invitation_id'] = invitation.id
-            return render(request, 'account/guest_register.html',
+            return redirect('team:guest_register', code=code)
+        except Invitation.DoesNotExist:
+            messages.error(request, 'Invalid or expired invitation code.')
+            return redirect('home')
+
+
+class GuestRegisterView(View):
+    def get(self, request, code):
+        form = RegistrationForm()
+        try:
+            invitation = Invitation.objects.get(
+                id=request.session.get('invitation_id'))
+
+            if invitation.expiry_date < datetime.now():
+                messages.error(request, 'This invitation has expired.')
+                return redirect('home')
+            form = RegistrationForm(initial={'email': invitation.email})
+            return render(request, 'team/guest_register.html',
                           {'form': form})
         except Invitation.DoesNotExist:
             messages.error(request, 'Invalid or expired invitation code.')
@@ -192,6 +237,12 @@ class GuestRegisterView(View):
             try:
                 invitation = Invitation.objects.get(
                     id=request.session['invitation_id'])
+
+                # Ensure the email matches the invitation
+                if form.cleaned_data.get('email').lower() != invitation.email:
+                    messages.error(request,
+                                   'Email does not match the invitation.')
+                    return redirect('team:guest_register', code=code)
 
                 leader_membership = Membership.objects.filter(
                     team=invitation.team, role=RoleChoices.LEADER).first()
@@ -251,5 +302,4 @@ class GuestRegisterView(View):
             except Invitation.DoesNotExist:
                 messages.error(request, 'Problem in accepting the invitation.')
             return redirect('account:login')
-        return render(request, 'account/guest_register.html', {'form': form})
-
+        return render(request, 'team/guest_register.html', {'form': form})

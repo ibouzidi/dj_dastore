@@ -21,7 +21,7 @@ urlpatterns = [
     path('admin_panel/', admin.site.urls),
     path('', include(tf_urls)),
     path('account/', include('account.urls')),
-    path('team/', include('team.urls')),
+    path('account/team/', include('team.urls')),
 
     # Password reset links (ref: https://github.com/django/django/blob/master/django/contrib/auth/views.py)
     # path('account/reset/', include('django.contrib.auth.urls')),

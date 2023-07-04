@@ -64,6 +64,13 @@ class Invitation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     expiry_date = models.DateTimeField(null=True, blank=True)
 
+    sender = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='sent_invitations',
+    )
+
     class InvitationStatusChoices(models.TextChoices):
         PENDING = 'PENDING', 'Pending'
         ACCEPTED = 'ACCEPTED', 'Accepted'
