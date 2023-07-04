@@ -104,6 +104,20 @@
                                 <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>Invite</button>
                             </div>
                         </div>
+                        {% if remaining_invitations > 0 %}
+                            <div class="alert alert-info" role="alert">
+                                <small>Remember, you can only invite {{ remaining_invitations }} more members.</small>
+                            </div>
+                        {% elif remaining_invitations == 0 %}
+                            <div class="alert alert-warning" role="alert">
+                                <small>Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.</small>
+                            </div>
+                        {% else %}
+                            <div class="alert alert-danger" role="alert">
+                                <small>Something went wrong. Please contact support.</small>
+                            </div>
+                        {% endif %}
+
                     </div>
                 </form>
                 {% if pending_invitations %}

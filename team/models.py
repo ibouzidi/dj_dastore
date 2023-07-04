@@ -14,7 +14,6 @@ class Team(models.Model):
     """
     team_name = models.CharField(max_length=100)
     team_id = models.CharField(max_length=15, unique=True, null=True)
-    total_members = models.IntegerField(default=0)
     subscription = models.ForeignKey(
         'djstripe.Subscription', null=True, blank=True, on_delete=models.SET_NULL,
         help_text="The team's Stripe Subscription object, if it exists"

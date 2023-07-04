@@ -82,11 +82,17 @@ def team_detail(request, team_id):
     pending_invitations = invitations.filter(
         status=Invitation.InvitationStatusChoices.PENDING)
 
+    remaining_invitations = 0
+    if request.user.is_team_leader and request.user.is_company:
+        remaining_invitations = int(request.user.limit_users()) - \
+                                request.user.total_members_all_teams
+
     context = {
         'form': form,
         'team_members': team_members,
         'team': team,
         'pending_invitations': pending_invitations,
+        'remaining_invitations': remaining_invitations,
     }
 
     return render(request, 'team/detail_team.html', context)
@@ -109,26 +115,22 @@ def send_invitation(request):
         selected_team_id = request.POST.get('team_id')
 
         team = Team.objects.filter(team_id=selected_team_id).first()
-        print("team")
-        print("team")
-        print(team)
         membership = Membership.objects.filter(user=request.user, team=team,
                                                role=RoleChoices.LEADER).first()
-        print("membership")
-        print("membership")
-        print(membership)
         if membership:
-            print("yes if membership")
             if membership.user.is_team_leader:
-                limit_users = membership.user.limit_users()
-                # Total members across all team
-                total_members_all_teams = \
-                    membership.user.total_members_all_teams
+                limit_users = membership.user.limit_users()  # Get limit from user's plan
+                print("limit_users")
+                print(limit_users)
+                if limit_users is None:  # In case of None limit, convert it to 0
+                    limit_users = 0
+                # Total members in the specific team
+                total_members_in_team = team.memberships.count()
+                print("total_members_in_team")
+                print(total_members_in_team)
 
-                print("total_members_all_teams")
-                print(total_members_all_teams)
-                # Check if total members across all team exceeds the limit
-                if total_members_all_teams >= int(limit_users):
+                # Check if total members in team exceeds the limit
+                if total_members_in_team >= int(limit_users):
                     messages.error(request, 'The team is already at capacity.')
                     return redirect('team:team_detail', team_id=team.team_id)
 
@@ -274,7 +276,6 @@ class GuestRegisterView(View):
                 del request.session['invitation_id']
 
                 # Update the total_members count of the team
-                invitation.team.total_members += 1
                 invitation.team.save()
 
                 messages.success(request,
