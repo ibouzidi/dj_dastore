@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./dj_dastore
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./dj_dastore/:/usr/src/dj_dastore/
+      - static_volume:/usr/src/dj_dastore/static_cdn
+      - media_volume:/usr/src/dj_dastore/media_cdn
+    ports:
+      - 8000:8000
+    env_file:
+      - ./dj_dastore/.env
+    environment:
+      DJANGO_SETTINGS_MODULE: dj_dastore.settings.local
+    depends_on:
+      - db1
+
+  db1:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=dj_dastore_local
+      - POSTGRES_PASSWORD=dj_dastore_local
+      - POSTGRES_DB=dj_dastore_local
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
