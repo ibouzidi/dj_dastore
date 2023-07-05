@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build: 
-      context: ./dj_dastore
+      context: ./
       dockerfile: Dockerfile.prod
     command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000
     expose:
@@ -12,7 +12,7 @@ services:
       - static_volume:/home/dj_dastore/web/static_cdn
       - media_volume:/home/dj_dastore/web/media_cdn
     env_file:
-      - ./dj_dastore/.env.prod
+      - ./.env.prod
     depends_on:
       - db1_prod
     environment:
@@ -31,7 +31,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - ./dj_dastore/.env.prod.db
+      - ./.env.prod.db
 
 volumes:
   postgres_data:
