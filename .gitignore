@@ -10,3 +10,5 @@ __pycache__/
 .env.prod
 .env.prod.db
 mykey.key
+stripe.exe
+
