@@ -7,4 +7,6 @@ __pycache__/
 /media_cdn/
 /api/debug.log
 .env
+.env.prod
+.env.prod.db
 mykey.key
