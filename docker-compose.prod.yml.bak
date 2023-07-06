@@ -6,18 +6,26 @@ services:
       context: ./
       dockerfile: Dockerfile.prod
     command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000
-    user: '1000:1000'
-    ports:
-      - 8000:8000
+    expose:
+        - 8000
     volumes:
-      - ./static_cdn:/home/dj_dastore/web/static_cdn
-      - ./media_cdn:/home/dj_dastore/web/media_cdn
+      - static_volume:/home/dj_dastore/web/static_cdn
+      - media_volume:/home/dj_dastore/web/media_cdn
     env_file:
       - ./.env.prod
     depends_on:
       - db1_prod
     environment:
       DJANGO_SETTINGS_MODULE: dj_dastore.settings.production
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/home/dj_dastore/web/static_cdn
+      - media_volume:/home/dj_dastore/web/media_cdn
+    ports:
+      - 1337:80
+    depends_on:
+      - web
   db1_prod:
     image: postgres:13.0-alpine
     volumes:
@@ -27,3 +35,5 @@ services:
 
 volumes:
   postgres_data:
+  static_volume:
+  media_volume:

@@ -43,8 +43,7 @@ FROM python:3.10
 RUN mkdir -p /home/dj_dastore
 
 # create the app user
-RUN addgroup --gid 1000 dj_dastore && adduser --uid 1000 --gid 1000 --disabled-password --gecos '' dj_dastore
-#RUN addgroup --gid 1001 dj_dastore && adduser --uid 1001 --gid 1001 --disabled-password --gecos '' dj_dastore
+RUN addgroup --gid 1001 dj_dastore && adduser --uid 1001 --gid 1001 --disabled-password --gecos '' dj_dastore
 
 
 # create the appropriate directories
