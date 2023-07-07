@@ -186,3 +186,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
             return plan.product.metadata["limit_users"]
         else:
             return 0  # Default limit_users
+
+    @property
+    def has_teams(self):
+        return self.teams.exists()

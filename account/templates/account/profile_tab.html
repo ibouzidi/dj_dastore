@@ -54,7 +54,7 @@
             Teams
         </a>
     {% endif %}
-     {% if request.user.user_teams is not None and not request.user.get_active_subscriptions %}
+     {% if request.user.has_teams and not request.user.get_active_subscriptions %}
         <a href="{% url 'team:membership_detail' %}"
            class="nav-item nav-link has-icon nav-link-faded" data-id="team">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

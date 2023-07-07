@@ -31,9 +31,7 @@
         <div id="teamDetail" data-aos="fade-left" data-aos-delay="200">
             <div class="card-body tab-content">
                 {% for membership in memberships %}
-
-                    <h6>Your a member of Team: {{ membership.team.team_name }}</h6>
-
+                    <h6>You're a member of Team: {{ membership.team.team_name }}</h6>
                     <hr>
                     <h6>Members :</h6>
                     <div class="table-responsive">
@@ -43,15 +41,14 @@
                                 <th>Email</th>
                                 <th>Role</th>
                             </tr>
-                            {% for member in membership.team.team_members.all %}
+                            {% for member in membership.team.memberships.all %}
                                 <tr>
                                     <td>{{ member.user.username }}</td>
                                     <td>{{ member.user.email }}</td>
                                     <td>
-
                                         {% if  member.user == request.user %}
-                                             <strong>
-                                            {{ member.get_role_display }} (YOU)
+                                            <strong>
+                                                {{ member.get_role_display }} (YOU)
                                             </strong>
                                         {% else %}
                                             {{ member.get_role_display }}
@@ -67,4 +64,5 @@
             </div>
         </div>
     </div>
+
 {% endblock %}

@@ -26,7 +26,7 @@ class SubListView(View):
     def get(self, request):
         if request.user.is_authenticated:
             if request.user.get_active_subscriptions or \
-                    request.user.user_teams is not None:
+                    request.user.has_teams:
                 messages.info(request, "You're already subscribed! "
                               "Thank you for your continued support.")
                 return redirect("account:account_profile")
