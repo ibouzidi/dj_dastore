@@ -28,8 +28,7 @@ services:
   
   stripe:
     image: stripe/stripe-cli:v1.7.4
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    network_mode: host  
     command: listen --api-key=$STRIPE_TEST_SECRET_KEY --forward-to http://web:8000/stripe/webhook/
     volumes:
       - ./.env:/usr/src/dj_dastore/.env
