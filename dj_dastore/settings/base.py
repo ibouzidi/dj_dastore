@@ -95,18 +95,16 @@ TEMPLATES = [
 # DATABASES SETTINGS
 # =====================================================================
 
+
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.mysql',
-       'NAME': config('DB_NAME'),
-       'USER': config('DB_USER'),
-       'PASSWORD': config('DB_PASSWORD'),
-       'HOST': config('DB_HOST'),
-       'PORT': '3306',
-       'OPTIONS': {
-           'charset': config('DB_CHARSET')
-       }
-   }
+    "default": {
+        "ENGINE": config("SQL_ENGINE", "django.db.backends.postgresql"),
+        "NAME": config("SQL_DATABASE"),
+        "USER": config("SQL_USER"),
+        "PASSWORD": config("SQL_PASSWORD"),
+        "HOST": config("SQL_HOST"),
+        "PORT": config("SQL_PORT"),
+    }
 }
 
 

@@ -25,6 +25,19 @@ services:
       - POSTGRES_USER=dj_dastore_local
       - POSTGRES_PASSWORD=dj_dastore_local
       - POSTGRES_DB=dj_dastore_local
+  
+  stripe:
+    image: stripe/stripe-cli:v1.7.4
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: listen --api-key=$STRIPE_TEST_SECRET_KEY --forward-to http://web:8000/stripe/webhook/
+    volumes:
+      - ./.env:/usr/src/dj_dastore/.env
+    depends_on:
+      - web
+    environment:
+      - /usr/src/dj_dastore/.env
+      - STRIPE_DEVICE_NAME=djstripe_docker
 
 volumes:
   postgres_data:
