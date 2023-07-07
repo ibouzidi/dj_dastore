@@ -95,29 +95,18 @@ TEMPLATES = [
 # DATABASES SETTINGS
 # =====================================================================
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': config('DB_NAME'),
-#        'USER': config('DB_USER'),
-#        'PASSWORD': config('DB_PASSWORD'),
-#        'HOST': config('DB_HOST'),
-#        'PORT': '3306',
-#        'OPTIONS': {
-#            'charset': config('DB_CHARSET')
-#        }
-#    }
-#}
-
 DATABASES = {
-    "default": {
-        "ENGINE": config("SQL_ENGINE", "django.db.backends.postgresql"),
-        "NAME": config("SQL_DATABASE"),
-        "USER": config("SQL_USER"),
-        "PASSWORD": config("SQL_PASSWORD"),
-        "HOST": config("SQL_HOST"),
-        "PORT": config("SQL_PORT"),
-    }
+   'default': {
+       'ENGINE': 'django.db.backends.mysql',
+       'NAME': config('DB_NAME'),
+       'USER': config('DB_USER'),
+       'PASSWORD': config('DB_PASSWORD'),
+       'HOST': config('DB_HOST'),
+       'PORT': '3306',
+       'OPTIONS': {
+           'charset': config('DB_CHARSET')
+       }
+   }
 }
 
 
@@ -233,13 +222,12 @@ RECAPTCHA_PUBLIC_KEY = '6LdEG1smAAAAAAEn-_8vrhE4eUeVgMKhiW8Tr_eP'
 RECAPTCHA_PRIVATE_KEY = '6LdEG1smAAAAAFNBtdDqDaUJrFWknkdtz-fETWIB'
 # SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
-# stripe config
-STRIPE_TEST_PUBLIC_KEY = 'pk_test_51Han4nJWztZpQABxysTVGo4JzUVAofIK57O8wrZgN0vvjBsbQYja5RdeMdOKyGaaZUK9OdbmjJF9xUp6RVyrTYz200ofLajlDL'
-STRIPE_TEST_SECRET_KEY = 'sk_test_51Han4nJWztZpQABxCCz5MlmSTiTzZIVFuFjgsSAfy0iLWQ1TQ2rNi5yYtdtQuiM0DfaxIYeXNJL2ZmmQAwaOHXzs0017w3y1IW'
-STRIPE_LIVE_MODE = False
+# Stripe And Dj-stripe config
+STRIPE_TEST_PUBLIC_KEY = config('STRIPE_TEST_PUBLIC_KEY', cast=str)
+STRIPE_TEST_SECRET_KEY = config('STRIPE_TEST_SECRET_KEY', cast=str)
+STRIPE_LIVE_MODE = config('STRIPE_LIVE_MODE', cast=bool)
+DJSTRIPE_WEBHOOK_SECRET = config('DJSTRIPE_WEBHOOK_SECRET', cast=str)
 
-# Dj-stripe config
-DJSTRIPE_WEBHOOK_SECRET = 'whsec_56d7c095da9b777a89840d2b4ec445f19c4a5c42e51d73566a857b545d87b4c4'
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 
