@@ -48,10 +48,7 @@ def user_is_active_subscriber(view_func):
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
         active_plan = user.get_active_plan
-        member_of_any_team = user.user_teams is not None
-        print("member_of_any_team")
-        print(member_of_any_team)
-        if active_plan or member_of_any_team:
+        if active_plan or user.has_teams:
             return view_func(request, *args, **kwargs)
         elif user.is_superuser:
             return view_func(request, *args, **kwargs)
@@ -65,7 +62,7 @@ def user_is_only_team_member(view_func):
     def _wrapped_view(request, *args, **kwargs):
         user = request.user
         active_plan = user.get_active_plan
-        member_of_any_team = user.user_teams is not None
+        member_of_any_team = user.has_teams
         if member_of_any_team and not active_plan:
             return view_func(request, *args, **kwargs)
         elif user.is_superuser:

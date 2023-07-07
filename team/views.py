@@ -101,9 +101,9 @@ def team_detail(request, team_id):
 @method_decorator(user_is_only_team_member, name='dispatch')
 class MembershipDetailView(View):
     def get(self, request):
-        membership = Membership.objects.get(user=request.user)  # updated line
+        memberships = Membership.objects.filter(user=request.user)  # updated line
         context = {
-            'membership': membership
+            'memberships': memberships
         }
         return render(request, 'team/membership_detail.html', context)
 
@@ -175,10 +175,12 @@ def send_invitation(request):
 class InvitationLandingView(View):
     def get(self, request, code):
         try:
-            invitation = Invitation.objects.get(code=code, status=Invitation.InvitationStatusChoices.PENDING)
+            invitation = Invitation.objects.get(
+                code=code, status=Invitation.InvitationStatusChoices.PENDING)
             # Store the invitation ID in the session
             request.session['invitation_id'] = invitation.id
-            return render(request, 'team/invitation_landing.html', {'invitation': invitation})
+            return render(request, 'team/invitation_landing.html',
+                          {'invitation': invitation})
         except Invitation.DoesNotExist:
             messages.error(request, 'Invalid or expired invitation code.')
             return redirect('home')
@@ -186,7 +188,9 @@ class InvitationLandingView(View):
     def post(self, request, code):
         try:
             invitation_id = request.session.get('invitation_id')
-            invitation = Invitation.objects.get(id=invitation_id, status=Invitation.InvitationStatusChoices.PENDING)
+            invitation = Invitation.objects.get(
+                id=invitation_id,
+                status=Invitation.InvitationStatusChoices.PENDING)
             if invitation.code != code:
                 messages.error(request, 'Invalid session.')
                 return redirect('home')
@@ -201,8 +205,10 @@ class GuestRegisterView(View):
         form = RegistrationForm()
         try:
             invitation_id = request.session.get('invitation_id')
-            invitation = Invitation.objects.get(id=invitation_id, code=code,
-                                                status=Invitation.InvitationStatusChoices.PENDING)
+            invitation = Invitation.objects.get(
+                id=invitation_id,
+                code=code,
+                status=Invitation.InvitationStatusChoices.PENDING)
             if invitation.expiry_date < datetime.now():
                 messages.error(request, 'This invitation has expired.')
                 return redirect('home')

@@ -8,3 +8,5 @@ __pycache__/
 /api/debug.log
 .env
 mykey.key
+.env.prod.db
+.env.prod
