@@ -1,5 +1,4 @@
 import re
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
@@ -22,7 +21,7 @@ class RegistrationForm(UserCreationForm):
 			account = Account.objects.exclude(pk=self.instance.pk).get(email=email)
 		except Account.DoesNotExist:
 			return email
-		raise forms.ValidationError('Email "%s" is already in use.' % account)
+		raise forms.ValidationError('Email "%s" is already in use.' % account.email)
 
 	def clean_username(self):
 		username = self.cleaned_data['username']
@@ -30,7 +29,7 @@ class RegistrationForm(UserCreationForm):
 			account = Account.objects.exclude(pk=self.instance.pk).get(username=username)
 		except Account.DoesNotExist:
 			return username
-		raise forms.ValidationError('Username "%s" is already in use.' % username)
+		raise forms.ValidationError('Username "%s" is already in use.' % account.username)
 
 
 class AccountAuthenticationForm(forms.ModelForm):

@@ -7,6 +7,7 @@ import os
 from django.utils import timezone
 import datetime
 from djstripe.models import Customer, Subscription
+from team.models import RoleChoices
 
 
 class MyAccountManager(BaseUserManager):
@@ -75,6 +76,13 @@ class Account(AbstractBaseUser, PermissionsMixin):
     request_counts = models.PositiveIntegerField(default=0)
     last_request_timestamp = models.DateTimeField(null=True, blank=True)
 
+    teams = models.ManyToManyField(
+        'team.Team',  # updated to reference the 'team' app
+        through='team.Membership',
+        through_fields=('user', 'team'),
+        related_name='account_memberships'  # updated related_name here
+    )
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
 
@@ -82,6 +90,10 @@ class Account(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    @property
+    def get_full_name(self):
+        return f"{self.first_name} {self.last_name}"
 
     def get_profile_image_filename(self):
         return str(self.profile_image)[str(self.profile_image).index(
@@ -108,7 +120,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     def has_perm(self, perm, obj=None):
         return self.is_admin
 
-    # Does this user have permission to view this app? (ALWAYS YES FOR SIMPLICITY)
+    # Does this user have permission to view this app
     def has_module_perms(self, app_label):
         return True
 
@@ -130,29 +142,47 @@ class Account(AbstractBaseUser, PermissionsMixin):
     @property
     def customer(self):
         try:
-            customer = Customer.objects.get(subscriber=self)
-            return customer
-        except:
+            return Customer.objects.get(subscriber=self)
+        except Customer.DoesNotExist:
             return None
 
     @property
     def get_active_subscriptions(self):
-        try:
-            customer = Customer.objects.get(subscriber=self)
-            return customer.active_subscriptions
-        except:
-            return []
+        customer = self.customer
+        return customer.active_subscriptions if customer else []
 
     @property
     def get_active_plan(self):
-        try:
-            customer = Customer.objects.get(subscriber=self)
-            return customer.active_subscriptions[0].plan
-        except:
-            return None
+        customer = self.customer
+        return customer.active_subscriptions[
+            0].plan if customer and customer.active_subscriptions else None
 
     @property
-    def get_full_name(self):
-        return f"{self.first_name} {self.last_name}"
+    def is_team_leader(self):
+        if hasattr(self, 'membership'):
+            return self.membership.role == RoleChoices.LEADER.value
+        return False
 
+    @property
+    def total_members_all_teams(self):
+        if hasattr(self, 'membership') and self.is_team_leader:
+            return self.membership.team.member_count()
+        return 0
 
+    @property
+    def is_company(self):
+        active_plan = self.get_active_plan
+        if active_plan is not None and active_plan.product.name == 'Enterprise':
+            print("true")
+            return True
+        else:
+            print("false")
+            return False
+
+    def limit_users(self):
+        active_subscriptions = self.get_active_subscriptions
+        if active_subscriptions:
+            plan = active_subscriptions[0].plan
+            return plan.product.metadata["limit_users"]
+        else:
+            return 0  # Default limit_users

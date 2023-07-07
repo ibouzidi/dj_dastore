@@ -1,0 +1,55 @@
+{% extends "../sub_base.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load breadcrumb %}
+
+
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'account:team_list' as team_list_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url%}
+                        {% breadcrumb "Team Detail" team_list_url%}
+                        {% breadcrumb "Create Team" %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block sub_content %}
+    <div class="card-body tab-content">
+        <h6>Add a team</h6>
+        <hr>
+        <form method="post">
+            {% csrf_token %}
+            <div class="col-md-6">
+            <div class="form-group mb-4">
+                <label for="{{ form.team_name.id_for_label }}">Team Name</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-user-friends"></span></span>
+                    {% render_field form.team_name class="form-control" placeholder="Team Name"%}
+                </div>
+                {{ form.team_name.errors }}
+            </div>
+            <div class="form-group mb-3">
+                <label for="{{ form.team_id.id_for_label }}">Team ID</label>
+                <div class="input-group">
+                    <span class="input-group-text" id="basic-addon3"><span class="fas fa-hashtag"></span></span>
+                    {% render_field form.team_id class="form-control" placeholder="Team ID"%}
+                </div>
+                {{ form.team_id.errors }}
+            </div>
+                </div>
+            <button type="submit" class="custom-button btn" value="Add Team"><i class="fa fa-check"></i>Add Team</button>
+        </form>
+    </div>
+{% endblock %}

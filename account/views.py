@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordChangeView
@@ -10,7 +11,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -20,6 +21,8 @@ from django.views import View
 from account.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
 from account.models import Account
+from dj_dastore.decorator import user_is_subscriber, user_is_company, \
+    user_is_active_subscriber
 from .calc_storage_limit import calculate_storage_usage
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
@@ -39,7 +42,8 @@ class RegisterView(View):
     def get(self, request):
         form = RegistrationForm()
         plan_id = request.session.get("plan_id")
-
+        print("enregistrement compte")
+        print(plan_id)
         if not plan_id:
             messages.info(request, 'Please select a plan before '
                                    'registering.')
@@ -124,44 +128,6 @@ def get_redirect_if_exists(request):
             redirect = str(request.GET.get("next"))
     return redirect
 
-# @login_required
-# def account_view(request):
-#     print("default_device(request.user)")
-#     print(default_device(request.user))
-#     context = {}
-#     try:
-#         account = request.user
-#     except:
-#         messages.error(request, "No user logged in.")
-#         return redirect("login")  # redirect to your login view
-#
-#     context['id'] = account.id
-#     context['username'] = account.username
-#     context['first_name'] = account.first_name
-#     context['last_name'] = account.last_name
-#     context['phone'] = account.phone
-#     context['address'] = account.address
-#     context['number'] = account.number
-#     context['city'] = account.city
-#     context['zip'] = account.zip
-#     context['email'] = account.email
-#     context['profile_image'] = account.profile_image
-#     # context['subscription_plan'] = account.subscription_plan
-#
-#     context['is_self'] = True
-#
-#     storage_used, storage_limit, storage_limit_unit, storage_limit_used \
-#         = calculate_storage_usage(account)
-#     # Store the values in the context dictionary
-#     context['storage_used'] = storage_used
-#     context['storage_limit'] = storage_limit
-#     context['storage_limit_unit'] = storage_limit_unit
-#     context['storage_used_unit'] = storage_limit_used
-#
-#     context['default_device'] = default_device(
-#         request.user) if request.user.is_authenticated else None
-#     return render(request, "account/account.html", context)
-
 
 def save_temp_profile_image_from_base64String(imageString, user):
     # TODO: ne sauvegarde pas temporaiement le fichier
@@ -187,6 +153,7 @@ def save_temp_profile_image_from_base64String(imageString, user):
     return None
 
 
+@login_required
 def crop_image(request, *args, **kwargs):
     payload = {}
     user = request.user
@@ -227,6 +194,7 @@ def crop_image(request, *args, **kwargs):
             payload['result'] = "error"
             payload['exception'] = str(e)
     return HttpResponse(json.dumps(payload), content_type="application/json")
+
 
 @login_required
 def account_view(request, *args, **kwargs):
@@ -275,10 +243,6 @@ def account_view(request, *args, **kwargs):
         context['form'] = form
     context[
         'DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
-    customer = request.user.customer
-    if customer:
-        invoices = Invoice.objects.filter(customer=customer)
-        context['invoices'] = invoices
 
     storage_used, storage_limit, storage_limit_unit, storage_limit_used \
         = calculate_storage_usage(account)
@@ -288,9 +252,15 @@ def account_view(request, *args, **kwargs):
     context['storage_limit_unit'] = storage_limit_unit
     context['storage_used_unit'] = storage_limit_used
 
-    context['default_device'] = default_device(
-        request.user) if request.user.is_authenticated else None
     return render(request, "account/account.html", context)
+
+
+@login_required
+def account_security(request, *args, **kwargs):
+    context = {'default_device': default_device(
+        request.user) if request.user.is_authenticated else None}
+
+    return render(request, 'account/account_security.html', context)
 
 
 @method_decorator(login_required, name='dispatch')
@@ -316,3 +286,14 @@ class CustomPasswordChangeView(PasswordChangeView):
             return JsonResponse(form.errors, status=400)
         else:
             return response
+
+
+@user_is_active_subscriber
+def account_billing(request, *args, **kwargs):
+    context = {}
+    customer = request.user.customer
+    if customer:
+        invoices = Invoice.objects.filter(customer=customer)
+        context['invoices'] = invoices
+
+    return render(request, 'account/account_billing.html', context)

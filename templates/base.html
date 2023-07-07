@@ -108,12 +108,15 @@
 </script>
 <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
+{% block script %}
+{% endblock %}
 {#<script src="{% static 'js/nav_menu_member.js' %}"></script>#}
 
 
 {% include "snippets/add_active_class.html" %}
-{% block script %}
-{% endblock %}
+{% include "snippets/add_active_class_account.html" %}
+
+
 <!-- End Body -->
 
 </body>

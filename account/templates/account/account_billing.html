@@ -1,0 +1,150 @@
+{% extends "../sub_base.html" %}
+{% load static %}
+{% load breadcrumb %}
+
+
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4">
+                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url%}
+                        {% breadcrumb "Billing Detail" %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block sub_content %}
+    <div class="card-body tab-content">
+        <h6>BILLING SETTINGS</h6>
+        <hr>
+        <div class="row">
+            <div class="col-lg-6 mb-4">
+                <!-- Billing card 3-->
+                <div class="card h-100 border-start-lg border-start-success">
+                    <div class="card-body">
+                        <div class="small text-muted">Current plan</div>
+                        <div class="h3 d-flex align-items-center">{{ request.user.get_active_subscriptions.0.plan.product.name }}</div>
+                        <div class="h5 d-flex align-items-center">Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</div>
+                        {#                        <a class="text-arrow-icon small text-success" href="#!">#}
+                        {#                            Upgrade plan#}
+                        {#                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>#}
+                        {#                        </a>#}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <!-- Billing card 2-->
+                <div class="card h-100 border-start-lg border-start-secondary">
+                    <div class="card-body">
+                        <div class="small text-muted">Current monthly bill</div>
+                        <div class="h3">${{ request.user.get_active_subscriptions.0.plan.amount}}</div>
+                        <div class="small text-muted">Next payment due</div>
+                        <div class="h3">{{ request.user.get_active_subscriptions.0.current_period_end.date }}</div>
+                        {#                        <a class="text-arrow-icon small text-secondary" href="#!">#}
+                        {#                            View payment history#}
+                        {#                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>#}
+                        {#                        </a>#}
+                        {% if request.user.get_active_subscriptions %}
+                            {% if subscription.cancel_at_period_end %}
+                                <p>Subscription is set to be canceled at the end of the billing period.</p>
+                            {% else %}
+                                <a href="{% url 'subscriptions:CancelSubscriptionView' %}" class="btn btn-outline-danger my-2" id="cancel_subscription">
+                                    Cancel subscription
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <p>No active subscriptions found.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <!-- Billing history card-->
+            <div class="card mb-4">
+                <div class="card-header">Billing History</div>
+                <div class="card-body p-0">
+                    <!-- Billing history table-->
+                    <div class="table-responsive table-billing-history">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Transaction Id</th>
+                                <th scope="col">Customer</th>
+                                {#                                <th scope="col">Billing Period</th>#}
+                                <th scope="col">Amount</th>
+                                <th scope="col">Paid At</th>
+                                <th scope="col">Status</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for invoice in invoices %}
+                                <tr>
+                                    <th scope="row">{{ forloop.counter }}</th>
+                                    <td>{{ invoice.number }}</td>
+                                    <td>{{ invoice.customer.email }}</td>
+                                    {#                                    <td>{{ invoice.period_start.date }}</td>#}
+                                    <td>{{ invoice.total }} {{ invoice.currency|upper }}</td>
+                                    <td class="date-col">{{ invoice.status_transitions.paid_at }}</td>
+
+                                    <td>
+                                        {% if invoice.status == "paid" %}
+                                            <i class="icofont-check-circled text-success"></i>
+                                        {% elif invoice.status == "unpaid" %}
+                                            <i class="icofont-warning text-warning"></i>
+                                        {% else %}
+                                            <i class="icofont-close text-danger"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="{{ invoice.invoice_pdf }}" class="custom-button btn-sm" target="_blank">
+                                            <i class="fa fa-download"></i>Download
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script type="text/javascript">
+        $('#cancel_subscription').on('click', function(e) {
+            e.preventDefault();
+            // Set the modal title
+            $("#confirmModalLabel").text("Cancel Subscription");
+            $("#confirmButton").text("Confirm");
+            $("#dismissButton").text("Discard");
+            $("#confirmModal").attr("data-keyboard", "true");
+            $("#confirmModal").attr("data-backdrop", "dynamic");
+            // Set the modal body with the form
+            var confirmationMessage = "Are you sure you want to cancel your subscription? Your subscription will be canceled at the end of the billing period.";
+            $("#confirmMessage").html(confirmationMessage);
+            // Show the modal
+            $("#confirmModal").modal("show");
+            $("#confirmButton").on('click', function(e) {
+                e.preventDefault();
+                window.location.href = "{% url 'subscriptions:CancelSubscriptionView' %}";
+            });
+        });
+        const dateCols = document.querySelectorAll(".table .date-col");
+        dateCols.forEach(col => {
+            const timestamp = col.innerText;
+            const date = new Date(Number(timestamp) * 1000);
+            col.innerText = `${date.toLocaleString()}`
+        })
+    </script>
+{% endblock %}

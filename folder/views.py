@@ -1,6 +1,6 @@
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.files.storage import default_storage
 from django.http import JsonResponse, HttpResponseBadRequest, \
     HttpResponseRedirect, HttpResponse
@@ -9,13 +9,15 @@ from django.utils.decorators import method_decorator
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
+
+from dj_dastore.decorator import user_is_subscriber, user_is_active_subscriber
 from .forms import FolderCreateForm, FolderEditForm
 from .models import Folder
 from extbackup.models import File
 from extbackup.forms import FileForm
 
 
-# FolderCreateView
+@method_decorator(user_is_active_subscriber, name='dispatch')
 class FolderCreateView(BSModalCreateView):
     template_name = 'folder/folder_create.html'
     form_class = FolderCreateForm
@@ -36,6 +38,7 @@ class FolderCreateView(BSModalCreateView):
             return reverse('folder:folder_list')
 
 
+@method_decorator(user_is_active_subscriber, name='dispatch')
 class FolderUpdateView(BSModalUpdateView):
     model = Folder
     template_name = 'folder/folder_update.html'
@@ -100,6 +103,7 @@ class FolderUpdateView(BSModalUpdateView):
 #             return render(request, self.template_name, context)
 
 
+@method_decorator(user_is_active_subscriber, name='dispatch')
 class FolderListView(View):
     template_name = 'folder/folder_list.html'
 

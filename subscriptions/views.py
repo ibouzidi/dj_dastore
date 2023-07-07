@@ -24,11 +24,12 @@ stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 class SubListView(View):
     def get(self, request):
-        if request.user.is_authenticated and \
-                request.user.get_active_subscriptions:
-            messages.info(request, "You're already subscribed! "
-                          "Thank you for your continued support.")
-            return redirect("account:account_profile")
+        if request.user.is_authenticated:
+            if request.user.get_active_subscriptions or \
+                    request.user.user_teams is not None:
+                messages.info(request, "You're already subscribed! "
+                              "Thank you for your continued support.")
+                return redirect("account:account_profile")
 
         # Retrieve products and active prices
         products = Product.objects.all()
@@ -214,7 +215,7 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
 
     invoice = stripe.Invoice.retrieve(invoice_id)
     lines = invoice.get("lines", [])
-
+    print("payment")
     if lines:
         for line in lines['data']:
             if line['type'] == 'subscription':
@@ -227,7 +228,7 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     plan = get_object_or_404(Plan, id=plan_id)
                     user.storage_limit = plan.product.metadata["storage_limit"]
                     # Add the user to the 'Active Subscribers' group
-                    group = Group.objects.get(name='active_subscribers')
+                    group = Group.objects.get(name='g_active_subscribers')
                     user.groups.add(group)
                     user.save()
     return
@@ -248,7 +249,7 @@ def subscription_cancelled_event_listener(event, **kwargs):
         subscription.save()
 
         # Move user to 'Inactive Subscribers' group
-        move_user_to_group(user, 'active_subscribers', 'inactive_ubscribers')
+        move_user_to_group(user, 'active_subscribers', 'inactive_subscribers')
 
     except Subscription.DoesNotExist:
         print("Subscription does not exist in the database")
