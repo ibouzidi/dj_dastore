@@ -3,6 +3,7 @@ import json
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -121,8 +122,10 @@ class CreateCheckoutSession(View):
             payment_method_types=["card"],
             payment_method_collection="if_required",
             subscription_data=subscription_data,
-            success_url="http://dastore/subscriptions/success/",
-            cancel_url="http://dastore/subscriptions/cancelled/",
+            success_url=request.build_absolute_uri(
+                reverse('subscriptions:SuccessView')),
+            cancel_url=request.build_absolute_uri(
+                reverse('subscriptions:CancelView')),
         )
         return redirect(session.url)
 
