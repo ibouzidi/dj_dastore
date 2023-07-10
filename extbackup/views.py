@@ -442,7 +442,7 @@ class BulkDeleteBackupsView(View):
         file.delete()
 
 
-@method_decorator(user_is_active_subscriber, name='dispatch')
+@user_is_active_subscriber
 def view_zip_content(request, file_id):
     try:
         file = File.objects.get(pk=file_id)
