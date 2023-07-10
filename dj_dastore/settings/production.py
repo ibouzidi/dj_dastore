@@ -35,4 +35,12 @@ DATABASES = {
 
 
 DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
-FTP_STORAGE_LOCATION = 'ftp://testftp:azerty@192.168.0.14'
+FTP_STORAGE_LOCATION = config('FTP_STORAGE')
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST = config('EMAIL_HOST', cast=str)
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast=str)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast=str)

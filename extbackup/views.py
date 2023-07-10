@@ -71,8 +71,9 @@ class BackupUploadView(View):
                 encrypted_file = default_storage.save(encrypted_file_name,
                                                       BytesIO(
                                                           encrypted_content))
-                encrypted_file_path = default_storage.path(encrypted_file)
-                encrypted_file_size = os.path.getsize(encrypted_file_path)
+                # encrypted_file_path = default_storage.path(encrypted_file)
+                # encrypted_file_size = os.path.getsize(encrypted_file_path)
+                encrypted_file_size = len(encrypted_content)
 
                 total_size += encrypted_file_size
 
