@@ -32,3 +32,7 @@ DATABASES = {
 # SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 #
 # SESSION_COOKIE_SECURE = True
+
+
+DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+FTP_STORAGE_LOCATION = 'ftp://testftp:azerty@192.168.0.14'
