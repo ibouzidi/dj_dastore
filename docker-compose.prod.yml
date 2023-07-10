@@ -25,15 +25,11 @@ services:
     env_file:
       - ./.env.prod.db
   stripe:
-    image: stripe/stripe-cli:v1.7.4
-    network_mode: host  
-    command: listen --api-key=$STRIPE_TEST_SECRET_KEY --forward-to http://web:8000/stripe/webhook/
-    volumes:
-      - ./.env.prod:/usr/src/dj_dastore/.env.prod
+    image: stripe/stripe-cli:v1.15.0
+    command: ["listen", "--api-key", "sk_test_51Han4nJWztZpQABxCCz5MlmSTiTzZIVFuFjgsSAfy0iLWQ1TQ2rNi5yYtdtQuiM0DfaxIYeXNJL2ZmmQAwaOHXzs0017w3y1IW", "--forward-to", "web:8000/stripe/webhook/"]
     depends_on:
       - web
     environment:
-      - /usr/src/dj_dastore/.env.prod
       - STRIPE_DEVICE_NAME=djstripe_docker
 volumes:
   postgres_data:

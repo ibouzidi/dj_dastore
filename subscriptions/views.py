@@ -121,8 +121,8 @@ class CreateCheckoutSession(View):
             payment_method_types=["card"],
             payment_method_collection="if_required",
             subscription_data=subscription_data,
-            success_url="http://localhost:8000/subscriptions/success/",
-            cancel_url="http://localhost:8000/subscriptions/cancelled/",
+            success_url="http://dastore/subscriptions/success/",
+            cancel_url="http://dastore/subscriptions/cancelled/",
         )
         return redirect(session.url)
 
