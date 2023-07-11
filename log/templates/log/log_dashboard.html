@@ -1,0 +1,79 @@
+{% extends '../sub_base.html' %}
+{% load static %}
+{% load breadcrumb %}
+
+{% block title %} Backup {% endblock title %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
+                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url %}
+                        {% breadcrumb "Log Dashboard"%}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+    <div class="row custom-content-row">
+        <div class="col-sm-12">
+            <div class="row custom-content-row text-center" data-aos="fade-left" data-aos-delay="100">
+                {% include 'partials/generic/div_sqare_count.html' with title=count.log_number.0 number=count.log_number.1 %}
+                {% include 'partials/chartlines/dashboard_chartline.html' with title='Last 7 days Log' chart_label=chart_label|safe chart_lengths=chart_lengths chart_datasets=chart_datasets %}
+            </div>
+            <div class="card">
+                <div class="card-body" data-aos="fade-left" data-aos-delay="100">
+                    <h4 class="text-center text-typo1">Last 10 Log</h4>
+                    <a href="{% url 'log:log_list' %}" class="btn mx-2 custom-button"><i class="fas fa-list"></i>All logs</a>
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Appli</th>
+                            <th>Action</th>
+                            <th>Text</th>
+                            <th>Open date</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% now "U" as datenow %}
+                        {% for i in list_items %}
+                            <tr class='clickable-row' data-href="{% url 'log:log_select' i.id %}">
+                                <td><div><a class="text-decoration-none">{{ i.id }}</a></div></td>
+                                <td><div><a class="text-decoration-none">{{ i.user|truncatechars:15 }}</a></div></td>
+                                <td><div><a class="text-decoration-none">{{ i.appli|truncatechars:15 }}</a></div></td>
+                                <td><div><a class="text-decoration-none">{{ i.action|truncatechars:15 }}</a></div></td>
+                                <td><div><a class="text-decoration-none">{{ i.description|truncatechars:100 }}</a></div></td>
+                                <td><div><a class="text-decoration-none">{{ i.date_open|date:"Y-M-d" }}</a></div></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(function() {
+            $(".clickable-row").click(function() {
+                window.location = $(this).data("href");
+            })
+        });
+    </script>
+    {% include 'partials/chartlines/js_chartline.html' %}
+
+{% endblock %}

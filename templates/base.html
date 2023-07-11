@@ -17,6 +17,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.css" />
     <link rel="stylesheet" href="{% static 'js/cropperjs/dist/cropper.min.css' %}">
+    {% block head %}{% endblock head %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {#    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">#}
     <link rel="stylesheet" href="{% block stylesheet %}{% endblock %}">
@@ -74,19 +75,19 @@
 {% block hero %} {% endblock %}
 
 <main>
- {% if request.user.is_authenticated %}
-    <div class="container-fluid py-5">
-{% else %}
-      <div class="container py-5">
-{% endif %}
+    {% if request.user.is_authenticated %}
+        <div class="container-fluid py-5">
+    {% else %}
+        <div class="container py-5">
+    {% endif %}
 
-{% block breadcrumbs %}{% endblock %}
-        {% block content %} {% endblock %}
+    {% block breadcrumbs %}{% endblock %}
+    {% block content %} {% endblock %}
     </div>
 
 </main>
-    {% include 'snippets/footer.html' %}
-    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+{% include 'snippets/footer.html' %}
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 
 <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>

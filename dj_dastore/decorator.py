@@ -11,8 +11,7 @@ def authenticateduser(user):
 
 # DEV SECTION
 def dev(user):
-    if user.is_authenticated and "g_dev" \
-            in user.groups.values_list('name', flat=True):
+    if user.is_authenticated and user.is_admin:
         return True
     raise PermissionDenied
 

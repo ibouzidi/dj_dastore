@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
     'team.apps.TeamConfig',
+    'log.apps.LogConfig',
     'app.apps.AppConfig',
     'extbackup.apps.ExtbackupConfig',
     'folder.apps.FolderConfig',

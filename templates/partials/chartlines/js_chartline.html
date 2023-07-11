@@ -1,0 +1,46 @@
+<script>
+    let root = $(':root');
+    let colcharttextcolor = $(root).css('--clr-dark-purple');
+    let letters = '0123456789ABCDEF';
+    let chartfontcolor = [];
+    let gen_datasets = "[";
+    for (let j = 0; j < {{ chart_lengths|safe }}; j++) {
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        chartfontcolor.push(color);
+        gen_datasets += "{data:[" + {{ chart_datasets|safe }}[j] + "],label:'" + {{ chart_label|safe }}[j] + "',borderColor:'" + color + "',fill: false},";
+
+    }
+    gen_datasets += "]";
+    new Chart(document.getElementById("line-chart"), {
+        type: 'line',
+        data: {
+            datasets: eval(gen_datasets)
+            ,
+            labels:{{label|safe}},
+        },
+        options: {
+            legend: {
+                labels: {
+                    fontColor: colcharttextcolor,
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: colcharttextcolor,
+                        precision: 0
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontColor: colcharttextcolor,
+                    }
+                }]
+            }
+        }
+    });
+</script>

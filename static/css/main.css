@@ -1306,3 +1306,72 @@ Header
     display: block;
     cursor: pointer;
 }
+
+/*  square div or number*/
+.numbersquare {
+    border: 3px solid var(--clr-purple-1);
+    border-radius: 5px;
+    margin: 30% auto;
+    width: 200px;
+    height: 200px;
+}
+
+.intermsquaretext {
+    height: 20px;
+    line-height: 20px;
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+    font-family: var(--font-family-monospace);
+    color: var(--clr-dark-purple);
+    font-size: 90%;
+}
+
+.intermsquarenb {
+    height: 180px;
+    line-height: 180px;
+    width: 100%;
+    display: inline-block;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.numbertext, .numbertextxl, .numbertextxxl, .numbertextxxxl {
+    font-family: var(--font-family-monospace);
+    color: var(--clr-dark-purple);
+}
+
+.numbertext {
+    font-size: 100px;
+}
+
+.numbertextxl {
+    font-size: 80px;
+}
+
+.numbertextxxl {
+    font-size: 50px;
+}
+
+.numbertextxxxl {
+    font-size: 30px;
+}
+
+
+
+.clickable-row:hover {
+    background-color: var(--clr-purple-1);
+    cursor: pointer;
+}
+
+.clickable-row:hover td div a {
+    color: white;
+}
+
+.clickable-row:focus,
+.clickable-row:active {
+    background-color: var(--clr-purple-3);
+    outline: none;
+}
+

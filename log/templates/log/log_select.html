@@ -1,0 +1,76 @@
+{% extends '../sub_base.html' %}
+{% load static %}
+{% load custom_query %}
+{% load widget_tweaks %}
+{% load breadcrumb %}
+
+{% block title %} Backup {% endblock title %}
+
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
+                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'log:log_dashboard' as log_dashboard_url %}
+                        {% url 'log:log_list' as log_list_url %}
+                        {% url 'log:log_select' item.pk as log_select_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url %}
+                        {% breadcrumb "Log Dahboard" log_dashboard_url %}
+                        {% breadcrumb "Log List" log_list_url %}
+                        {% breadcrumb item.pk%}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row custom-content-row">
+        <div class="col-sm-12">
+            <div class="card">
+                <div class="card-body" data-aos="fade-left" data-aos-delay="100">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>ID:</strong>
+                            <p>{{ item.id }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>User:</strong>
+                            <p>{{ item.user }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>Action:</strong>
+                            <p>{{ item.action }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Appli:</strong>
+                            <p>{{ item.appli }}</p>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <strong>Description:</strong>
+                            {% for part in description_parts %}
+                                <p>{{ part }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <strong>Creation time:</strong>
+                            <p>{{ item.date_open }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
