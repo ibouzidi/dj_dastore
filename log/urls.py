@@ -9,6 +9,6 @@ urlpatterns = [
     path('list/', views.log_list, name='log_list'),
     path('<int:pk>/', views.log_select, name='log_select'),
     path('list/export', views.log_export, name='log_export'),
-    # path('delete/', log.log_delete, name='log_delete'),
+    path('delete/', views.log_delete, name='log_delete'),
 
 ]
