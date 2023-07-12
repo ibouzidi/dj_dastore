@@ -321,7 +321,10 @@ def account_storage_stat(request, *args, **kwargs):
     units = [convert_size(size)[1] for size in sizes]
     size_mapping = {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3, 'TB': 4, 'PB': 5,
                     'EB': 6, 'ZB': 7, 'YB': 8}
-    largest_unit = max(units, key=lambda unit: size_mapping[unit])
+    largest_unit = 'B'  # Set a default unit
+
+    if units:
+        largest_unit = max(units, key=lambda unit: size_mapping[unit])
 
     for dataset in chart_datasets:
         dataset['label'] = f"{dataset['label']} ({largest_unit})"
