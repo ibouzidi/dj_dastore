@@ -22,7 +22,7 @@
         </svg>
         Security
     </a>
-    {% if request.user.get_active_subscriptions %}
+    {% if request.user.get_active_subscriptions or request.user.is_admin %}
         <a href="{% url 'account:account_storage_stat' %}"
            class="nav-item nav-link has-icon nav-link-faded" data-id="statistics">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -47,7 +47,7 @@
         </a>
 
     {% endif %}
-    {% if request.user.is_company or request.user.is_superuser %}
+    {% if request.user.is_company or request.user.is_admin %}
         <a href="{% url 'team:team_list' %}"
            class="nav-item nav-link has-icon nav-link-faded" data-id="team">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
