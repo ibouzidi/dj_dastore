@@ -1,5 +1,7 @@
 import datetime
+import hashlib
 import json
+import secrets
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
@@ -19,6 +21,7 @@ import stripe
 from django.contrib.auth.models import Group
 
 from account.models import Account
+from dj_dastore.decorator import user_is_active_subscriber
 
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
@@ -196,20 +199,53 @@ def move_user_to_group(user, old_group_name, new_group_name):
         print(f"Group does not exist: {old_group_name} or {new_group_name}")
 
 
-class CancelSubscriptionView(View):
-    def get(self, request):
-        if len(request.user.get_active_subscriptions) > 0:
-            stripe.Subscription.modify(
-                request.user.get_active_subscriptions[0].id,
-                cancel_at_period_end=True,
-            )
-            # Move user to 'Inactive Subscribers' group
-            move_user_to_group(request.user, 'active_subscribers',
-                               'inactive_subscribers')
+# class CancelSubscriptionView(View):
+#     def get(self, request):
+#         if len(request.user.get_active_subscriptions) > 0:
+#             stripe.Subscription.modify(
+#                 request.user.get_active_subscriptions[0].id,
+#                 cancel_at_period_end=True,
+#             )
+#             # Move user to 'Inactive Subscribers' group
+#             move_user_to_group(request.user, 'active_subscribers',
+#                                'inactive_subscribers')
+#
+#             messages.success(request, "Subscription will be cancelled at"
+#                                       " the end of the billing period")
+#         return redirect("account:account_profile")
 
-            messages.success(request, "Subscription will be cancelled at"
-                                      " the end of the billing period")
-        return redirect("account:account_profile")
+@user_is_active_subscriber
+def customer_portal(request):
+    # Authenticate your user.
+    customer_id = request.user.customer.id
+
+    # Generate a unique token based on user information.
+    token = hashlib.sha256(
+        f"{customer_id}{request.user.username}".encode()).hexdigest()
+
+    # Store the token in the user's session for verification.
+
+    # Create a session.
+    session = stripe.billing_portal.Session.create(
+        customer=customer_id,
+        return_url=request.build_absolute_uri(
+                reverse('account:account_billing')),
+    )
+
+    # Directly redirect the user to the validation endpoint.
+    return redirect(session.url)
+
+
+def validate_portal_access(request, token):
+    # Retrieve the user's session token.
+    stored_token = request.session.get('portal_access_token')
+
+    if stored_token and token == stored_token:
+        # Display the customer portal.
+        return render(request, 'account/account_billing.html')
+
+    # Redirect to an error page or show an error message.
+    return render(request, 'account/account_billing.html')
 
 
 @webhooks.handler("payment_intent.succeeded")

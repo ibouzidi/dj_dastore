@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from account.views import create_line_chart_datasets
 from dj_dastore.decorator import dev
 from log.filters import LogFilter
 from log.models import Log
@@ -55,12 +56,14 @@ def dashboard(request):
         label.append(item['date'].strftime("%b/%d"))
         chart_data.append(item['count'])
 
-    chart_datasets = [{
-        'data': chart_data,
-        'label': 'Nb log',
-        'borderColor': 'purple',  # replace this with your desired color
-        'fill': 'false'
-    }]
+    chart_datasets, label = create_line_chart_datasets(
+        last_seven_days_logs,
+        'date',
+        'count',
+        lambda d: d.strftime("%b/%d"),
+        lambda c: c,  # The count value is used as is
+        'Nb log'
+    )
 
     context = {
         'list_items': list_items,

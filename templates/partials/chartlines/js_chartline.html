@@ -1,17 +1,17 @@
 <script>
-   let root = $(':root');
+   function createLineChart(canvasId, labels, datasets) {
+    let root = $(':root');
     let colcharttextcolor = $(root).css('--clr-dark-purple');
-    let chart_datasets = JSON.parse("{{ chart_datasets_json|escapejs }}");
 
-    chart_datasets.forEach(dataset => {
+    datasets.forEach(dataset => {
         dataset.fill = dataset.fill === 'true';
     });
 
-    new Chart(document.getElementById("line-chart"), {
+    new Chart(document.getElementById(canvasId), {
         type: 'line',
         data: {
-            datasets: chart_datasets,
-            labels:{{label|safe}},
+            datasets: datasets,
+            labels: labels,
         },
         options: {
             legend: {
@@ -35,6 +35,7 @@
             }
         }
     });
+}
 </script>
 
 

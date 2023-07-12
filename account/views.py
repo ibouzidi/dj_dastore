@@ -263,6 +263,22 @@ def account_view(request, *args, **kwargs):
     return render(request, "account/account.html", context)
 
 
+
+def create_line_chart_datasets(queryset, label_column, data_column, label_func, data_func, label_text):
+    label, chart_data = list(), list()
+    for item in queryset:
+        label.append(label_func(item[label_column]))
+        chart_data.append(data_func(item[data_column]))
+
+    return [{
+        'data': chart_data,
+        'label': label_text,
+        'borderColor': 'purple',
+        'fill': 'false'
+    }], label
+
+
+
 @login_required
 def account_storage_stat(request, *args, **kwargs):
     if not request.user.is_authenticated:
@@ -281,7 +297,6 @@ def account_storage_stat(request, *args, **kwargs):
     used_percentage, \
     available_percentage = calculate_storage_usage(account)
 
-    # Create a chart of upload activity by size over the last 7 days
     last_seven_days_files = (
         File.objects.filter(
             uploaded_at__date__gte=timezone.now() - timedelta(days=7),
@@ -292,19 +307,24 @@ def account_storage_stat(request, *args, **kwargs):
             .order_by('date')
     )
 
-    # Now we can get the date labels and size directly
-    label, chart_data = list(), list()
-    for item in last_seven_days_files:
-        label.append(item['date'].strftime("%b/%d"))
-        size, unit = convert_size(item['total_size'])
-        chart_data.append(size)
+    chart_datasets, label = create_line_chart_datasets(
+        last_seven_days_files,
+        'date',
+        'total_size',
+        lambda d: d.strftime("%b/%d"),
+        lambda s: convert_size(s)[0],
+        'Upload Size'
+    )
 
-    chart_datasets = [{
-        'data': chart_data,
-        'label': f'Upload Size ({unit})',
-        'borderColor': 'purple',  # replace this with your desired color
-        'fill': 'false'
-    }]
+    # Find the largest unit from the dataset for determining the unit
+    sizes = [item['total_size'] for item in last_seven_days_files]
+    units = [convert_size(size)[1] for size in sizes]
+    size_mapping = {'B': 0, 'KB': 1, 'MB': 2, 'GB': 3, 'TB': 4, 'PB': 5,
+                    'EB': 6, 'ZB': 7, 'YB': 8}
+    largest_unit = max(units, key=lambda unit: size_mapping[unit])
+
+    for dataset in chart_datasets:
+        dataset['label'] = f"{dataset['label']} ({largest_unit})"
 
     context = {
         'file_count': file_count,
@@ -327,7 +347,7 @@ def convert_size(size_bytes):
     i = int(math.floor(math.log(size_bytes, 1024)))
     p = math.pow(1024, i)
     s = round(size_bytes / p, 2)
-    return (s, size_name[i])
+    return s, size_name[i]
 
 
 

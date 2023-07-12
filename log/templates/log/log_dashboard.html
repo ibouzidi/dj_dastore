@@ -67,13 +67,17 @@
 {% endblock %}
 
 {% block script %}
+        {% include 'partials/chartlines/js_chartline.html' %}
+
     <script>
         $(function() {
             $(".clickable-row").click(function() {
                 window.location = $(this).data("href");
             })
         });
+        let chart_datasets = JSON.parse("{{ chart_datasets_json|escapejs }}");
+let labels = {{ label|safe }};
+createLineChart("line-chart", labels, chart_datasets);
     </script>
-    {% include 'partials/chartlines/js_chartline.html' %}
 
 {% endblock %}
