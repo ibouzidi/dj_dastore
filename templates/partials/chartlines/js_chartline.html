@@ -1,24 +1,16 @@
 <script>
-    let root = $(':root');
+   let root = $(':root');
     let colcharttextcolor = $(root).css('--clr-dark-purple');
-    let letters = '0123456789ABCDEF';
-    let chartfontcolor = [];
-    let gen_datasets = "[";
-    for (let j = 0; j < {{ chart_lengths|safe }}; j++) {
-        let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
-        chartfontcolor.push(color);
-        gen_datasets += "{data:[" + {{ chart_datasets|safe }}[j] + "],label:'" + {{ chart_label|safe }}[j] + "',borderColor:'" + color + "',fill: false},";
+    let chart_datasets = JSON.parse("{{ chart_datasets_json|escapejs }}");
 
-    }
-    gen_datasets += "]";
+    chart_datasets.forEach(dataset => {
+        dataset.fill = dataset.fill === 'true';
+    });
+
     new Chart(document.getElementById("line-chart"), {
         type: 'line',
         data: {
-            datasets: eval(gen_datasets)
-            ,
+            datasets: chart_datasets,
             labels:{{label|safe}},
         },
         options: {
@@ -44,3 +36,10 @@
         }
     });
 </script>
+
+
+
+
+
+
+

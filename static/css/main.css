@@ -1375,3 +1375,8 @@ Header
     outline: none;
 }
 
+@media screen and (min-width: 992px) {
+    .updatedb .col-md-6{
+        min-width: 250px;
+    }
+}

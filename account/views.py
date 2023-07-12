@@ -1,3 +1,4 @@
+import math
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib import messages
@@ -6,7 +7,8 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordChangeView
 from django.core.mail import send_mail, BadHeaderError
-from django.db.models import Q
+from django.db.models import Q, Sum
+from django.db.models.functions import TruncDate
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate, logout
@@ -17,12 +19,15 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from two_factor.signals import user_verified
 from two_factor.utils import default_device
+from django.utils import timezone
 from django.views import View
 from account.forms import RegistrationForm, AccountAuthenticationForm, \
     AccountUpdateForm
 from account.models import Account
 from dj_dastore.decorator import user_is_subscriber, user_is_company, \
     user_is_active_subscriber
+from extbackup.models import File
+from folder.models import Folder
 from .calc_storage_limit import calculate_storage_usage
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
@@ -244,15 +249,86 @@ def account_view(request, *args, **kwargs):
     context[
         'DATA_UPLOAD_MAX_MEMORY_SIZE'] = settings.DATA_UPLOAD_MAX_MEMORY_SIZE
 
-    storage_used, storage_limit, storage_limit_unit, storage_limit_used \
-        = calculate_storage_usage(account)
+    storage_used_bytes, \
+    storage_limit_bytes, \
+    used_percentage, \
+    available_percentage = calculate_storage_usage(account)
+
     # Store the values in the context dictionary
-    context['storage_used'] = storage_used
-    context['storage_limit'] = storage_limit
-    context['storage_limit_unit'] = storage_limit_unit
-    context['storage_used_unit'] = storage_limit_used
+    context['storage_used_bytes'] = convert_size(storage_used_bytes)
+    context['storage_limit_bytes'] = convert_size(storage_limit_bytes)
+    context['used_percentage'] = used_percentage
+    context['available_percentage'] = available_percentage
 
     return render(request, "account/account.html", context)
+
+
+@login_required
+def account_storage_stat(request, *args, **kwargs):
+    if not request.user.is_authenticated:
+        return redirect("account:login")
+    user_id = request.user.pk
+    account = get_object_or_404(Account, pk=user_id)
+    if account.pk != request.user.pk:
+        messages.warning(request, "You cannot edit someone else's profile.")
+        return redirect("account:account_profile")
+
+    file_count = File.objects.filter(user=account).count()
+    folder_count = Folder.objects.filter(user=account).count()
+
+    storage_used_bytes, \
+    storage_limit_bytes, \
+    used_percentage, \
+    available_percentage = calculate_storage_usage(account)
+
+    # Create a chart of upload activity by size over the last 7 days
+    last_seven_days_files = (
+        File.objects.filter(
+            uploaded_at__date__gte=timezone.now() - timedelta(days=7),
+            user=account)
+            .annotate(date=TruncDate('uploaded_at'))
+            .values('date')
+            .annotate(total_size=Sum('size'))
+            .order_by('date')
+    )
+
+    # Now we can get the date labels and size directly
+    label, chart_data = list(), list()
+    for item in last_seven_days_files:
+        label.append(item['date'].strftime("%b/%d"))
+        size, unit = convert_size(item['total_size'])
+        chart_data.append(size)
+
+    chart_datasets = [{
+        'data': chart_data,
+        'label': f'Upload Size ({unit})',
+        'borderColor': 'purple',  # replace this with your desired color
+        'fill': 'false'
+    }]
+
+    context = {
+        'file_count': file_count,
+        'folder_count': folder_count,
+        'storage_used_bytes': convert_size(storage_used_bytes),
+        'storage_limit_bytes': convert_size(storage_limit_bytes),
+        'used_percentage': used_percentage,
+        'available_percentage': available_percentage,
+        'label': label,
+        'chart_datasets_json': json.dumps(chart_datasets),
+    }
+
+    return render(request, "account/account_storage_stat.html", context)
+
+
+def convert_size(size_bytes):
+    if size_bytes == 0:
+        return (0, "B")
+    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+    i = int(math.floor(math.log(size_bytes, 1024)))
+    p = math.pow(1024, i)
+    s = round(size_bytes / p, 2)
+    return (s, size_name[i])
+
 
 
 @login_required

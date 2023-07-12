@@ -12,6 +12,8 @@ urlpatterns = [
     path('security/', views.account_security, name="account_security"),
     # path('edit/<user_id>/', edit_account_view, name="account_edit"),
     path('edit/cropImage/', views.crop_image, name="account_crop_image"),
+    path('statistics/', views.account_storage_stat,
+         name="account_storage_stat"),
 
     path('password_change/', views.CustomPasswordChangeView.as_view(),
          name='password_change'),

@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import user_passes_test
 from django.db.models import Count
 from django.db.models.functions import TruncDate
@@ -38,10 +40,8 @@ def dashboard(request):
     """
     list_items = Log.objects.all().order_by('-id')[:10]
     count = {'log_number': ['log Number', Log.objects.count()]}
-    label, chart_label = list(), list()
+    label, chart_data = list(), list()
 
-    # Instead of querying in a loop, we group by date
-    # and count the logs in a single query
     last_seven_days_logs = (
         Log.objects.filter(
             date_open__date__gte=timezone.now() - timedelta(days=7))
@@ -51,23 +51,25 @@ def dashboard(request):
             .order_by('date')
     )
 
-    # Now we can get the date labels and log counts directly
     for item in last_seven_days_logs:
         label.append(item['date'].strftime("%b/%d"))
-        chart_label.append(item['count'])
+        chart_data.append(item['count'])
 
-    chart_datasets = [chart_label]
-    chart_label = ['Nb log']
-    chart_lengths = len(chart_datasets)
+    chart_datasets = [{
+        'data': chart_data,
+        'label': 'Nb log',
+        'borderColor': 'purple',  # replace this with your desired color
+        'fill': 'false'
+    }]
 
-    return render(request,
-                  'log/log_dashboard.html',
-                  {'list_items': list_items,
-                   'count': count,
-                   'label': label,
-                   'chart_label': chart_label,
-                   'chart_datasets': chart_datasets,
-                   'chart_lengths': chart_lengths})
+    context = {
+        'list_items': list_items,
+        'count': count,
+        'label': label,
+        'chart_datasets_json': json.dumps(chart_datasets),
+    }
+
+    return render(request, 'log/log_dashboard.html', context)
 
 
 @user_passes_test(dev)
