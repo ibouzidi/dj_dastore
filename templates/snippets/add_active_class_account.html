@@ -1,25 +1,26 @@
 <script type="text/javascript">
-$(document).ready(function() {
-    var pathMap = {
-        '/account/profile/': 'a[data-id="account"]',
-        '/account/security/': 'a[data-id="security"]',
-        '/account/billing/': 'a[data-id="billing"]',
-        '/account/team/': 'a[data-id="team"]',
-        '/account/statistics/': 'a[data-id="statistics"]',
-    };
+    $(document).ready(function() {
+        var pathMap = {
+            '/account/profile/': 'a[data-id="account"]',
+            '/account/security/': 'a[data-id="security"]',
+            '/account/billing/': 'a[data-id="billing"]',
+            '/account/team/membership_detail': 'a[data-id="membership_detail"]',
+            '/account/team/': 'a[data-id="team"]',
+            '/account/statistics/': 'a[data-id="statistics"]',
+        };
 
-    // Iterate over each path in the pathMap
-    $.each(pathMap, function(path, selector) {
-        // If the current URL starts with this path
-        if (window.location.pathname.startsWith(path)) {
-            // Remove the 'active' class from all nav links
-            $(".nav-pills .nav-link").removeClass('active');
-            // Add the 'active' class to the current nav link
-            $(selector).addClass('active');
-            // Break out of the loop, since we found a match
-            return false;
-        }
+        // Iterate over each path in the pathMap
+        $.each(pathMap, function(path, selector) {
+            // If the current URL starts with this path
+            if (window.location.pathname.startsWith(path)) {
+                // Remove the 'active' class from all nav links
+                $(".nav-pills .nav-link").removeClass('active');
+                // Add the 'active' class to the current nav link
+                $(selector).addClass('active');
+                // Break out of the loop, since we found a match
+                return false;
+            }
+        });
     });
-});
 
 </script>

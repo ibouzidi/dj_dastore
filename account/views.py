@@ -47,8 +47,6 @@ class RegisterView(View):
     def get(self, request):
         form = RegistrationForm()
         plan_id = request.session.get("plan_id")
-        print("enregistrement compte")
-        print(plan_id)
         if not plan_id:
             messages.info(request, 'Please select a plan before '
                                    'registering.')

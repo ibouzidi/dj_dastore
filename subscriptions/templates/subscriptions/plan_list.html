@@ -54,14 +54,20 @@
                             </div>
                         </div>
 
-                        <div class="col-12 col-md-4">
+                        <div class="col-12 col-md-6">
                             <!-- Plan Description -->
                             <div class="description">
                                 <p>{{ plan.description }}</p>
-                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_one }}</p>
-                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_two }}</p>
-                                <p><i class="material-symbols-outlined">check_circle</i>{{ plan.metadata.option_three }}</p>
-                                <p><i class="material-symbols-outlined">check_circle</i>Limit Users : {{ plan.metadata.limit_users }}</p>
+                            </div>
+                            <div class="row">
+                            <div class="col-6">
+                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>{{ plan.metadata.option_one }}</p>
+                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>{{ plan.metadata.option_two }}</p>
+                            </div>
+                            <div class="col-6">
+                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>{{ plan.metadata.option_three }}</p>
+                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>Limit Users : {{ plan.metadata.limit_users }}</p>
+                            </div>
                             </div>
                         </div>
 
@@ -83,50 +89,50 @@
 {% block script %}
     <script type="text/javascript">
         const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";
-function handleSelectPlan(button) {
-    const planId = button.getAttribute("data-id");
-    // Send a POST request to set the selected plan in the Django session
-    fetch("{% url 'subscriptions:set_selected_plan' %}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')
-        },
-        body: JSON.stringify({ plan_id: planId })
-    })
-        .then(response => response.json())
-        .then(data => {
-           if (data.status === 'success') {
-                // The selected plan was successfully set in the Django session
-                // Redirect the user to the registration page or the checkout page as before
-                if (isAuthenticated) {
-                    window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}";
-                } else {
-                    window.location.href = "{% url 'account:RegisterView' %}";
-                }
-            } else {
-                // Handle error
-                console.error("Failed to set selected plan: " + data.error);
-                console.error("Failed to set selected plan:", data);
-            }
-        });
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        let cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
+        function handleSelectPlan(button) {
+            const planId = button.getAttribute("data-id");
+            // Send a POST request to set the selected plan in the Django session
+            fetch("{% url 'subscriptions:set_selected_plan' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ plan_id: planId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        // The selected plan was successfully set in the Django session
+                        // Redirect the user to the registration page or the checkout page as before
+                        if (isAuthenticated) {
+                            window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}";
+                        } else {
+                            window.location.href = "{% url 'account:RegisterView' %}";
+                        }
+                    } else {
+                        // Handle error
+                        console.error("Failed to set selected plan: " + data.error);
+                        console.error("Failed to set selected plan:", data);
+                    }
+                });
         }
-    }
-    return cookieValue;
-}
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                let cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
 
         {#const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";#}
         {##}
