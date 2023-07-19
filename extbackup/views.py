@@ -68,9 +68,9 @@ class BackupUploadView(View):
                     encrypted_content = fernet_encrypt(original.read())
 
                 encrypted_file_name = f'{folder_name}/{file.name}_encrypted'
-                encrypted_file = default_storage.save(encrypted_file_name,
-                                                      BytesIO(
-                                                          encrypted_content))
+                default_storage.save(
+                    encrypted_file_name,
+                    BytesIO(encrypted_content))
                 # encrypted_file_path = default_storage.path(encrypted_file)
                 # encrypted_file_size = os.path.getsize(encrypted_file_path)
                 encrypted_file_size = len(encrypted_content)
@@ -348,7 +348,6 @@ class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
         deleted_items = []
 
         self.object = self.get_object()
-        # Save parent folder id before deleting the object
         # Save parent folder id before deleting the object
         if isinstance(self.object, Folder):
             self.parent_id = self.object.parent.pk if self.object.parent else None

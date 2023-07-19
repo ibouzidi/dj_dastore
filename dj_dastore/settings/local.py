@@ -21,6 +21,10 @@ DATABASES = {
 # During development only
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# CONFIGURE Storage
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+
+
 # INSTALLED_APPS += ["debug_toolbar"]
 #
 # MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")

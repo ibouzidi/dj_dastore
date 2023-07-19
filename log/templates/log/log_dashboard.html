@@ -34,31 +34,33 @@
                 <div class="card-body" data-aos="fade-left" data-aos-delay="100">
                     <h4 class="text-center text-typo1">Last 10 Log</h4>
                     <a href="{% url 'log:log_list' %}" class="btn mx-2 custom-button"><i class="fas fa-list"></i>All logs</a>
-                    <table class="table">
-                        <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>User</th>
-                            <th>Appli</th>
-                            <th>Action</th>
-                            <th>Text</th>
-                            <th>Open date</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% now "U" as datenow %}
-                        {% for i in list_items %}
-                            <tr class='clickable-row' data-href="{% url 'log:log_select' i.id %}">
-                                <td><div><a class="text-decoration-none">{{ i.id }}</a></div></td>
-                                <td><div><a class="text-decoration-none">{{ i.user|truncatechars:15 }}</a></div></td>
-                                <td><div><a class="text-decoration-none">{{ i.appli|truncatechars:15 }}</a></div></td>
-                                <td><div><a class="text-decoration-none">{{ i.action|truncatechars:15 }}</a></div></td>
-                                <td><div><a class="text-decoration-none">{{ i.description|truncatechars:100 }}</a></div></td>
-                                <td><div><a class="text-decoration-none">{{ i.date_open|date:"Y-M-d" }}</a></div></td>
+                    <div class="table-responsive">
+                        <table class="table table-centered table-nowrap mb-0 rounded">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Appli</th>
+                                <th>Action</th>
+                                <th>Text</th>
+                                <th>Open date</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {% now "U" as datenow %}
+                            {% for i in list_items %}
+                                <tr class='clickable-row' data-href="{% url 'log:log_select' i.id %}">
+                                    <td><div><a class="text-decoration-none">{{ i.id }}</a></div></td>
+                                    <td><div><a class="text-decoration-none">{{ i.user|truncatechars:15 }}</a></div></td>
+                                    <td><div><a class="text-decoration-none">{{ i.appli|truncatechars:15 }}</a></div></td>
+                                    <td><div><a class="text-decoration-none">{{ i.action|truncatechars:15 }}</a></div></td>
+                                    <td><div><a class="text-decoration-none">{{ i.description|truncatechars:100 }}</a></div></td>
+                                    <td><div><a class="text-decoration-none">{{ i.date_open|date:"Y-M-d" }}</a></div></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,7 +69,7 @@
 {% endblock %}
 
 {% block script %}
-        {% include 'partials/chartlines/js_chartline.html' %}
+    {% include 'partials/chartlines/js_chartline.html' %}
 
     <script>
         $(function() {
@@ -76,8 +78,8 @@
             })
         });
         let chart_datasets = JSON.parse("{{ chart_datasets_json|escapejs }}");
-let labels = {{ label|safe }};
-createLineChart("line-chart", labels, chart_datasets);
+        let labels = {{ label|safe }};
+        createLineChart("line-chart", labels, chart_datasets);
     </script>
 
 {% endblock %}

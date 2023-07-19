@@ -1,16 +1,10 @@
 from bootstrap_modal_forms.generic import BSModalCreateView, BSModalUpdateView
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required, user_passes_test
-from django.core.files.storage import default_storage
-from django.http import JsonResponse, HttpResponseBadRequest, \
-    HttpResponseRedirect, HttpResponse
-from django.template.loader import render_to_string
 from django.utils.decorators import method_decorator
 from django.views import View
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse, reverse_lazy
-
-from dj_dastore.decorator import user_is_subscriber, user_is_active_subscriber
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from dj_dastore.decorator import user_is_active_subscriber
 from .forms import FolderCreateForm, FolderEditForm
 from .models import Folder
 from extbackup.models import File
@@ -58,49 +52,6 @@ class FolderUpdateView(BSModalUpdateView):
             return reverse('folder:folder_list') + '?id=' + parent_folder_id
         else:
             return reverse('folder:folder_list')
-
-    # def get_success_url(self):
-    #     print("YES")
-    #     folder = self.get_object()
-    #     print("folder")
-    #     print(folder.parent.pk)
-    #     if folder.parent is not None:
-    #         return reverse('folder:folder_list') + '?id=' + str(folder.parent.pk)
-    #     else:
-    #         return reverse('folder:folder_list')
-
-# class FolderCreateView(View):
-#     template_name = 'folder/folder_create.html'
-#
-#     def get(self, request, *args, **kwargs):
-#         parent_folder_id = request.GET.get('parent_folder_id', None)
-#         print('Parent Folder ID:', parent_folder_id)
-#         form = FolderCreateForm(initial={'parent_folder_id': parent_folder_id})
-#         context = {
-#             'form': form,
-#             'submit_url': reverse('folder:folder_create'),
-#             'add_folder': reverse('folder:folder_create'),
-#         }
-#         return render(request, self.template_name, context)
-#
-#     def post(self, request, *args, **kwargs):
-#         form = FolderCreateForm(request.POST)
-#         if form.is_valid():
-#             new_folder = form.save(commit=False)
-#             new_folder.user = request.user
-#             parent_folder_id = form.cleaned_data.get('parent_folder_id')
-#             if parent_folder_id:
-#                 new_folder.parent = Folder.objects.get(pk=parent_folder_id)
-#             new_folder.save()
-#             messages.success(request, "Folder created successfully")
-#             return redirect("folder:folder_list")
-#         else:
-#             context = {
-#                 'form': form,
-#                 'submit_url': reverse('folder:folder_create'),
-#                 'add_folder': reverse('folder:folder_create'),
-#             }
-#             return render(request, self.template_name, context)
 
 
 @method_decorator(user_is_active_subscriber, name='dispatch')

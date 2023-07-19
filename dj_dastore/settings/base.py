@@ -174,9 +174,6 @@ MESSAGE_TAGS = {
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb = 10 * 1024 *1024
 
-# CONFIGURE Storage
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-
 
 JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to Admin Panel.",
