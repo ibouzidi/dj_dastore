@@ -12,7 +12,7 @@ django-storages==1.13.2
 cryptography==39.0.0
 django-jazzmin==2.6.0
 django-bootstrap-modal-forms==2.2.1
-django-two-factor-auth==1.15.2
+django-two-factor-auth==1.15.3
 django-phonenumber-field==6.4.0
 django-widget-tweaks==1.4.12
 phonenumbers==8.13.11

@@ -2,15 +2,17 @@ from pathlib import Path
 from decouple import Csv, config
 import os
 from django.contrib.messages import constants as messages
+from django.core.management.utils import get_random_secret_key
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY",
-                    default="django-insecure$dj_dastore.settings.local")
+SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
 
+print("SECRET_KEY")
+print(SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=True, cast=bool)
 

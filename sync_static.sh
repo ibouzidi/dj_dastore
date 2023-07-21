@@ -8,6 +8,9 @@ REMOTE_IP="192.168.0.6"
 STATIC_REMOTE_PATH="/home/amethyste/web/static_cdn/"
 MEDIA_REMOTE_PATH="/home/amethyste/web/media_cdn/"
 
+# Collectstatic
+docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear
+
 # Sync files
 rsync -azP -e "ssh -i ~/.ssh/id_rsa_rsync" "${STATIC_LOCAL_PATH}" "${REMOTE_USER}@${REMOTE_IP}:${STATIC_REMOTE_PATH}"
 rsync -azP -e "ssh -i ~/.ssh/id_rsa_rsync" "${MEDIA_LOCAL_PATH}" "${REMOTE_USER}@${REMOTE_IP}:${MEDIA_REMOTE_PATH}"

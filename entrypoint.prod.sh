@@ -10,4 +10,10 @@ then
     echo "PostgreSQL started"
 fi
 
+echo "Make migrations files"
+python manage.py makemigrations account team extbackup folder log
+#python manage.py makemigrations phonenumber --fake-initial
+echo "Make Migrations files done."
+python manage.py migrate
+
 exec "$@"
