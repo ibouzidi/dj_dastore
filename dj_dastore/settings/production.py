@@ -1,5 +1,20 @@
 from .base import *
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
+
+
 # =====================================================================
 # STATIC FILES AND MEDIA FILES SETTINGS
 # =====================================================================
@@ -10,8 +25,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
-STATIC_ROOT = '/mnt/nfs/static_cdn'
-MEDIA_ROOT = '/mnt/nfs/media_cdn'
+STATIC_ROOT = BASE_DIR.parent / 'static_cdn'
+MEDIA_ROOT = BASE_DIR.parent / 'media_cdn'
 
 TEMP = BASE_DIR.parent / 'media_cdn/temp'
 

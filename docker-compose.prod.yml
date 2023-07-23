@@ -5,14 +5,14 @@ services:
     build: 
       context: ./
       dockerfile: Dockerfile.prod
-    command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000
-      #command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000 --log-level debug
-    user: '1000:1000'
+        #command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000 --log-level debug
+      #user: '1000:1000'
     ports:
       - 8000:8000
     volumes:
-      - /mnt/nfs/static_cdn:/home/dj_dastore/web/static_cdn
-      - /mnt/nfs/media_cdn:/home/dj_dastore/web/media_cdn
+      - /mnt/nfs/dj_dastore/static_cdn:/home/dj_dastore/web/static_cdn
+      - /mnt/nfs/dj_dastore/media_cdn:/home/dj_dastore/web/media_cdn
     env_file:
       - ./.env.prod
     depends_on:
