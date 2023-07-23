@@ -1,5 +1,20 @@
 from .base import *
 
+# =====================================================================
+# STATIC FILES AND MEDIA FILES SETTINGS
+# =====================================================================
+
+STATICFILES_DIRS = [
+    BASE_DIR.parent / 'static',
+    BASE_DIR.parent / 'media',
+]
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+STATIC_ROOT = '/mnt/nfs/static_cdn'
+MEDIA_ROOT = '/mnt/nfs/media_cdn'
+
+TEMP = BASE_DIR.parent / 'media_cdn/temp'
+
 
 # ==============================================================================
 # DATABASE SETTINGS
@@ -33,9 +48,11 @@ DATABASES = {
 #
 # SESSION_COOKIE_SECURE = True
 
+# CONFIGURE Storage
+DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
-DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
-FTP_STORAGE_LOCATION = config('FTP_STORAGE')
+# DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
+# FTP_STORAGE_LOCATION = config('FTP_STORAGE')
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

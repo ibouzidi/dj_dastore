@@ -11,8 +11,8 @@ services:
     ports:
       - 8000:8000
     volumes:
-      - ./static_cdn:/home/dj_dastore/web/static_cdn
-      - ./media_cdn:/home/dj_dastore/web/media_cdn
+      - /mnt/nfs/static_cdn:/home/dj_dastore/web/static_cdn
+      - /mnt/nfs/media_cdn:/home/dj_dastore/web/media_cdn
     env_file:
       - ./.env.prod
     depends_on:

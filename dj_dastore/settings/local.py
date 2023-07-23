@@ -1,5 +1,20 @@
 from .base import *
 
+# =====================================================================
+# STATIC FILES AND MEDIA FILES SETTINGS
+# =====================================================================
+
+STATICFILES_DIRS = [
+    BASE_DIR.parent / 'static',
+    BASE_DIR.parent / 'media',
+]
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+STATIC_ROOT = BASE_DIR.parent / 'static_cdn'
+MEDIA_ROOT = BASE_DIR.parent / 'media_cdn'
+
+TEMP = BASE_DIR.parent / 'media_cdn/temp'
+
 # ==============================================================================
 # DATABASE SETTINGS
 # ==============================================================================
