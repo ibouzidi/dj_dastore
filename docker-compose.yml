@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./:/usr/src/dj_dastore/
+      - static_volume:/usr/src/dj_dastore/static_cdn
+      - media_volume:/usr/src/dj_dastore/media_cdn
+    ports:
+      - 8000:8000
+    env_file:
+      - ./.env
+    environment:
+      DJANGO_SETTINGS_MODULE: dj_dastore.settings.local
+    depends_on:
+      - db1
+
+  db1:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=dj_dastore_local
+      - POSTGRES_PASSWORD=dj_dastore_local
+      - POSTGRES_DB=dj_dastore_local
+  
+  stripe:
+    image: stripe/stripe-cli:v1.7.4
+    network_mode: host  
+    command: listen --api-key=$STRIPE_TEST_SECRET_KEY --forward-to http://web:8000/stripe/webhook/
+    volumes:
+      - ./.env:/usr/src/dj_dastore/.env
+    depends_on:
+      - web
+    environment:
+      - /usr/src/dj_dastore/.env
+      - STRIPE_DEVICE_NAME=djstripe_docker
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

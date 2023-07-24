@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from account.models import Account, Team, Membership, Invitation
+from account.models import Account
+from team.models import Team, Membership, Invitation
 
 
 class AccountAdmin(UserAdmin):
@@ -40,26 +41,30 @@ class AccountAdmin(UserAdmin):
 
     )
 
+
 class MembershipInline(admin.TabularInline):
     model = Membership
     extra = 1
     can_delete = False
+
 
 class TeamAdmin(admin.ModelAdmin):
     inlines = (MembershipInline,)
     list_display = ('team_name',)
     search_fields = ('team_name',)
 
+
 class MembershipAdmin(admin.ModelAdmin):
     list_display = ('team', 'user', 'role',)
     search_fields = ('team__name', 'user__username')
+
 
 class InvitationAdmin(admin.ModelAdmin):
     list_display = ('email', 'team', 'created_at', 'status',)
     search_fields = ('email', 'team__team_name', 'status',)
 
-admin.site.register(Invitation, InvitationAdmin)
 
+admin.site.register(Invitation, InvitationAdmin)
 
 admin.site.register(Account, AccountAdmin)
 admin.site.register(Team, TeamAdmin)

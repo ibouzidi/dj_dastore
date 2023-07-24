@@ -8,6 +8,13 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Backup and Restore application in Django</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'dastore/fav/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'dastore/fav/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'dastore/fav/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'dastore/fav/site.webmanifest' %}">
+    <link rel="mask-icon" href="{% static 'dastore/fav/safari-pinned-tab.svg' %}" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
     <link type="text/css" href="{% static 'css/volt.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/icofont/icofont.min.css' %}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
@@ -17,6 +24,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.css" />
     <link rel="stylesheet" href="{% static 'js/cropperjs/dist/cropper.min.css' %}">
+    {% block head %}{% endblock head %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     {#    <link rel="stylesheet" href="{% static 'css/normalize.css' %}">#}
     <link rel="stylesheet" href="{% block stylesheet %}{% endblock %}">
@@ -74,19 +82,19 @@
 {% block hero %} {% endblock %}
 
 <main>
- {% if request.user.is_authenticated %}
-    <div class="container-fluid py-5">
-{% else %}
-      <div class="container py-5">
-{% endif %}
+    {% if request.user.is_authenticated %}
+        <div class="container-fluid py-5">
+    {% else %}
+        <div class="container py-5">
+    {% endif %}
 
-{% block breadcrumbs %}{% endblock %}
-        {% block content %} {% endblock %}
+    {% block breadcrumbs %}{% endblock %}
+    {% block content %} {% endblock %}
     </div>
 
 </main>
-    {% include 'snippets/footer.html' %}
-    <a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
+{% include 'snippets/footer.html' %}
+<a href="#" class="back-to-top"><i class="icofont-simple-up"></i></a>
 
 <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js"></script>

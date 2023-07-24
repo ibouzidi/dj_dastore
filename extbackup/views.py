@@ -68,11 +68,12 @@ class BackupUploadView(View):
                     encrypted_content = fernet_encrypt(original.read())
 
                 encrypted_file_name = f'{folder_name}/{file.name}_encrypted'
-                encrypted_file = default_storage.save(encrypted_file_name,
-                                                      BytesIO(
-                                                          encrypted_content))
-                encrypted_file_path = default_storage.path(encrypted_file)
-                encrypted_file_size = os.path.getsize(encrypted_file_path)
+                default_storage.save(
+                    encrypted_file_name,
+                    BytesIO(encrypted_content))
+                # encrypted_file_path = default_storage.path(encrypted_file)
+                # encrypted_file_size = os.path.getsize(encrypted_file_path)
+                encrypted_file_size = len(encrypted_content)
 
                 total_size += encrypted_file_size
 
@@ -348,7 +349,6 @@ class DeleteBackupsView(SuccessMessageMixin, BSModalDeleteView):
 
         self.object = self.get_object()
         # Save parent folder id before deleting the object
-        # Save parent folder id before deleting the object
         if isinstance(self.object, Folder):
             self.parent_id = self.object.parent.pk if self.object.parent else None
         elif isinstance(self.object, File):
@@ -441,7 +441,7 @@ class BulkDeleteBackupsView(View):
         file.delete()
 
 
-@method_decorator(user_is_active_subscriber, name='dispatch')
+@user_is_active_subscriber
 def view_zip_content(request, file_id):
     try:
         file = File.objects.get(pk=file_id)

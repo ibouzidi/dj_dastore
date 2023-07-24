@@ -82,8 +82,13 @@
                                             {% if request.user.get_active_subscriptions %}
                                                 Plan : {{ request.user.get_active_subscriptions.0.plan.product.name }}
                                                 <p>Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
-                                            {% else %}No active subscription</p>
+                                            {% elif request.user.teams.exists %}
+                                                Member of team : {{ request.user.teams.first.team_name }}
+                                            {% else %}
+                                                No active subscription
                                             {% endif %}
+                                        </p>
+
                                     </div>
                                 </div>
                             </div>
@@ -441,25 +446,10 @@
                 return color;
             }
 
-            let storageUsed = {{ storage_used }};
-            let storageUsedUnit = "{{ storage_used_unit }}";
-            let storageLimit = {{ storage_limit }};
-            let storageLimitUnit = "{{ storage_limit_unit }}";
-
-            if (storageUsedUnit == "GB") {
-                storageUsed *= 1024;
-            }
-            let usedPercentage = Math.round((storageUsed / (storageLimit * 1024)) * 100)+ 0.001;
-            // if used percentage equal to 0 the pie chart is not displayed
-            // so we add 0.001 which doesnt change the displayed value
-            let availablePercentage = 100 - usedPercentage;
-
-            {#console.log("storageUsed", storageUsed);#}
-            {#console.log("storageUsedUnit", storageUsedUnit);#}
-            {#console.log("storageLimit", storageLimit);#}
-            {#console.log("storageLimitUnit", storageLimitUnit);#}
-            {#console.log("usedPercentage", usedPercentage);#}
-            {#console.log("availablePercentage", availablePercentage);#}
+            let storageUsed = "{{ storage_used_bytes.0 }} {{ storage_used_bytes.1 }}";
+            let storageLimit = "{{ storage_limit_bytes.0 }} {{ storage_limit_bytes.1 }}";
+            let usedPercentage = {{ used_percentage }};
+            let availablePercentage = {{ available_percentage }};
 
             let ctx = document.getElementById('storageUsageChart').getContext('2d');
             let storageUsageChart = new Chart(ctx, {
@@ -479,29 +469,17 @@
                     tooltips: {
                         callbacks: {
                             label: function(tooltipItem, data) {
-                                let dataset = data.datasets[tooltipItem.datasetIndex];
                                 let index = tooltipItem.index;
-
                                 if (index == 0) {
-                                    if (storageUsedUnit == "GB") {
-                                        return 'Used: ' + (storageUsed / 1024).toFixed(2) + ' ' + storageUsedUnit;
-                                    }
-                                    else{
-                                        return 'Used: ' + (storageUsed).toFixed(2) + ' ' + storageUsedUnit;
-                                    }
+                                    return 'Used: ' + storageUsed;
                                 } else {
-                                    let available = (storageLimit * 1024 - storageUsed).toFixed(2)
-                                    if (available < 1000){
-                                        return 'Available: ' + (storageLimit * 1024 - storageUsed).toFixed(2) + ' ' + 'MB';
-                                    }else{
-                                        return 'Available: ' + (storageLimit - storageUsed /1024).toFixed(2) + ' ' + storageLimitUnit;
-
-                                    }
+                                    return 'Available: ' + storageLimit;
                                 }
                             }
                         }
                     }
                 }
             });
+
     </script>
 {% endblock %}

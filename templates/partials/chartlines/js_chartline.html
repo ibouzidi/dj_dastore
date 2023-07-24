@@ -1,0 +1,46 @@
+<script>
+   function createLineChart(canvasId, labels, datasets) {
+    let root = $(':root');
+    let colcharttextcolor = $(root).css('--clr-dark-purple');
+
+    datasets.forEach(dataset => {
+        dataset.fill = dataset.fill === 'true';
+    });
+
+    new Chart(document.getElementById(canvasId), {
+        type: 'line',
+        data: {
+            datasets: datasets,
+            labels: labels,
+        },
+        options: {
+            legend: {
+                labels: {
+                    fontColor: colcharttextcolor,
+                }
+            },
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        fontColor: colcharttextcolor,
+                        precision: 0
+                    }
+                }],
+                xAxes: [{
+                    ticks: {
+                        fontColor: colcharttextcolor,
+                    }
+                }]
+            }
+        }
+    });
+}
+</script>
+
+
+
+
+
+
+

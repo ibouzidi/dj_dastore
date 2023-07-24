@@ -1,0 +1,68 @@
+{% extends "../sub_base.html" %}
+{% load static %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% load breadcrumb %}
+
+
+{% block breadcrumbs %}
+    <div class="breadcrumb-container">
+        <div class="row">
+            <div class="col-12 col-md-6 col-lg-5">
+                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                    <ol class="breadcrumb mb-4">
+                        {% url 'account:account_profile' as account_url %}
+                        {% url 'home' as home_url %}
+                        {% breadcrumb "Home" home_url %}
+                        {% breadcrumb "Profile" account_url%}
+                        {% breadcrumb "Membership Details" %}
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block sub_content %}
+
+    <div class="card-body tab-content">
+        <h6>My Teams</h6>
+        <hr>
+        <div id="teamDetail" data-aos="fade-left" data-aos-delay="200">
+            <div class="card-body tab-content">
+                {% for membership in memberships %}
+                    <h6>You're a member of Team: {{ membership.team.team_name }}</h6>
+                    <hr>
+                    <h6>Members :</h6>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                            </tr>
+                            {% for member in membership.team.memberships.all %}
+                                <tr>
+                                    <td>{{ member.user.username }}</td>
+                                    <td>{{ member.user.email }}</td>
+                                    <td>
+                                        {% if  member.user == request.user %}
+                                            <strong>
+                                                {{ member.get_role_display }} (YOU)
+                                            </strong>
+                                        {% else %}
+                                            {{ member.get_role_display }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% empty %}
+                    <p>You are not a member of any teams.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

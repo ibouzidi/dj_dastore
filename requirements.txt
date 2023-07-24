@@ -1,6 +1,7 @@
 asgiref==3.6.0
 Django==3.2
-mysqlclient==2.1.1
+gunicorn==20.1.0
+psycopg2-binary==2.9.1
 python-decouple==3.7
 pytz==2022.7.1
 sqlparse==0.4.3
@@ -11,10 +12,11 @@ django-storages==1.13.2
 cryptography==39.0.0
 django-jazzmin==2.6.0
 django-bootstrap-modal-forms==2.2.1
-django-two-factor-auth==1.15.2
+django-two-factor-auth==1.15.3
 django-phonenumber-field==6.4.0
 django-widget-tweaks==1.4.12
 phonenumbers==8.13.11
 django-recaptcha==3.0.0
 stripe==4.2.0
 dj-stripe==2.7.3
+django-filter==21.1

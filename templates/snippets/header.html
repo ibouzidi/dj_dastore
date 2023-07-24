@@ -45,6 +45,11 @@
             <li>
                 <i class="material-symbols-outlined">person</i><a href="{% url 'account:account_profile' %}">Profil</a>
             </li>
+            {% if request.user.is_authenticated and request.user.is_admin%}
+                <li>
+                    <i class="material-symbols-outlined">browse_activity</i><a href="{% url 'log:log_dashboard' %}">Logs</a>
+                </li>
+            {% endif %}
             <li>
                 <i class="material-symbols-outlined">logout</i><a href="{% url 'account:logout' %}">Logout</a>
             </li>

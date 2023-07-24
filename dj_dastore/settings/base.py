@@ -2,15 +2,17 @@ from pathlib import Path
 from decouple import Csv, config
 import os
 from django.contrib.messages import constants as messages
+from django.core.management.utils import get_random_secret_key
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config("SECRET_KEY",
-                    default="django-insecure$dj_dastore.settings.local")
+SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
 
+print("SECRET_KEY")
+print(SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=True, cast=bool)
 
@@ -30,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account.apps.AccountConfig',
+    'team.apps.TeamConfig',
+    'log.apps.LogConfig',
     'app.apps.AppConfig',
     'extbackup.apps.ExtbackupConfig',
     'folder.apps.FolderConfig',
@@ -90,23 +94,6 @@ TEMPLATES = [
     },
 ]
 
-# =====================================================================
-# DATABASES SETTINGS
-# =====================================================================
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': '3306',
-        'OPTIONS': {
-            'charset': config('DB_CHARSET')
-        }
-    }
-}
 
 # =====================================================================
 # AUTHENTICATION BACKENDS SETTINGS
@@ -156,20 +143,6 @@ USE_L10N = True
 
 USE_TZ = False
 
-# =====================================================================
-# STATIC FILES AND MEDIA FILES SETTINGS
-# =====================================================================
-
-STATICFILES_DIRS = [
-    BASE_DIR.parent / 'static',
-    BASE_DIR.parent / 'media',
-]
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-STATIC_ROOT = BASE_DIR.parent / 'static_cdn'
-MEDIA_ROOT = BASE_DIR.parent / 'media_cdn'
-
-TEMP = BASE_DIR.parent / 'media_cdn/temp'
 
 BASE_URL = "http://127.0.0.1:8000"
 
@@ -186,15 +159,8 @@ MESSAGE_TAGS = {
     messages.ERROR:     'alert-danger',
 }
 
-if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # During development only
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760 # 10mb = 10 * 1024 *1024
-
-# CONFIGURE FTP
-# DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
-DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-# FTP_STORAGE_LOCATION = 'ftp://test:test@localhost:21/'
 
 
 JAZZMIN_SETTINGS = {
@@ -220,13 +186,12 @@ RECAPTCHA_PUBLIC_KEY = '6LdEG1smAAAAAAEn-_8vrhE4eUeVgMKhiW8Tr_eP'
 RECAPTCHA_PRIVATE_KEY = '6LdEG1smAAAAAFNBtdDqDaUJrFWknkdtz-fETWIB'
 # SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
-# stripe config
-STRIPE_TEST_PUBLIC_KEY = 'pk_test_51Han4nJWztZpQABxysTVGo4JzUVAofIK57O8wrZgN0vvjBsbQYja5RdeMdOKyGaaZUK9OdbmjJF9xUp6RVyrTYz200ofLajlDL'
-STRIPE_TEST_SECRET_KEY = 'sk_test_51Han4nJWztZpQABxCCz5MlmSTiTzZIVFuFjgsSAfy0iLWQ1TQ2rNi5yYtdtQuiM0DfaxIYeXNJL2ZmmQAwaOHXzs0017w3y1IW'
-STRIPE_LIVE_MODE = False
+# Stripe And Dj-stripe config
+STRIPE_TEST_PUBLIC_KEY = config('STRIPE_TEST_PUBLIC_KEY', cast=str)
+STRIPE_TEST_SECRET_KEY = config('STRIPE_TEST_SECRET_KEY', cast=str)
+STRIPE_LIVE_MODE = config('STRIPE_LIVE_MODE', cast=bool)
+DJSTRIPE_WEBHOOK_SECRET = config('DJSTRIPE_WEBHOOK_SECRET', cast=str)
 
-# Dj-stripe config
-DJSTRIPE_WEBHOOK_SECRET = 'whsec_56d7c095da9b777a89840d2b4ec445f19c4a5c42e51d73566a857b545d87b4c4'
 DJSTRIPE_FOREIGN_KEY_TO_FIELD = "id"
 DJSTRIPE_USE_NATIVE_JSONFIELD = True
 

@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% load static %}
-{% block stylesheet %}
-
-
-    {% static 'account/css/account.css' %}
-{% endblock %}
+{% block stylesheet %}{% static 'account/css/account.css' %}{% endblock %}
+{% block head %}
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker.min.css">
+{% endblock head %}
 
 {% block content %}
     <div class="row gutters-sm">
@@ -30,6 +29,7 @@
 {% endblock content %}
 
 {% block script %}
+
     {% block sub_script %}
     {% endblock sub_script %}
 {% endblock script %}

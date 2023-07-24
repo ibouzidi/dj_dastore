@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  web:
+    build: 
+      context: ./
+      dockerfile: Dockerfile.prod
+        #command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000
+    command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000 --log-level debug
+      #user: '1000:1000'
+    ports:
+      - 8000:8000
+    volumes:
+      - /mnt/nfs/dj_dastore/static_cdn:/home/dj_dastore/web/static_cdn
+      - /mnt/nfs/dj_dastore/media_cdn:/home/dj_dastore/web/media_cdn
+    env_file:
+      - ./.env.prod
+    depends_on:
+      - db1_prod
+    environment:
+      DJANGO_SETTINGS_MODULE: dj_dastore.settings.production
+  db1_prod:
+    image: postgres:13.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.prod.db
+  autopgbackup:
+    image: rogersik/autopostgresqlbackup:latest
+    env_file:
+      - ./.env.prod
+    environment:
+      - CRON_LOG_LEVEL=0
+      - CRON_SCHEDULE=5 4 * * *
+      - LATEST=yes
+    volumes:
+     - /opt/docker/foobar/db_dumps:/backups
+     - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - db1_prod
+  stripe:
+    image: stripe/stripe-cli:v1.15.0
+    command: ["listen", "--api-key", "${STRIPE_TEST_SECRET_KEY}", "--forward-to", "web:8000/stripe/webhook/"]
+    depends_on:
+      - web
+    env_file:
+      - ./.env.prod
+    environment:
+      - STRIPE_DEVICE_NAME=djstripe_docker
+volumes:
+  postgres_data:

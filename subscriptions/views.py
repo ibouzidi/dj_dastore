@@ -1,8 +1,11 @@
 import datetime
+import hashlib
 import json
+import secrets
 
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -18,17 +21,19 @@ import stripe
 from django.contrib.auth.models import Group
 
 from account.models import Account
+from dj_dastore.decorator import user_is_active_subscriber
 
 stripe.api_key = settings.STRIPE_TEST_SECRET_KEY
 
 
 class SubListView(View):
     def get(self, request):
-        if request.user.is_authenticated and \
-                request.user.get_active_subscriptions:
-            messages.info(request, "You're already subscribed! "
-                          "Thank you for your continued support.")
-            return redirect("account:account_profile")
+        if request.user.is_authenticated:
+            if request.user.get_active_subscriptions or \
+                    request.user.has_teams:
+                messages.info(request, "You're already subscribed! "
+                              "Thank you for your continued support.")
+                return redirect("account:account_profile")
 
         # Retrieve products and active prices
         products = Product.objects.all()
@@ -120,8 +125,10 @@ class CreateCheckoutSession(View):
             payment_method_types=["card"],
             payment_method_collection="if_required",
             subscription_data=subscription_data,
-            success_url="http://localhost:8000/subscriptions/success/",
-            cancel_url="http://localhost:8000/subscriptions/cancelled/",
+            success_url=request.build_absolute_uri(
+                reverse('subscriptions:SuccessView')),
+            cancel_url=request.build_absolute_uri(
+                reverse('subscriptions:CancelView')),
         )
         return redirect(session.url)
 
@@ -152,7 +159,7 @@ class CancelConfirmView(View):
             if user_id:
                 try:
                     user = Account.objects.get(id=user_id)
-                    group = Group.objects.get(name='g_inactive_subscribers')
+                    group = Group.objects.get(name='inactive_subscribers')
                     user.groups.add(group)
                     messages.error(request, "Subscription canceled")
                 except Account.DoesNotExist:
@@ -192,20 +199,53 @@ def move_user_to_group(user, old_group_name, new_group_name):
         print(f"Group does not exist: {old_group_name} or {new_group_name}")
 
 
-class CancelSubscriptionView(View):
-    def get(self, request):
-        if len(request.user.get_active_subscriptions) > 0:
-            stripe.Subscription.modify(
-                request.user.get_active_subscriptions[0].id,
-                cancel_at_period_end=True,
-            )
-            # Move user to 'Inactive Subscribers' group
-            move_user_to_group(request.user, 'g_active_subscribers',
-                               'ing_active_subscribers')
+# class CancelSubscriptionView(View):
+#     def get(self, request):
+#         if len(request.user.get_active_subscriptions) > 0:
+#             stripe.Subscription.modify(
+#                 request.user.get_active_subscriptions[0].id,
+#                 cancel_at_period_end=True,
+#             )
+#             # Move user to 'Inactive Subscribers' group
+#             move_user_to_group(request.user, 'active_subscribers',
+#                                'inactive_subscribers')
+#
+#             messages.success(request, "Subscription will be cancelled at"
+#                                       " the end of the billing period")
+#         return redirect("account:account_profile")
 
-            messages.success(request, "Subscription will be cancelled at"
-                                      " the end of the billing period")
-        return redirect("account:account_profile")
+@user_is_active_subscriber
+def customer_portal(request):
+    # Authenticate your user.
+    customer_id = request.user.customer.id
+
+    # Generate a unique token based on user information.
+    token = hashlib.sha256(
+        f"{customer_id}{request.user.username}".encode()).hexdigest()
+
+    # Store the token in the user's session for verification.
+
+    # Create a session.
+    session = stripe.billing_portal.Session.create(
+        customer=customer_id,
+        return_url=request.build_absolute_uri(
+                reverse('account:account_billing')),
+    )
+
+    # Directly redirect the user to the validation endpoint.
+    return redirect(session.url)
+
+
+def validate_portal_access(request, token):
+    # Retrieve the user's session token.
+    stored_token = request.session.get('portal_access_token')
+
+    if stored_token and token == stored_token:
+        # Display the customer portal.
+        return render(request, 'account/account_billing.html')
+
+    # Redirect to an error page or show an error message.
+    return render(request, 'account/account_billing.html')
 
 
 @webhooks.handler("payment_intent.succeeded")
@@ -226,12 +266,8 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     plan_id = line['plan']['id']
                     plan = get_object_or_404(Plan, id=plan_id)
                     user.storage_limit = plan.product.metadata["storage_limit"]
-                    print("storage limit ="+user.storage_limit)
-                    plan = get_object_or_404(Plan, id=plan_id)
-                    limit_users = plan.product.metadata["limit_users"]
-                    print("limit_users"+limit_users)
                     # Add the user to the 'Active Subscribers' group
-                    group = Group.objects.get(name='g_g_active_subscribers')
+                    group = Group.objects.get(name='g_active_subscribers')
                     user.groups.add(group)
                     user.save()
     return
