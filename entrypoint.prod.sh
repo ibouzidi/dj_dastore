@@ -1,4 +1,10 @@
 #!/bin/sh
+
+set -e
+
+# Activate the virtual environment
+. /home/dj_dastore/web/venv/bin/activate
+
 if [ "$DATABASE" = "postgres" ]
 then
     echo "Waiting for postgres..."
@@ -12,8 +18,8 @@ fi
 
 echo "Make migrations files"
 python manage.py makemigrations account team extbackup folder log
-#python manage.py makemigrations phonenumber --fake-initial
 echo "Make Migrations files done."
 python manage.py migrate
 
 exec "$@"
+

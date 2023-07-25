@@ -19,19 +19,10 @@ RUN apt-get update \
     && apt-get install -y netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
 
-# # lint
-# RUN pip install --upgrade pip
-# RUN pip install flake8==3.9.2
-# COPY . .
-# RUN flake8 --ignore=E501,F401 .
-
 # install dependencies
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/dj_dastore/wheels -r requirements.txt
 RUN pip install opencv-python-headless
-RUN pip install python-decouple
-
-
 #########
 # FINAL #
 #########
@@ -39,13 +30,17 @@ RUN pip install python-decouple
 # pull official base image
 FROM python:3.10
 
+# install apache and mod_wsgi
+RUN apt-get update && apt-get install -y \
+    apache2 \
+    libapache2-mod-wsgi-py3 \
+    && rm -rf /var/lib/apt/lists/*
+
 # create directory for the app user
 RUN mkdir -p /home/dj_dastore
 
 # create the app user
 RUN addgroup --gid 1000 dj_dastore && adduser --uid 1000 --gid 1000 --disabled-password --gecos '' dj_dastore
-#RUN addgroup --gid 1001 dj_dastore && adduser --uid 1001 --gid 1001 --disabled-password --gecos '' dj_dastore
-
 
 # create the appropriate directories
 ENV HOME=/home/dj_dastore
@@ -56,39 +51,57 @@ RUN mkdir $APP_HOME/media_cdn
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apt-get update && \
-    apt-get install -y libpq-dev \
-    && apt-get install -y netcat-openbsd \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libpq-dev netcat-openbsd && rm -rf /var/lib/apt/lists/*
+RUN pip install virtualenv
+RUN python3 -m venv /home/dj_dastore/web/venv
 
-# Copy wheel files and requirements.txt from builder stage
+# Use the virtual environment
+ENV PATH="/home/dj_dastore/web/venv/bin:$PATH"
+#ENV PYTHONPATH="/home/dj_dastore/web/venv/lib/python3.10/site-packages:${PYTHONPATH}"
+
+# Install application requirements
 COPY --from=builder /usr/src/dj_dastore/wheels /wheels
 COPY --from=builder /usr/src/dj_dastore/requirements.txt .
 
-# Install application requirements
-# TODO: find a way to be less repetitive
-RUN pip install --no-cache /wheels/*
-RUN pip install opencv-python-headless
-RUN pip install python-decouple
+# Activate the virtualenv and install dependencies into the virtualenv
+RUN . /home/dj_dastore/web/venv/bin/activate && \
+    pip install --no-cache /wheels/* && \
+    pip install opencv-python-headless && \
+    pip uninstall decouple && pip install python-decouple && \
+    pip freeze
 
+# install python-decouple outside the virtual environment
+RUN pip install python-decouple
 
 # copy entrypoint.prod.sh
 COPY ./entrypoint.prod.sh .
 RUN sed -i 's/\r$//g'  $APP_HOME/entrypoint.prod.sh
 RUN chmod +x  $APP_HOME/entrypoint.prod.sh
-
-
 # copy project
 COPY . $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R dj_dastore:dj_dastore $APP_HOME
 
-# change to the app user
-USER dj_dastore
+RUN chown -R dj_dastore:dj_dastore /var/log/apache2
 
-# # Collect static files
-# RUN python manage.py collectstatic --noinput
+RUN chown -R dj_dastore:dj_dastore /var/run/apache2/
+
+# Enable the mod_wsgi module
+RUN a2enmod wsgi
+
+# Remove the default Apache site
+RUN a2dissite 000-default
+
+# Add our Apache site
+COPY ./apache_django.conf /etc/apache2/sites-available/
+RUN a2ensite apache_django
+
+RUN echo "ServerName localhost" | tee /etc/apache2/conf-available/fqdn.conf && a2enconf fqdn
+# change to the app user
+#USER dj_dastore
 
 # run entrypoint.prod.sh
 ENTRYPOINT ["/home/dj_dastore/web/entrypoint.prod.sh"]
+
+CMD tail -f /var/log/apache2/error.log

@@ -5,20 +5,20 @@ services:
     build: 
       context: ./
       dockerfile: Dockerfile.prod
-        #command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000
-    command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000 --log-level debug
-      #user: '1000:1000'
+    command: ["apache2ctl", "-D", "FOREGROUND"]
     ports:
-      - 8000:8000
+      - 80:80
     volumes:
       - /mnt/nfs/dj_dastore/static_cdn:/home/dj_dastore/web/static_cdn
       - /mnt/nfs/dj_dastore/media_cdn:/home/dj_dastore/web/media_cdn
+      - ./apache_django.conf:/etc/apache2/sites-available/000-default.conf
     env_file:
       - ./.env.prod
     depends_on:
       - db1_prod
     environment:
       DJANGO_SETTINGS_MODULE: dj_dastore.settings.production
+      RUN_ENVIRONMENT: ${RUN_ENVIRONMENT}
   db1_prod:
     image: postgres:13.0-alpine
     volumes:

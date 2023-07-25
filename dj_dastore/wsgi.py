@@ -8,6 +8,14 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 """
 
 import os
+import sys
+print("sys.executable")
+print(sys.executable)
+
+import site
+print("site.getsitepackages()")
+print(site.getsitepackages())
+
 
 from decouple import config
 from django.core.wsgi import get_wsgi_application
