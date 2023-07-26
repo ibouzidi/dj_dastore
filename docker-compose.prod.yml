@@ -18,7 +18,7 @@ services:
       - db1_prod
     environment:
       DJANGO_SETTINGS_MODULE: dj_dastore.settings.production
-      RUN_ENVIRONMENT: ${RUN_ENVIRONMENT}
+#      RUN_ENVIRONMENT: ${RUN_ENVIRONMENT}
   db1_prod:
     image: postgres:13.0-alpine
     volumes:
