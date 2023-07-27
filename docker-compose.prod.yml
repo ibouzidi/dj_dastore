@@ -8,21 +8,55 @@ services:
         #command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000
     command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000 --log-level debug
       #user: '1000:1000'
-    ports:
-      - 8000:8000
     volumes:
       - /mnt/nfs/dj_dastore/static_cdn:/home/dj_dastore/web/static_cdn
       - /mnt/nfs/dj_dastore/media_cdn:/home/dj_dastore/web/media_cdn
+    expose:
+      - 8000
     env_file:
       - ./.env.prod
     depends_on:
       - db1_prod
     environment:
       DJANGO_SETTINGS_MODULE: dj_dastore.settings.production
+        #  nginx-proxy:
+        #    container_name: nginx-proxy
+        #    build: nginx
+        #    restart: always
+        #    ports:
+        #      - 443:443
+        #      - 80:80
+        #    volumes:
+        #      - static_cdn:/home/dj_dastore/web/static_cdn
+        #      - media_cdn:/home/dj_dastore/web/media_cdn
+        #      - /home/topaze/certs:/etc/nginx/certs
+        #    depends_on:
+        #      - web
+  nginx:
+      build: ./nginx
+      restart: always
+      volumes:
+        - static_cdn:/home/dj_dastore/web/static_cdn
+        - media_cdn:/home/dj_dastore/web/media_cdn
+        - /home/topaze/certs:/etc/nginx/certs
+      ports:
+        - 80:80
+        - 443:443
+      depends_on:
+        - web
   db1_prod:
     image: postgres:13.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./.env.prod.db
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    ports:
+      - 5050:80
+    depends_on:
+      - db1_prod
     env_file:
       - ./.env.prod.db
   autopgbackup:
@@ -48,4 +82,6 @@ services:
     environment:
       - STRIPE_DEVICE_NAME=djstripe_docker
 volumes:
+  media_cdn:
+  static_cdn:
   postgres_data:
