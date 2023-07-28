@@ -70,7 +70,7 @@ COPY --from=builder /usr/src/dj_dastore/requirements.txt .
 RUN pip install --no-cache /wheels/*
 RUN pip install opencv-python-headless
 RUN pip install python-decouple
-
+RUN pip install django-csp
 
 # copy entrypoint.prod.sh
 COPY ./entrypoint.prod.sh .

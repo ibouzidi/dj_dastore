@@ -9,8 +9,8 @@ services:
     command: gunicorn dj_dastore.wsgi:application --bind 0.0.0.0:8000 --log-level debug
       #user: '1000:1000'
     volumes:
-      - /mnt/nfs/dj_dastore/static_cdn:/home/dj_dastore/web/static_cdn
-      - /mnt/nfs/dj_dastore/media_cdn:/home/dj_dastore/web/media_cdn
+      - /mnt/nfs/static_cdn:/home/dj_dastore/web/static_cdn
+      - /mnt/nfs/media_cdn:/home/dj_dastore/web/media_cdn
     expose:
       - 8000
     env_file:
@@ -19,19 +19,6 @@ services:
       - db1_prod
     environment:
       DJANGO_SETTINGS_MODULE: dj_dastore.settings.production
-        #  nginx-proxy:
-        #    container_name: nginx-proxy
-        #    build: nginx
-        #    restart: always
-        #    ports:
-        #      - 443:443
-        #      - 80:80
-        #    volumes:
-        #      - static_cdn:/home/dj_dastore/web/static_cdn
-        #      - media_cdn:/home/dj_dastore/web/media_cdn
-        #      - /home/topaze/certs:/etc/nginx/certs
-        #    depends_on:
-        #      - web
   nginx:
       build: ./nginx
       restart: always
