@@ -110,7 +110,7 @@ CSP_FONT_SRC = (
     "'self'",
     "https://cdnjs.cloudflare.com",
     "https://fonts.gstatic.com",
-    # Add other font sources...
+    "https://cdnjs.cloudflare.com",
 )
 CSP_OBJECT_SRC = ("'none'",)
 CSP_BASE_URI = ("'self'", )
