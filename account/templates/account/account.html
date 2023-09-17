@@ -148,7 +148,7 @@
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
                                         <label for="username">Username</label>
-                                        <input name="username" class="form-control" id="username" type="text"
+                                        <input name="username" class="form-control" id="username" type="username" pattern="[A-Za-z0-9]+" title="Username must contain only letters and numbers"
                                                placeholder="Username" value="{{ form.initial.username }}" readonly>
                                         {% if form.username.errors %}
                                             <span style="color: red;margin: 0">
