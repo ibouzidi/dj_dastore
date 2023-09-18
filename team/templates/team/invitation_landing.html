@@ -25,11 +25,13 @@
     <div class="d-flex justify-content-center">
         <div class="mb-4 mb-lg-0 bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
             <div class="text-center text-md-center mb-4 mt-md-0">
-                <h1 class="mb-0 h3">Invitation to Join Team</h1>
-                <p>You have been invited by <strong><u>{{ invitation.sender.email }}</u></strong> to join the team: <strong><u>{{ invitation.team.team_name }}</u></strong></p>
+                <h1 class="mb-0 h3">{% trans "Invitation to Join Team" %}</h1>
+                {% blocktrans %}
+                    <p>You have been invited by <strong><u>{{ invitation.sender.email }}</u></strong> to join the team: <strong><u>{{ invitation.team.team_name }}</u></strong></p>
+                {% endblocktrans %}
                 <form method="post" action="{% url 'team:invitation_landing' invitation.code %}">
                     {% csrf_token %}
-                    <button type="submit" class="btn custom-button">Accept Invitation</button>
+                    <button type="submit" class="btn custom-button">{% trans "Accept Invitation" %}</button>
                 </form>
             </div>
         </div>

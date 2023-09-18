@@ -1,4 +1,5 @@
 {% extends '../sub_base.html' %}
+{% load i18n %}
 {% load static %}
 {% load breadcrumb %}
 
@@ -27,23 +28,28 @@
     <div class="row custom-content-row">
         <div class="col-sm-12">
             <div class="row custom-content-row text-center" data-aos="fade-left" data-aos-delay="100">
+                {% get_current_language as LANGUAGE_CODE %}
                 {% include 'partials/generic/div_sqare_count.html' with title=count.log_number.0 number=count.log_number.1 %}
-                {% include 'partials/chartlines/dashboard_chartline.html' with title='Last 7 days Log' chart_label=chart_label|safe chart_lengths=chart_lengths chart_datasets=chart_datasets %}
+                {% if LANGUAGE_CODE == "fr" %}
+                    {% include 'partials/chartlines/dashboard_chartline.html' with title='7 derniers jours' chart_label=chart_label|safe chart_lengths=chart_lengths chart_datasets=chart_datasets %}
+                {% else %}
+                    {% include 'partials/chartlines/dashboard_chartline.html' with title='Last 7 days Log' chart_label=chart_label|safe chart_lengths=chart_lengths chart_datasets=chart_datasets %}
+                {% endif %}
             </div>
             <div class="card">
                 <div class="card-body" data-aos="fade-left" data-aos-delay="100">
-                    <h4 class="text-center text-typo1">Last 10 Log</h4>
-                    <a href="{% url 'log:log_list' %}" class="btn mx-2 custom-button"><i class="fas fa-list"></i>All logs</a>
+                    <h4 class="text-center text-typo1">{% trans "Last 10 Log" %}</h4>
+                    <a href="{% url 'log:log_list' %}" class="btn mx-2 custom-button"><i class="fas fa-list"></i>{% trans "All logs" %}</a>
                     <div class="table-responsive">
                         <table class="table table-centered table-nowrap mb-0 rounded">
                             <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>User</th>
+                                <th>{% trans "User" %}</th>
                                 <th>Appli</th>
                                 <th>Action</th>
-                                <th>Text</th>
-                                <th>Open date</th>
+                                <th>{% trans "Text"%}</th>
+                                <th>{% trans "Open date" %}</th>
                             </tr>
                             </thead>
                             <tbody>

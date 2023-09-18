@@ -1,4 +1,5 @@
 {% extends "../sub_base.html" %}
+{% load i18n %}
 {% load static %}
 {% load breadcrumb %}
 
@@ -20,24 +21,24 @@
         </div>
     </div>
 {% endblock %}
-
+{% get_current_language as LANGUAGE_CODE %}
 {% block sub_content %}
     <div class="card-body tab-content">
-        <h6>BILLING SETTINGS</h6>
+        <h6>{% trans "BILLING SETTINGS" %}</h6>
         <hr>
         <div class="row">
             <div class="col-lg-6 mb-4">
                 <!-- Billing card 3-->
                 <div class="card h-100 border-start-lg border-start-success">
                     <div class="card-body">
-                        <div class="small text-muted">Current plan</div>
+                        <div class="small text-muted">{% trans "Current plan" %}</div>
                         <div class="h3 d-flex align-items-center">{{ request.user.get_active_subscriptions.0.plan.product.name }}</div>
-                        <div class="h5 d-flex align-items-center">Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</div>
+                        <div class="h5 d-flex align-items-center">{% trans "Valid till" %}: {{ request.user.get_active_subscriptions.0.current_period_end }}</div>
                         {#                        <a class="text-arrow-icon small text-success" href="#!">#}
                         {#                            Upgrade plan#}
                         {#                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>#}
                         {#                        </a>#}
-                        <a href="{% url 'subscriptions:customer_portal' %}" class="btn custom-button btn-lg"><i class="fa fa-credit-card"></i></i>Manage Billing</a>
+                        <a href="{% url 'subscriptions:customer_portal' %}" class="btn custom-button btn-lg"><i class="fa fa-credit-card"></i></i>{% trans "Manage Billing" %}</a>
                     </div>
                 </div>
             </div>
@@ -45,31 +46,37 @@
                 <!-- Billing card 2-->
                 <div class="card h-100 border-start-lg border-start-secondary">
                     <div class="card-body">
-                        <div class="small text-muted">Current monthly bill</div>
-                        <div class="h3">${{ request.user.get_active_subscriptions.0.plan.amount}}</div>
-                        <div class="small text-muted">Next payment due</div>
+                        <div class="small text-muted">{% trans "Current monthly bill" %}</div>
+                        <div class="h3">
+                            {% if LANGUAGE_CODE == "fr" %}
+                                {{ request.user.get_active_subscriptions.0.plan.amount}}€
+                            {% else %}
+                                ${{ request.user.get_active_subscriptions.0.plan.amount}}
+                            {% endif %}
+                        </div>
+                        <div class="small text-muted">{% trans "Next payment due" %}</div>
                         <div class="h3">{{ request.user.get_active_subscriptions.0.current_period_end.date }}</div>
                         {#                        <a class="text-arrow-icon small text-secondary" href="#!">#}
                         {#                            View payment history#}
                         {#                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>#}
                         {#                        </a>#}
-{#                        {% if request.user.get_active_subscriptions %}#}
-{#                            {% if subscription.cancel_at_period_end %}#}
-{#                                <p>Subscription is set to be canceled at the end of the billing period.</p>#}
-{#                            {% else %}#}
-{#                                <a href="{% url 'subscriptions:CancelSubscriptionView' %}" class="btn btn-outline-danger my-2" id="cancel_subscription">#}
-{#                                    Cancel subscription#}
-{#                                </a>#}
-{#                            {% endif %}#}
-{#                        {% else %}#}
-{#                            <p>No active subscriptions found.</p>#}
-{#                        {% endif %}#}
+                        {#                        {% if request.user.get_active_subscriptions %}#}
+                        {#                            {% if subscription.cancel_at_period_end %}#}
+                        {#                                <p>Subscription is set to be canceled at the end of the billing period.</p>#}
+                        {#                            {% else %}#}
+                        {#                                <a href="{% url 'subscriptions:CancelSubscriptionView' %}" class="btn btn-outline-danger my-2" id="cancel_subscription">#}
+                        {#                                    Cancel subscription#}
+                        {#                                </a>#}
+                        {#                            {% endif %}#}
+                        {#                        {% else %}#}
+                        {#                            <p>No active subscriptions found.</p>#}
+                        {#                        {% endif %}#}
                     </div>
                 </div>
             </div>
             <!-- Billing history card-->
             <div class="card mb-4">
-                <div class="card-header">Billing History</div>
+                <div class="card-header">{% trans "Billing History" %}</div>
                 <div class="card-body p-0">
                     <!-- Billing history table-->
                     <div class="table-responsive table-billing-history">
@@ -77,12 +84,12 @@
                             <thead>
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col">Transaction Id</th>
-                                <th scope="col">Customer</th>
+                                <th scope="col">{% trans "Transaction Id" %}</th>
+                                <th scope="col">{% trans "Customer" %}</th>
                                 {#                                <th scope="col">Billing Period</th>#}
-                                <th scope="col">Amount</th>
-                                <th scope="col">Paid At</th>
-                                <th scope="col">Status</th>
+                                <th scope="col">{% trans "Amount" %}</th>
+                                <th scope="col">{% trans "Paid At" %}</th>
+                                <th scope="col">{% trans "Status" %}</th>
                                 <th scope="col"></th>
                             </tr>
                             </thead>
@@ -107,7 +114,7 @@
                                     </td>
                                     <td>
                                         <a href="{{ invoice.invoice_pdf }}" class="custom-button btn-sm" target="_blank">
-                                            <i class="fa fa-download"></i>Download
+                                            <i class="fa fa-download"></i>{% trans "Download" %}
                                         </a>
                                     </td>
                                 </tr>
@@ -141,11 +148,11 @@
         {#        window.location.href = "{% url 'subscriptions:CancelSubscriptionView' %}";#}
         {#    });#}
         {#});#}
-        const dateCols = document.querySelectorAll(".table .date-col");
-        dateCols.forEach(col => {
-            const timestamp = col.innerText;
-            const date = new Date(Number(timestamp) * 1000);
-            col.innerText = `${date.toLocaleString()}`
-        })
+            const dateCols = document.querySelectorAll(".table .date-col");
+            dateCols.forEach(col => {
+                const timestamp = col.innerText;
+                const date = new Date(Number(timestamp) * 1000);
+                col.innerText = `${date.toLocaleString()}`
+            })
     </script>
 {% endblock %}

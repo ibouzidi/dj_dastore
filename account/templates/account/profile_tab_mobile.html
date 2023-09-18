@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load static %}
 
 <style>
@@ -44,7 +45,7 @@
             <a href="{% url 'team:membership_detail' %}"
                class="nav-link has-icon" data-id="membership_detail">
                 {% include 'partials/icons/icon_slack.html' %}
-                Membership
+                {% trans "Membership" %}
             </a>
         {% endif %}
     </li>

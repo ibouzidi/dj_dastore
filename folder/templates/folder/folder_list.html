@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load static %}
 {% load breadcrumb %}
 
-{% block title %} Backup {% endblock title %}
+{% block title %} {% trans "Backup" %} {% endblock title %}
 
 {% block breadcrumbs %}
     <div class="breadcrumb-container">
@@ -50,13 +51,13 @@
                 <div class="card-body sticky">
                     <div class="d-flex flex-column align-items-start">
                         <div class="nav flex-column nav-pills nav-gap-y-1">
-                            <a href="#" class="nav-link action-btn my-2 add-folder-button" title="Add Folder">
+                            <a href="#" class="nav-link action-btn my-2 add-folder-button" title="{% trans "Add Folder" %}">
                                 <i class="material-symbols-outlined">create_new_folder</i>
                             </a>
-                            <a href="#" class="nav-link action-btn my-2 add-file-button" title="Upload">
+                            <a href="#" class="nav-link action-btn my-2 add-file-button" title="{% trans "Upload" %}">
                                 <i class="material-symbols-outlined">cloud_upload</i>
                             </a>
-                            <a id="download_selected" class="nav-link action-btn my-2" title="Download Selected">
+                            <a id="download_selected" class="nav-link action-btn my-2" title="{% trans "Download Selected" %}">
                                 <i class="material-symbols-outlined">cloud_download</i>
                             </a>
                         </div>
@@ -66,13 +67,13 @@
         </div>
         <div class="card-header border-bottom mb-3 d-flex d-md-none sticky-mobile out-container" data-aos="fade-right" data-aos-delay="300">
             <div class="nav nav-pills card-header-tabs nav-gap-x-1" role="tablist">
-                <a href="#" class="nav-link action-btn mx-2 add-folder-button" title="Add Folder">
+                <a href="#" class="nav-link action-btn mx-2 add-folder-button" title="{% trans "Add Folder" %}">
                     <i class="material-symbols-outlined">create_new_folder</i>
                 </a>
-                <a href="#" class="nav-link action-btn mx-2 add-file-button" title="Upload">
+                <a href="#" class="nav-link action-btn mx-2 add-file-button" title="{% trans "Upload" %}">
                     <i class="material-symbols-outlined">cloud_upload</i>
                 </a>
-                <a id="download_selected_mobile" class="nav-link action-btn mx-2" title="Download Selected">
+                <a id="download_selected_mobile" class="nav-link action-btn mx-2" title="{% trans "Download Selected" %}">
                     <i class="material-symbols-outlined">cloud_download</i>
                 </a>
             </div>
@@ -88,12 +89,12 @@
                         <label class="form-check-label mx-2" for="selectAllCheckboxes">
 
                         </label>
-                        <button id="delete_selected" class="btn btn-danger" title="Delete Selected"><i class="icofont-delete-alt"> Delete All</i></button>
+                        <button id="delete_selected" class="btn btn-danger" title="Delete Selected"><i class="icofont-delete-alt"> {% trans "Delete All" %}</i></button>
                     </div>
                     <!-- Custom Folder List -->
                     <div class="row " id="folderContainer">
                         {% if folder_list|length > 0 %}
-                            <p>Custom Folder</p>
+                            <p>{% trans "Custom Folder" %}</p>
                         {% endif %}
                         {% for custom_folder in custom_folder_list %}
                             <div class="col-6 col-md-4 col-lg-2 mb-3">
@@ -111,11 +112,11 @@
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-left position-absolute" aria-labelledby="dropdownMenuButton">
                                         <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'folder:delete_folder_view' folder_id=custom_folder.pk %}">
-                                            <span class="fas fa-trash-alt mr-2"></span>Delete
+                                            <span class="fas fa-trash-alt mr-2"></span>{% trans "Delete" %}
                                         </a>
                                         <a href="#" class="dropdown-item rename-custom-folder"
                                            data-folder-id="{{ custom_folder.pk }}" data-form-url="{% url 'folder:folder_rename' pk=custom_folder.pk %}">
-                                            <span class="fas fa-edit mr-2"></span>Rename
+                                            <span class="fas fa-edit mr-2"></span>{% trans "Rename" %}
                                         </a>
                                     </div>
                                     <button class="btn btn-link dropdown-toggle position-absolute" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -128,7 +129,7 @@
                     <!-- File List -->
                     <div class="row" id="folderContainer">
                         {% if file_list|length > 0 %}
-                            <p>Your Backup</p>
+                            <p>{% trans "Your Backup" %}</p>
                         {% endif %}
 
                         {% for backup in backup_list %}
@@ -156,26 +157,26 @@
                                     <div class="dropdown-menu dropdown-menu-left position-absolute"aria-labelledby="dropdownMenuButton" id="menu-{{ backup.0 }}">
                                         <a class="dropdown-item" href="{% url 'extbackup:download_zip_file' backup.0  %}"><span class="fas fa-download mr-2"></span>Download</a>
                                         <a class="dropdown-item text-info check-hash" href="#" data-file-id="{{ backup.0 }}" data-url="{% url 'extbackup:check_file_hashes' file_id=backup.0 %}">
-                                            <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>Check Integrity
+                                            <span class="material-symbols-outlined mr-2" style="line-height: 1;">plagiarism</span>{% trans "Check Integrity" %}
                                         </a>
                                         <a href="#" class="dropdown-item show-file-info" data-file-id="{{ backup.0 }}">
-                                            <span class="fas fa-info-circle mr-2"></span>Detail
+                                            <span class="fas fa-info-circle mr-2"></span>{% trans "Detail" %}
                                         </a>
                                         <a href="#" class="dropdown-item delete-backup-folder" data-form-url="{% url 'extbackup:delete_file_view' file_id=backup.0 %}">
-                                            <span class="fas fa-trash-alt mr-2"></span>Delete
+                                            <span class="fas fa-trash-alt mr-2"></span>{% trans "Delete" %}
                                         </a>
                                     </div>
                                     <div id="detail-backup" class="d-none">
                                         <div class="row">
-                                            <div class="col-4 font-weight-bold">Name:</div>
+                                            <div class="col-4 font-weight-bold">{% trans "Name" %}:</div>
                                             <div class="col-8"><span id="file-name-{{ backup.1 }}">{{ backup.1 }}</span></div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-4 font-weight-bold">Description:</div>
+                                            <div class="col-4 font-weight-bold">{% trans "Description" %}:</div>
                                             <div class="col-8">
                                                 <span id="file-description-{{ backup.2 }}">
                                                     {% if backup.2|default_if_none:"" == "" %}
-                                                        No description for this Backup.
+                                                        {% trans "No description for this Backup." %}
                                                     {% else %}
                                                         {{ backup.2 }}
                                                     {% endif %}
@@ -183,7 +184,7 @@
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-4 font-weight-bold">Size:</div>
+                                            <div class="col-4 font-weight-bold">{% trans "Size" %}:</div>
                                             <div class="col-8"><span id="file-size-{{ backup.4 }}">{{ backup.4|sizify }}</span></div>
                                         </div>
                                     </div>
@@ -197,7 +198,7 @@
                     </div>
                 </form>
             {% else %}
-                <p class="text-center mt-5">This folder is empty.</p>
+                <p class="text-center mt-5">{% trans "This folder is empty." %}</p>
             {% endif %}
         </div>
     </div>

@@ -1,5 +1,19 @@
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.utils import translation
+
+
+def set_language(request):
+    user_language = request.POST.get('language')
+    next_url = request.POST.get('next', '/')  # Fallback to root if 'next' is not provided
+
+    if user_language:
+        translation.activate(user_language)
+        request.session[translation.LANGUAGE_SESSION_KEY] = user_language
+        request.session.modified = True
+
+    return HttpResponseRedirect(next_url)
 
 
 def home_screen_view(request):

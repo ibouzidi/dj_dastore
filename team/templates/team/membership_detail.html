@@ -26,20 +26,20 @@
 {% block sub_content %}
 
     <div class="card-body tab-content">
-        <h6>My Teams</h6>
+        <h6>{% trans "My Team" %}</h6>
         <hr>
         <div id="teamDetail" data-aos="fade-left" data-aos-delay="200">
             <div class="card-body tab-content">
                 {% for membership in memberships %}
-                    <h6>You're a member of Team: {{ membership.team.team_name }}</h6>
+                    <h6>{% trans "You're a member of Team:" %} {{ membership.team.team_name }}</h6>
                     <hr>
-                    <h6>Members :</h6>
+                    <h6>{% trans "Members :" %}</h6>
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Role</th>
+                                <th>{% trans "Username" %}</th>
+                                <th>{% trans "Email" %}</th>
+                                <th>{% trans "Role" %}</th>
                             </tr>
                             {% for member in membership.team.memberships.all %}
                                 <tr>
@@ -59,7 +59,7 @@
                         </table>
                     </div>
                 {% empty %}
-                    <p>You are not a member of any teams.</p>
+                    <p>{% trans "You are not a member of any teams." %}</p>
                 {% endfor %}
             </div>
         </div>

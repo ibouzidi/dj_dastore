@@ -1,0 +1,992 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-09-18 11:36+0200\n"
+"PO-Revision-Date: 2023-09-18 11:40+0000\n"
+"Last-Translator: Gisela Vangjeffeazefefefef <lucas42@gmail.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Translated-Using: django-rosetta 0.9.9\n"
+
+#: .\account\templates\account\account.html:42
+msgid "EDIT YOUR PROFILE INFORMATION"
+msgstr "MODIFIER LES INFORMATIONS DE VOTRE PROFIL"
+
+#: .\account\templates\account\account.html:54
+#: .\account\templates\two_factor\_wizard_actions.html:8
+msgid "Cancel"
+msgstr "Annuler"
+
+#: .\account\templates\account\account.html:55
+msgid "Validate"
+msgstr "Valider"
+
+#: .\account\templates\account\account.html:78
+msgid "JPG or PNG. Max size of 10 MB."
+msgstr "JPG ou PNG. Taille maximale de 10 Mo."
+
+#: .\account\templates\account\account.html:84
+#: .\account\templates\account\account_billing.html:36
+msgid "Valid till"
+msgstr "Valable jusqu'à"
+
+#: .\account\templates\account\account.html:86
+msgid "Member of team"
+msgstr "Membre de l'équipe"
+
+#: .\account\templates\account\account.html:88
+msgid "No active subscription"
+msgstr "Aucun abonnement actif"
+
+#: .\account\templates\account\account.html:98
+msgid "Storage information"
+msgstr "Information sur le stockage"
+
+#: .\account\templates\account\account.html:106
+msgid "Profile information"
+msgstr "Informations de profil"
+
+#: .\account\templates\account\account.html:110
+msgid "First Name"
+msgstr "Prénom"
+
+#: .\account\templates\account\account.html:112
+msgid "Enter your first name"
+msgstr "Saisissez votre prénom"
+
+#: .\account\templates\account\account.html:123
+msgid "Last Name"
+msgstr "Nom de famille"
+
+#: .\account\templates\account\account.html:125
+msgid "Also your last name"
+msgstr "Saisissez votre nom de famille"
+
+#: .\account\templates\account\account.html:138
+#: .\account\templates\account\send_invitation.html:8
+#: .\team\templates\team\detail_team.html:82
+#: .\team\templates\team\detail_team.html:137
+#: .\team\templates\team\membership_detail.html:41
+msgid "Email"
+msgstr "E-mail"
+
+#: .\account\templates\account\account.html:150
+#: .\team\templates\team\detail_team.html:81
+#: .\team\templates\team\membership_detail.html:40
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+#: .\account\templates\account\account.html:162
+msgid "Phone"
+msgstr "Téléphone"
+
+#: .\account\templates\account\account.html:177
+msgid "Address"
+msgstr "Adresse"
+
+#: .\account\templates\account\account.html:179
+msgid "Enter your home address"
+msgstr "Saisissez votre adresse"
+
+#: .\account\templates\account\account.html:189
+msgid "Number"
+msgstr "Numéro"
+
+#: .\account\templates\account\account.html:203
+#: .\account\templates\account\account.html:204
+msgid "City"
+msgstr "Ville"
+
+#: .\account\templates\account\account.html:215
+#: .\account\templates\account\account.html:216
+msgid "ZIP"
+msgstr "Code Postale"
+
+#: .\account\templates\account\account.html:227
+msgid "Update Detail"
+msgstr "Enregistrer profil"
+
+#: .\account\templates\account\account_billing.html:27
+msgid "BILLING SETTINGS"
+msgstr "PARAMÈTRES DE FACTURATION"
+
+#: .\account\templates\account\account_billing.html:34
+msgid "Current plan"
+msgstr "Plan actuel"
+
+#: .\account\templates\account\account_billing.html:41
+msgid "Manage Billing"
+msgstr "Gestion d'abonnement"
+
+#: .\account\templates\account\account_billing.html:49
+msgid "Current monthly bill"
+msgstr "Facture mensuelle actuelle"
+
+#: .\account\templates\account\account_billing.html:57
+msgid "Next payment due"
+msgstr "Prochaine échéance"
+
+#: .\account\templates\account\account_billing.html:79
+msgid "Billing History"
+msgstr "Historique des factures"
+
+#: .\account\templates\account\account_billing.html:87
+msgid "Transaction Id"
+msgstr "Id de transaction"
+
+#: .\account\templates\account\account_billing.html:88
+msgid "Customer"
+msgstr "Client"
+
+#: .\account\templates\account\account_billing.html:90
+msgid "Amount"
+msgstr "Montant"
+
+#: .\account\templates\account\account_billing.html:91
+msgid "Paid At"
+msgstr "Payé le"
+
+#: .\account\templates\account\account_billing.html:92
+#: .\team\templates\team\detail_team.html:138
+msgid "Status"
+msgstr "Status"
+
+#: .\account\templates\account\account_billing.html:117
+msgid "Download"
+msgstr "Télécharger"
+
+#: .\account\templates\account\account_security.html:28
+msgid "SECURITY SETTINGS"
+msgstr "PARAMÈTRES DE SÉCURITÉ"
+
+#: .\account\templates\account\account_security.html:34
+#: .\account\templates\two_factor\core\setup_complete.html:34
+msgid ""
+"Congratulations, you've successfully enabled two-factor authentication."
+msgstr ""
+"Félicitations, vous avez activé avec succès l'authentification à deux "
+"facteurs."
+
+#: .\account\templates\account\account_security.html:36
+#: .\account\templates\two_factor\profile\profile.html:75
+msgid ""
+"However we strongly discourage you to do so, you can also disable two-factor"
+" authentication for your account."
+msgstr ""
+"Bien que nous vous déconseillions fortement de le faire, vous pouvez "
+"également désactiver l'authentification à deux facteurs l'authentification à"
+" deux facteurs pour votre compte."
+
+#: .\account\templates\account\account_security.html:41
+#: .\account\templates\two_factor\profile\profile.html:74
+#: .\account\templates\two_factor\profile\profile.html:78
+msgid "Disable Two-Factor Authentication"
+msgstr "Désactiver l'authentification à deux facteurs"
+
+#: .\account\templates\account\account_security.html:43
+#: .\account\templates\two_factor\core\backup_tokens.html:56
+#: .\account\templates\two_factor\core\setup_complete.html:41
+#: .\account\templates\two_factor\core\setup_complete.html:48
+#: .\account\templates\two_factor\profile\disable.html:57
+msgid "Back to Account Security"
+msgstr "Retour à Sécurité du compte"
+
+#: .\account\templates\account\account_security.html:46
+#: .\account\templates\two_factor\core\otp_required.html:11
+#: .\account\templates\two_factor\profile\profile.html:80
+msgid ""
+"Two-factor authentication is not enabled for your account. Enable two-factor"
+" authentication for enhanced account security."
+msgstr ""
+"L'authentification à deux facteurs n'est pas activée pour votre compte. "
+"Activez l'authentification à deux facteurs l'authentification à deux "
+"facteurs pour améliorer la sécurité de votre compte."
+
+#: .\account\templates\account\account_security.html:50
+#: .\account\templates\two_factor\core\otp_required.html:18
+#: .\account\templates\two_factor\core\setup.html:38
+#: .\account\templates\two_factor\profile\profile.html:84
+msgid "Enable Two-Factor Authentication"
+msgstr "Activer l'authentification à deux facteurs"
+
+#: .\account\templates\account\account_security.html:53
+msgid ""
+"Two-factor authentication adds an additional layer of security to your "
+"account by requiring more than just a password to log in."
+msgstr ""
+"L'authentification à deux facteurs ajoute une couche supplémentaire de "
+"sécurité à votre compte en exigeant plus qu'un simple mot de passe pour se "
+"connecter...."
+
+#: .\account\templates\account\account_storage_stat.html:28
+msgid "STORAGE STATISTICS"
+msgstr "STATISTIQUES DE STOCKAGE"
+
+#: .\account\templates\account\account_storage_stat.html:33
+msgid "File number"
+msgstr "Nombre de fichier"
+
+#: .\account\templates\account\account_storage_stat.html:39
+msgid "Folder number"
+msgstr "Nombre de dossier"
+
+#: .\account\templates\account\account_storage_stat.html:45
+msgid "File size Total"
+msgstr "Total de fichiers"
+
+#: .\account\templates\account\login.html:9
+msgid "Back to homepage"
+msgstr "Retour à l'accueil"
+
+#: .\account\templates\account\login.html:14
+msgid "Sign in to our platform"
+msgstr "S'inscrire à notre plateforme"
+
+#: .\account\templates\account\login.html:33
+#: .\account\templates\account\password_change.html:12
+#: .\account\templates\account\password_change.html:22
+#: .\account\templates\account\password_change.html:32
+#: .\account\templates\account\register.html:101
+#: .\templates\password_reset\password_reset_confirm.html:23
+msgid "Password"
+msgstr "Mot de passe"
+
+#: .\account\templates\account\login.html:41
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+#: .\account\templates\account\login.html:44
+msgid "Lost password?"
+msgstr "Mot de passe oublié ?"
+
+#: .\account\templates\account\login.html:78
+msgid "Not registered?"
+msgstr "Pas encore inscrit ?"
+
+#: .\account\templates\account\login.html:79
+#: .\account\templates\two_factor\core\login.html:72
+msgid "Create account"
+msgstr "Créer un compte"
+
+#: .\account\templates\account\password_change.html:4
+msgid "Change Password"
+msgstr "Changer de mot de passe"
+
+#: .\account\templates\account\password_change.html:9
+msgid "Old Password"
+msgstr "Ancien mot de passe"
+
+#: .\account\templates\account\password_change.html:19
+msgid "New Password"
+msgstr "Nouveau mot de passe"
+
+#: .\account\templates\account\password_change.html:29
+msgid "New Password Confirmation"
+msgstr "Nouveau mot de passe de confirmation"
+
+#: .\account\templates\account\password_change.html:36
+msgid "Change password"
+msgstr "Changer le mot de passe"
+
+#: .\account\templates\account\profile_tab.html:8
+#: .\templates\snippets\header.html:46
+msgid "Settings"
+msgstr "Paramètres"
+
+#: .\account\templates\account\profile_tab.html:13
+msgid "Security"
+msgstr "Sécurité"
+
+#: .\account\templates\account\profile_tab.html:19
+msgid "Statistics"
+msgstr "Statistiques"
+
+#: .\account\templates\account\profile_tab.html:24
+msgid "Billing"
+msgstr "Facturation"
+
+#: .\account\templates\account\profile_tab.html:32
+msgid "Teams"
+msgstr "Équipe"
+
+#: .\account\templates\account\profile_tab.html:39
+#: .\account\templates\account\profile_tab_mobile.html:48
+msgid "Membership"
+msgstr "Adhésion"
+
+#: .\account\templates\account\register.html:33
+msgid "Plan choosen"
+msgstr "Plan choisi"
+
+#: .\account\templates\account\register.html:56
+#: .\subscriptions\templates\subscriptions\plan_list.html:71
+msgid "month"
+msgstr "mois"
+
+#: .\account\templates\account\register.html:75
+msgid "Create an account"
+msgstr "Créer un compte"
+
+#: .\account\templates\account\register.html:81
+#: .\templates\password_reset\password_reset.html:18
+msgid "Your Email"
+msgstr "Votre E-mail"
+
+#: .\account\templates\account\register.html:88
+msgid "Your Username"
+msgstr "Votre nom d'utilisateur"
+
+#: .\account\templates\account\register.html:98
+msgid "Your Password"
+msgstr "Votre mot de passe"
+
+#: .\account\templates\account\register.html:107
+msgid "Confirm Password"
+msgstr "Confirmer le mot de passe"
+
+#: .\account\templates\account\register.html:117
+msgid "I agree to the"
+msgstr "J'accepte les"
+
+#: .\account\templates\account\register.html:117
+msgid "terms and conditions"
+msgstr "conditions générales"
+
+#: .\account\templates\account\register.html:122
+msgid "Sign in"
+msgstr "S'inscrire"
+
+#: .\account\templates\account\register.html:152
+msgid "Already have an account?"
+msgstr "Vous avez déjà un compte ?"
+
+#: .\account\templates\account\register.html:153
+msgid "Login here"
+msgstr "Se connecter ici"
+
+#: .\account\templates\account\send_invitation.html:5
+msgid "Send an invitation"
+msgstr "Envoyer une invitation"
+
+#: .\account\templates\account\send_invitation.html:10
+msgid "Submit"
+msgstr "Envoyer"
+
+#: .\account\templates\two_factor\_wizard_actions.html:4
+msgid "Login Now"
+msgstr "Se connecter maintenant"
+
+#: .\account\templates\two_factor\_wizard_actions.html:14
+#: .\account\templates\two_factor\_wizard_actions.html:18
+msgid "Back"
+msgstr "Retour"
+
+#: .\account\templates\two_factor\_wizard_actions.html:21
+msgid "Next"
+msgstr "Suivant"
+
+#: .\account\templates\two_factor\core\backup_tokens.html:34
+#: .\account\templates\two_factor\profile\profile.html:62
+msgid "Backup Tokens"
+msgstr "Jetons de secours"
+
+#: .\account\templates\two_factor\core\backup_tokens.html:37
+msgid ""
+"Backup tokens can be used when your primary and backup phone numbers aren't "
+"available. The backup tokens below can be used for login verification. If "
+"you've used up all your backup tokens, you can generate a new set of backup "
+"tokens. Only the backup tokens shown below will be valid."
+msgstr ""
+"Les jetons de sauvegarde peuvent être utilisés lorsque vos numéros de "
+"téléphone principal et de sauvegarde ne sont pas disponibles. Les jetons de "
+"sauvegarde ci-dessous peuvent être utilisés pour la vérification de la "
+"connexion. Si vous avez utilisé tous vos jetons de sauvegarde, vous pouvez "
+"générer un nouveau jeu de jetons de sauvegarde de sauvegarde. Seuls les "
+"jetons de sauvegarde indiqués ci-dessous seront valides."
+
+#: .\account\templates\two_factor\core\backup_tokens.html:49
+msgid "Print these tokens and keep them somewhere safe."
+msgstr "Imprimez ces jetons et conservez-les en lieu sûr."
+
+#: .\account\templates\two_factor\core\backup_tokens.html:51
+msgid "You don't have any backup codes yet."
+msgstr "Vous n'avez pas encore de codes de secours."
+
+#: .\account\templates\two_factor\core\backup_tokens.html:57
+msgid "Generate Tokens"
+msgstr "Générer des jetons"
+
+#: .\account\templates\two_factor\core\login.html:18
+msgid "Login to our platform"
+msgstr "Connexion à notre plateforme"
+
+#: .\account\templates\two_factor\core\login.html:22
+msgid "Enter your credentials."
+msgstr "Saisir vos informations d'identification."
+
+#: .\account\templates\two_factor\core\login.html:26
+msgid ""
+"Use this form for entering backup tokens for logging in. These tokens have "
+"been generated for you to print and keep safe. Please enter one of these "
+"backup tokens to login to your account."
+msgstr ""
+"Utilisez ce formulaire pour saisir des jetons de sauvegarde pour l'ouverture"
+" d'une session. Ces jetons ont ont été générés pour que vous puissiez les "
+"imprimer et les conserver. Veuillez saisir l'un de ces de sauvegarde pour "
+"vous connecter à votre compte."
+
+#: .\account\templates\two_factor\core\login.html:38
+msgid "Or, alternatively, use one of your other authentication methods:"
+msgstr ""
+"Vous pouvez également utiliser l'une de vos autres méthodes "
+"d'authentification :"
+
+#: .\account\templates\two_factor\core\login.html:57
+msgid "As a last resort, you can use a backup token:"
+msgstr "En dernier recours, vous pouvez utiliser un jeton de secours :"
+
+#: .\account\templates\two_factor\core\login.html:60
+msgid "Use Backup Token"
+msgstr "Utiliser le jeton de secours"
+
+#: .\account\templates\two_factor\core\login.html:67
+msgid "Lost password ?"
+msgstr "Mot de passe oublié ?"
+
+#: .\account\templates\two_factor\core\login.html:71
+msgid "Not registered ?"
+msgstr "Pas encore inscrit ?"
+
+#: .\account\templates\two_factor\core\otp_required.html:5
+msgid "Permission Denied"
+msgstr "Permission refusée"
+
+#: .\account\templates\two_factor\core\otp_required.html:7
+msgid ""
+"The page you requested, enforces users to verify using two-factor "
+"authentication for security reasons. You need to enable these security "
+"features in order to access this page."
+msgstr ""
+"La page que vous avez demandée oblige les utilisateurs à s'authentifier à "
+"l'aide d'une l'authentification à deux facteurs pour des raisons de "
+"sécurité. Vous devez activer ces sécurité pour pouvoir accéder à cette page."
+
+#: .\account\templates\two_factor\core\otp_required.html:16
+msgid "Go back"
+msgstr "Revenir en arrière"
+
+#: .\account\templates\two_factor\core\phone_register.html:5
+msgid "Add Backup Phone"
+msgstr "Ajout d'un téléphone de secours"
+
+#: .\account\templates\two_factor\core\phone_register.html:8
+msgid ""
+"You'll be adding a backup phone number to your account. This number will be "
+"used if your primary method of registration is not available."
+msgstr ""
+"Vous allez ajouter un numéro de téléphone de secours à votre compte. Ce "
+"numéro sera utilisé si votre méthode d'enregistrement principale n'est pas "
+"disponible."
+
+#: .\account\templates\two_factor\core\phone_register.html:12
+msgid ""
+"We've sent a token to your phone number. Please enter the token you've "
+"received."
+msgstr ""
+"Nous avons envoyé un jeton à votre numéro de téléphone. Veuillez saisir le "
+"jeton que vous avez reçu."
+
+#: .\account\templates\two_factor\core\setup.html:43
+msgid "Welcome"
+msgstr "Bienvenue"
+
+#: .\account\templates\two_factor\core\setup.html:44
+msgid ""
+"Congratulations on your decision to enhance your account security! <br><br> "
+"By enabling two-factor authentication, you're adding an extra layer of "
+"protection to safeguard your valuable data. <br><br> Two-factor "
+"authentication, often referred to as 2FA, requires not only a password and "
+"username but also something that only the user has on them, i.e., a piece of"
+" information only they should know or have immediately on hand - like a "
+"physical token. <br><br> Follow the steps in this wizard to enable two-"
+"factor authentication."
+msgstr ""
+"Félicitations pour votre décision de renforcer la sécurité de votre compte !"
+" <br><br> En activant l'authentification à deux facteurs, vous ajoutez une "
+"couche supplémentaire de protection pour protéger vos données précieuses. "
+"<br><br> L'authentification à deux facteurs, souvent appelée 2FA, nécessite "
+"non seulement un mot de passe et un nom d'utilisateur, mais aussi quelque "
+"chose que seul l'utilisateur possède, c'est-à-dire une information qu'il "
+"devrait connaître ou avoir immédiatement à portée de main, comme un jeton "
+"physique. <br><br> Suivez les étapes de ce guide pour activer "
+"l'authentification à deux facteurs."
+
+#: .\account\templates\two_factor\core\setup.html:60
+msgid "Please select which authentication method you would like to use."
+msgstr ""
+"Veuillez sélectionner la méthode d'authentification que vous souhaitez "
+"utiliser."
+
+#: .\account\templates\two_factor\core\setup.html:63
+msgid ""
+"To start using a token generator, please use your smartphone to scan the QR "
+"code below. For example, use Google Authenticator."
+msgstr ""
+"Pour commencer à utiliser un générateur de jetons, veuillez utiliser votre "
+"smartphone pour scanner le code QR ci-dessous. Par exemple, utilisez Google "
+"Authenticator."
+
+#: .\account\templates\two_factor\core\setup.html:67
+msgid ""
+"Alternatively you can use the following secret to setup TOTP in your "
+"authenticator or password manager manually."
+msgstr ""
+"Vous pouvez également utiliser le secret suivant pour configurer TOTP dans "
+"votre authentificateur ou gestionnaire de mots de passe manuellement."
+
+#: .\account\templates\two_factor\core\setup.html:69
+msgid "TOTP Secret:"
+msgstr "Secret TOTP :"
+
+#: .\account\templates\two_factor\core\setup.html:70
+msgid "Then, enter the token generated by the app."
+msgstr "Ensuite, saisissez le jeton généré par l'application."
+
+#: .\account\templates\two_factor\core\setup.html:73
+msgid ""
+"Please enter the phone number you wish to receive the text messages on. This"
+" number will be validated in the next step."
+msgstr ""
+"Veuillez entrer le numéro de téléphone sur lequel vous souhaitez recevoir "
+"les messages texte. Ce numéro sera validé à l'étape suivante."
+
+#: .\account\templates\two_factor\core\setup.html:77
+msgid ""
+"Please enter the phone number you wish to be called on. This number will be "
+"validated in the next step."
+msgstr ""
+"Veuillez entrer le numéro de téléphone sur lequel vous souhaitez être "
+"appelé. Ce numéro sera validé à l'étape suivante."
+
+#: .\account\templates\two_factor\core\setup.html:82
+msgid "We are calling your phone right now, please enter the digits you hear."
+msgstr ""
+"Nous appelons votre téléphone en ce moment, veuillez saisir les chiffres que"
+" vous entendez."
+
+#: .\account\templates\two_factor\core\setup.html:85
+msgid "We sent you a text message, please enter the tokens we sent."
+msgstr ""
+"Nous vous avons envoyé un message texte, veuillez saisir les jetons que nous"
+" avons envoyés."
+
+#: .\account\templates\two_factor\core\setup.html:89
+msgid ""
+"We've encountered an issue with the selected authentication method. Please "
+"go back and verify that you entered your information correctly, try again, "
+"or use a different authentication method instead. If the issue persists, "
+"contact the site administrator."
+msgstr ""
+"Nous avons rencontré un problème avec la méthode d'authentification "
+"sélectionnée. Veuillez revenir en arrière et vérifier que vous avez saisi "
+"correctement vos informations, réessayez ou utilisez une méthode "
+"d'authentification différente à la place. Si le problème persiste, contactez"
+" l'administrateur du site."
+
+#: .\account\templates\two_factor\core\setup.html:96
+msgid ""
+"To identify and verify your YubiKey, please insert a token in the field "
+"below. Your YubiKey will be linked to your account."
+msgstr ""
+"Pour identifier et vérifier votre YubiKey, veuillez insérer un jeton dans le"
+" champ ci-dessous. Votre YubiKey sera liée à votre compte."
+
+#: .\account\templates\two_factor\core\setup_complete.html:31
+msgid "Two-Factor Authentication Activated"
+msgstr "Authentification à deux facteurs activée"
+
+#: .\account\templates\two_factor\core\setup_complete.html:43
+msgid ""
+"However, it might happen that you don't have access to your primary token "
+"device. To enable account recovery, add a phone number."
+msgstr ""
+"Cependant, il peut arriver que vous n'ayez pas accès à votre jeton principal"
+" Pour permettre la récupération du compte, ajoutez un numéro de téléphone."
+
+#: .\account\templates\two_factor\core\setup_complete.html:50
+#: .\account\templates\two_factor\profile\profile.html:59
+msgid "Add Phone Number"
+msgstr "Ajouter un numéro de téléphone"
+
+#: .\account\templates\two_factor\profile\disable.html:35
+msgid "Disable Two-factor Authentication"
+msgstr "Désactiver l'authentification à deux facteurs"
+
+#: .\account\templates\two_factor\profile\disable.html:38
+msgid ""
+"You are about to disable two-factor authentication. This weakens your "
+"account security, are you sure?"
+msgstr ""
+"Vous êtes sur le point de désactiver l'authentification à deux facteurs. "
+"Cela affaiblit votre sécurité du compte, êtes-vous sûr ?"
+
+#: .\account\templates\two_factor\profile\disable.html:54
+msgid "Disable"
+msgstr "Désactiver"
+
+#: .\account\templates\two_factor\profile\profile.html:35
+msgid "Account Security"
+msgstr "Sécurité du compte"
+
+#: .\account\templates\two_factor\profile\profile.html:39
+#, python-format
+msgid "Primary method: %(primary)s"
+msgstr "Méthode principale: %(primary)s"
+
+#: .\account\templates\two_factor\profile\profile.html:42
+msgid "Backup Phone Numbers"
+msgstr "Numéros de téléphone de secours"
+
+#: .\account\templates\two_factor\profile\profile.html:43
+msgid ""
+"If your primary method is not available, we are able to send backup tokens "
+"to the phone numbers listed below."
+msgstr ""
+"Si votre méthode principale n'est pas disponible, nous pouvons vous envoyer "
+"des jetons de secours aux numéros de téléphone indiqués ci-dessous."
+
+#: .\account\templates\two_factor\profile\profile.html:50
+msgid "Are you sure?"
+msgstr "En êtes-vous sûr ?"
+
+#: .\account\templates\two_factor\profile\profile.html:53
+msgid "Unregister"
+msgstr "Annuler l'inscription"
+
+#: .\account\templates\two_factor\profile\profile.html:64
+msgid ""
+"If you don't have any device with you, you can access your account using "
+"backup tokens."
+msgstr ""
+"Si vous n'avez pas d'appareil avec vous, vous pouvez accéder à votre compte "
+"en utilisant des jetons de sauvegarde."
+
+#: .\account\templates\two_factor\profile\profile.html:66
+#, python-format
+msgid "You have only one backup token remaining."
+msgid_plural "You have %(counter)s backup tokens remaining."
+msgstr[0] "Il ne vous reste qu'un seul jeton de sauvegarde."
+msgstr[1] "Il vous reste %(counter)s de jetons de sauvegarde."
+
+#: .\account\templates\two_factor\profile\profile.html:73
+msgid "Show Codes"
+msgstr "Afficher les codes"
+
+#: .\account\templates\two_factor\twilio\sms_message.html:2
+#, python-format
+msgid "Your OTP token is %(token)s"
+msgstr "Votre jeton OTP est %(token)s"
+
+#: .\dj_dastore\settings\local.py:51
+msgid "English"
+msgstr ""
+
+#: .\dj_dastore\settings\local.py:52
+msgid "French"
+msgstr ""
+
+#: .\folder\templates\folder\folder_list.html:6
+#: .\templates\snippets\header.html:45
+msgid "Backup"
+msgstr "Sauvegarde"
+
+#: .\folder\templates\folder\folder_list.html:54
+#: .\folder\templates\folder\folder_list.html:70
+msgid "Add Folder"
+msgstr "Ajouter un dossier"
+
+#: .\folder\templates\folder\folder_list.html:57
+#: .\folder\templates\folder\folder_list.html:73
+msgid "Upload"
+msgstr "Charger"
+
+#: .\folder\templates\folder\folder_list.html:60
+#: .\folder\templates\folder\folder_list.html:76
+msgid "Download Selected"
+msgstr "Télécharger la sélection"
+
+#: .\folder\templates\folder\folder_list.html:92
+msgid "Delete All"
+msgstr "Tout supprimer"
+
+#: .\folder\templates\folder\folder_list.html:97
+msgid "Custom Folder"
+msgstr "Dossier personnalisé"
+
+#: .\folder\templates\folder\folder_list.html:115
+#: .\folder\templates\folder\folder_list.html:166
+#: .\team\templates\team\team_list.html:57
+msgid "Delete"
+msgstr "Supprimer"
+
+#: .\folder\templates\folder\folder_list.html:119
+msgid "Rename"
+msgstr "Renommer"
+
+#: .\folder\templates\folder\folder_list.html:132
+msgid "Your Backup"
+msgstr "Vos sauvegardes"
+
+#: .\folder\templates\folder\folder_list.html:160
+msgid "Check Integrity"
+msgstr "Vérifier l'intégrité"
+
+#: .\folder\templates\folder\folder_list.html:163
+msgid "Detail"
+msgstr "Détail"
+
+#: .\folder\templates\folder\folder_list.html:171
+msgid "Name"
+msgstr "Nom"
+
+#: .\folder\templates\folder\folder_list.html:175
+msgid "Description"
+msgstr "Description"
+
+#: .\folder\templates\folder\folder_list.html:179
+msgid "No description for this Backup."
+msgstr "Aucune description pour cette sauvegarde"
+
+#: .\folder\templates\folder\folder_list.html:187
+msgid "Size"
+msgstr "Taille"
+
+#: .\folder\templates\folder\folder_list.html:201
+msgid "This folder is empty."
+msgstr "Ce répertoire est vide."
+
+#: .\log\templates\log\log_dashboard.html:39
+msgid "Last 10 Log"
+msgstr "10 derniers journaux"
+
+#: .\log\templates\log\log_dashboard.html:40
+msgid "All logs"
+msgstr "Toutes les données"
+
+#: .\log\templates\log\log_dashboard.html:46
+#| msgid "Username"
+msgid "User"
+msgstr "Utilisateur"
+
+#: .\log\templates\log\log_dashboard.html:49
+msgid "Text"
+msgstr "Texte"
+
+#: .\log\templates\log\log_dashboard.html:50
+msgid "Open date"
+msgstr "Date d'ouverture"
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:29
+msgid "Pricing Plans"
+msgstr "Plans tarifaires"
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:30
+msgid "Let's find a way together"
+msgstr "Trouvons une solution ensemble"
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:31
+msgid "Choose your plan, take what you need for you."
+msgstr "Choisissez votre plan, prenez ce qui vous convient."
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:48
+msgid "Popular"
+msgstr "Populaire"
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:115
+msgid "Limit Users"
+msgstr "Limite de comptes"
+
+#: .\team\templates\team\create_team.html:30
+msgid "Add a team"
+msgstr "Ajouter une équipe"
+
+#: .\team\templates\team\create_team.html:36
+#: .\team\templates\team\detail_team.html:55
+msgid "Team Name"
+msgstr "Nom équipe"
+
+#: .\team\templates\team\create_team.html:44
+msgid "Team ID"
+msgstr "N° Équipe"
+
+#: .\team\templates\team\create_team.html:52
+msgid "Add Team"
+msgstr "Ajouter une équipe"
+
+#: .\team\templates\team\detail_team.html:47
+msgid "Edit Team :"
+msgstr "Éditer l'équipe : "
+
+#: .\team\templates\team\detail_team.html:72
+msgid "Save Team"
+msgstr "Enregistrer l'équipe"
+
+#: .\team\templates\team\detail_team.html:77
+msgid "Team Members"
+msgstr "Membres de l'équipe"
+
+#: .\team\templates\team\detail_team.html:83
+#: .\team\templates\team\membership_detail.html:42
+msgid "Role"
+msgstr "Rôle"
+
+#: .\team\templates\team\detail_team.html:95
+msgid "Invite Team Members"
+msgstr "Inviter des membres"
+
+#: .\team\templates\team\detail_team.html:104
+msgid "Invite"
+msgstr "Inviter"
+
+#: .\team\templates\team\detail_team.html:110
+#, python-format
+msgid ""
+"\n"
+"                                        <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
+"                                    "
+msgstr ""
+"\n"
+"                                        <small>N'oubliez pas que vous ne pouvez inviter que %(remaining_invitations)s de membres.</small>\n"
+"                                    "
+
+#: .\team\templates\team\detail_team.html:118
+#, python-format
+msgid ""
+"\n"
+"                                    Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
+"                                    "
+msgstr ""
+"\n"
+"                                    Votre équipe est au maximum de ses capacités (%(team_members.count)s), vous ne pouvez plus inviter d'autres membres.\n"
+"                                    "
+
+#: .\team\templates\team\detail_team.html:125
+msgid "Something went wrong. Please contact support."
+msgstr "Un problème s'est produit. Veuillez contacter le support."
+
+#: .\team\templates\team\detail_team.html:133
+msgid "Pending invitation"
+msgstr "Invitation en attente"
+
+#: .\team\templates\team\detail_team.html:139
+msgid "Action"
+msgstr "Action"
+
+#: .\team\templates\team\detail_team.html:145
+msgid "Cancel Invitation"
+msgstr "Annuler une invitation"
+
+#: .\team\templates\team\invitation_landing.html:28
+msgid "Invitation to Join Team"
+msgstr "Invitation à rejoindre une équipe"
+
+#: .\team\templates\team\invitation_landing.html:29
+#, python-format
+msgid ""
+"\n"
+"                    <p>You have been invited by <strong><u>%(invitation.sender.email)s</u></strong> to join the team: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
+"                "
+msgstr ""
+"\n"
+"                    <p>Vous avez été invité par <strong><u>%(invitation.sender.email)s</u></strong> à rejoindre l'équipe: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
+"                "
+
+#: .\team\templates\team\invitation_landing.html:34
+msgid "Accept Invitation"
+msgstr "Accepter une invitation"
+
+#: .\team\templates\team\membership_detail.html:29
+msgid "My Team"
+msgstr "Mon équipe"
+
+#: .\team\templates\team\membership_detail.html:34
+msgid "You're a member of Team:"
+msgstr "Membre de l'équipe:"
+
+#: .\team\templates\team\membership_detail.html:36
+msgid "Members :"
+msgstr "Membres :"
+
+#: .\team\templates\team\membership_detail.html:62
+msgid "You are not a member of any teams."
+msgstr "Vous ne faites partie d'aucune équipe."
+
+#: .\team\templates\team\team_list.html:27
+msgid "Teams Detail"
+msgstr "Détail de l'équipe"
+
+#: .\team\templates\team\team_list.html:30
+msgid "Create Team"
+msgstr "Créer une équipe"
+
+#: .\team\templates\team\team_list.html:56
+msgid "Edit"
+msgstr "Éditer"
+
+#: .\team\templates\team\team_list.html:62
+msgid "No team found."
+msgstr "Aucune équipe n'a été trouvée."
+
+#: .\templates\password_reset\password_reset.html:9
+msgid "Back to sign in"
+msgstr "Retour à la connexion"
+
+#: .\templates\password_reset\password_reset.html:13
+msgid ""
+"Don't fret! Just type in your email and we will send you a code to reset "
+"your password!"
+msgstr ""
+"Ne vous inquiétez pas ! Saisissez simplement votre adresse électronique et "
+"nous vous enverrons un code pour réinitialiser votre mot de passe !"
+
+#: .\templates\password_reset\password_reset.html:25
+msgid "Reset password"
+msgstr "Réinitialiser le mot de passe"
+
+#: .\templates\snippets\header.html:44 .\templates\snippets\header.html:77
+msgid "GET STARTED"
+msgstr "DÉCOUVRIR"
+
+#: .\templates\snippets\header.html:48
+msgid "My account"
+msgstr "Mon compte"
+
+#: .\templates\snippets\header.html:65
+msgid "Profil"
+msgstr "Profil"
+
+#: .\templates\snippets\header.html:69
+msgid "Logs"
+msgstr "Logs"
+
+#: .\templates\snippets\header.html:73
+msgid "Logout"
+msgstr "Déconnexion"
+
+#: .\templates\snippets\header.html:80
+msgid "Login"
+msgstr "Connexion"
+
+#~ msgid "hello"
+#~ msgstr "bonjour"

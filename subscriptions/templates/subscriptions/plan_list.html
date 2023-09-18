@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load breadcrumb %}
 
 {% block breadcrumbs %}
@@ -18,20 +19,22 @@
 {% endblock %}
 
 {% block content %}
+    {% get_current_language as LANGUAGE_CODE %}
     <section class="price_plan_area section_padding_130_80 py-5" id="pricing">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-12 col-sm-8 col-lg-6">
                     <!-- Section Heading-->
                     <div class="section-heading text-center wow fadeInUp" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
-                        <h6 data-aos="fade-right" data-aos-delay="110">Pricing Plans</h6>
-                        <h3 data-aos="fade-right" data-aos-delay="120">Let's find a way together</h3>
-                        <p data-aos="fade-right" data-aos-delay="130">Choose your plan, take what you need for you.</p>
+                        <h6 data-aos="fade-right" data-aos-delay="110">{% translate "Pricing Plans" %}</h6>
+                        <h3 data-aos="fade-right" data-aos-delay="120">{% translate "Let's find a way together"%}</h3>
+                        <p data-aos="fade-right" data-aos-delay="130">{% translate "Choose your plan, take what you need for you." %}</p>
                         <div data-aos="fade-right" data-aos-delay="140" class="line"></div>
                     </div>
                 </div>
             </div>
 
+            {% get_current_language as LANGUAGE_CODE %}
             {% for plan in plans %}
                 <!-- Single Price Plan Area-->
                 <div data-aos="fade-right" data-aos-delay="150" class="single_price_plan" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
@@ -42,35 +45,78 @@
                                 {% if plan.metadata.popular == "true" %}
                                     <!-- Side Shape-->
                                     <div class="side-shape"><img src="https://bootdey.com/img/popular-pricing.png" alt=""></div>
-                                    <span>Popular</span>
+                                    <span>{% translate "Popular" %}</span>
                                 {% endif %}
-                                <h3>{{ plan.product.name }}</h3>
-                                <p>{{ plan.metadata.subtitle }}</p>
+                                <h3>
+                                    {% if LANGUAGE_CODE == "fr" %}
+                                        {{ plan.metadata.fr_name }}
+                                    {% else %}
+                                        {{ plan.product.name }}
+                                    {% endif %}
+                                </h3>
+                                <p>
+                                    {% if LANGUAGE_CODE == "fr" %}
+                                        {{ plan.metadata.fr_subtitle }}
+                                    {% else %}
+                                        {{ plan.metadata.subtitle }}
+                                    {% endif %}
+                                </p>
                                 <div class="line"></div>
                             </div>
                             <!-- Plan Price -->
                             <div class="price">
-                                <h4>{{ plan.amount }}$/{{ plan.interval }}</h4>
+                                <h4>
+                                    {{ plan.amount }}
+                                    {% if LANGUAGE_CODE == "fr" %}
+                                        €/{% translate "month" %}
+                                    {% else %}
+                                        $/{{ plan.interval }}
+                                    {% endif %}
+                                </h4>
                             </div>
                         </div>
-
                         <div class="col-12 col-md-6">
                             <!-- Plan Description -->
                             <div class="description">
-                                <p>{{ plan.description }}</p>
+                                <p>
+                                    {% if LANGUAGE_CODE == "fr" %}
+                                        {{ plan.metadata.fr_desc }}
+                                    {% else %}
+                                        {{ plan.description }}
+                                    {% endif %}
+                                </p>
                             </div>
                             <div class="row">
-                            <div class="col-12 col-md-6 col-sm-6">
-                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>{{ plan.metadata.option_one }}</p>
-                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>{{ plan.metadata.option_two }}</p>
-                            </div>
-                            <div class="col-6">
-                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>{{ plan.metadata.option_three }}</p>
-                                <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>Limit Users : {{ plan.metadata.limit_users }}</p>
-                            </div>
+                                <div class="col-12 col-md-6 col-sm-6">
+                                    <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>
+                                        {% if LANGUAGE_CODE == "fr" %}
+                                            {{ plan.metadata.fr_option_one }}
+                                        {% else %}
+                                            {{ plan.metadata.option_one }}
+                                        {% endif %}
+                                    </p>
+                                    <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>
+                                        {% if LANGUAGE_CODE == "fr" %}
+                                            {{ plan.metadata.fr_option_two }}
+                                        {% else %}
+                                            {{ plan.metadata.option_two }}
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div class="col-6">
+                                    <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>
+                                        {% if LANGUAGE_CODE == "fr" %}
+                                            {{ plan.metadata.fr_option_three }}
+                                        {% else %}
+                                            {{ plan.metadata.option_three }}
+                                        {% endif %}
+                                    </p>
+                                    <p><i class="material-symbols-outlined align-middle mx-2 my-2">check_circle</i>
+                                        {% translate "Limit Users" %}: {{ plan.metadata.limit_users }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
-
                         <div class="col-12 col-md-4 text-center">
                             <div class="slide-container">
                                 <div class="slider" data-id="{{ plan.id }}" onclick="handleSelectPlan(this)">
@@ -81,7 +127,6 @@
                     </div>
                 </div>
             {% endfor %}
-
         </div>
     </section>
 {% endblock content %}

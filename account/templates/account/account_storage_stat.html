@@ -25,24 +25,24 @@
 
 {% block sub_content %}
     <div class="card-body tab-content">
-    <h6>STORAGE STATISTICS</h6>
+    <h6>{% trans "STORAGE STATISTICS" %}</h6>
     <hr>
     <div class="row custom-content-row justify-content-evenly" data-aos="fade-left" data-aos-delay="100">
         <div class="col-md-6 col-lg-2">
             <div class="numbersquare">
-                <div class="intermsquaretext">File number</div>
+                <div class="intermsquaretext">{% trans "File number" %}</div>
                 <div class="intermsquarenb numbertextxl">{{ file_count }}</div>
             </div>
         </div>
         <div class="col-md-6 col-lg-2">
             <div class="numbersquare">
-                <div class="intermsquaretext">Folder number</div>
+                <div class="intermsquaretext">{% trans "Folder number" %}</div>
                 <div class="intermsquarenb numbertextxl">{{ folder_count }}</div>
             </div>
         </div>
         <div class="col-md-6 col-lg-2">
             <div class="numbersquare">
-                <div class="intermsquaretext">File size Total</div>
+                <div class="intermsquaretext">{% trans "File size Total" %}</div>
                 <div class="intermsquarenb numbertextxxxl">{{ storage_used_bytes.0 }} {{ storage_used_bytes.1 }}</div>
             </div>
         </div>
