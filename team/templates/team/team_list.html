@@ -5,18 +5,20 @@
 
 
 {% block breadcrumbs %}
-    <div class="breadcrumb-container">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
-                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-                    <ol class="breadcrumb mb-4">
-                        {% url 'account:account_profile' as account_url %}
-                        {% url 'home' as home_url %}
-                        {% breadcrumb "Home" home_url %}
-                        {% breadcrumb "Profile" account_url%}
-                        {% breadcrumb "Teams Detail" %}
-                    </ol>
-                </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url%}
+                            {% breadcrumb "Teams Detail" %}
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>

@@ -82,11 +82,11 @@
 {% block hero %} {% endblock %}
 
 <main>
-    {% if request.user.is_authenticated %}
-        <div class="container-fluid py-5">
-    {% else %}
-        <div class="container py-5">
-    {% endif %}
+{#    {% if request.user.is_authenticated %}#}
+        <div class="py-5">
+{#    {% else %}#}
+{#        <div class="container py-5">#}
+{#    {% endif %}#}
 
     {% block breadcrumbs %}{% endblock %}
     {% block content %} {% endblock %}
@@ -114,6 +114,7 @@
         }
     }
 </script>
+
 <script src="{% static 'js/jquery.bootstrap.modal.forms.js' %}"></script>
 <script src="{% static 'js/main.js' %}"></script>
 {% block script %}

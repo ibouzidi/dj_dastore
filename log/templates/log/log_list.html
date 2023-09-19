@@ -7,20 +7,22 @@
 {% block title %} Backup {% endblock title %}
 
 {% block breadcrumbs %}
-    <div class="breadcrumb-container">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
-                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-                    <ol class="breadcrumb mb-4">
-                        {% url 'account:account_profile' as account_url %}
-                        {% url 'log:log_dashboard' as log_dashboard_url %}
-                        {% url 'home' as home_url %}
-                        {% breadcrumb "Home" home_url %}
-                        {% breadcrumb "Profile" account_url %}
-                        {% breadcrumb "Log Dahboard" log_dashboard_url %}
-                        {% breadcrumb "Log List"%}
-                    </ol>
-                </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4" style="width: auto!important">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'log:log_dashboard' as log_dashboard_url %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url %}
+                            {% breadcrumb "Log Dahboard" log_dashboard_url %}
+                            {% breadcrumb "Log List"%}
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -28,144 +30,145 @@
 
 
 {% block content %}
-    <div class="row custom-content-row">
-        <div class="col-sm-12 col-md-6 col-lg-3">
-            <div class="card">
-                <div class="card-body" data-aos="fade-left" data-aos-delay="100">
-                    <form class="form-group" method="GET">
-                        <h4>Filter</h4>
-                        <div class="form-field mb-3">
-                            {#                    <label for="{{ filtered_qs.form.user.id_for_label }}">{{ filtered_qs.form.user.label_tag }}</label>#}
-                            {{ filtered_qs.form.user|add_class:"form-control" }}
-                        </div>
-                        <div class="form-field mb-3">
-                            {#                    <label for="{{ filtered_qs.form.appli.id_for_label }}">{{ filtered_qs.form.appli.label_tag }}</label>#}
-                            {{ filtered_qs.form.appli|add_class:"form-control" }}
-                        </div>
-                        <div class="form-field mb-3">
-                            {#                    <label for="{{ filtered_qs.form.appli.id_for_label }}">{{ filtered_qs.form.appli.label_tag }}</label>#}
-                            {{ filtered_qs.form.action|add_class:"form-control" }}
-                        </div>
-                        <div class="form-field mb-3">
-                            {#                    <label for="{{ filtered_qs.form.text.id_for_label }}">{{ filtered_qs.form.text.label_tag }}</label>#}
-                            {{ filtered_qs.form.text|add_class:"form-control" }}
-                        </div>
-                        <div class="form-field mb-3">
-                            {#                    <label for="{{ filtered_qs.form.date_open.id_for_label }}">{{ filtered_qs.form.date_open.label_tag }}</label>#}
-                            {{ filtered_qs.form.date_open|add_class:"form-control" }}
-                        </div>
-                        <div class="form-field mb-3">
-                            {{ filtered_qs.form.start_date|add_class:"form-control datepicker-here" }}
-                            <span class="error_start_date" style="color:red"></span>
-                        </div>
-                        <div class="form-field mb-3">
-                            {{ filtered_qs.form.end_date|add_class:"form-control datepicker-here" }}
-                            <span class="error_end_date" style="color:red"></span>
-                        </div>
-                        <button class="btn custom-button btn-lg mt-3"><i class="fa fa-filter"></i> Filter</button>
-                        <button type="button" class="btn custom-button btn-lg mt-3" id="reset-button"><i class="fa fa-times"></i> Reset</button>
+    <div class="container-fluid-custom">
+        <div class="row custom-content-row">
+            <div class="col-sm-12 col-md-6 col-lg-3">
+                <div class="card">
+                    <div class="card-body" data-aos="fade-left" data-aos-delay="100">
+                        <form class="form-group" method="GET">
+                            <h4>Filter</h4>
+                            <div class="form-field mb-3">
+                                {#                    <label for="{{ filtered_qs.form.user.id_for_label }}">{{ filtered_qs.form.user.label_tag }}</label>#}
+                                {{ filtered_qs.form.user|add_class:"form-control" }}
+                            </div>
+                            <div class="form-field mb-3">
+                                {#                    <label for="{{ filtered_qs.form.appli.id_for_label }}">{{ filtered_qs.form.appli.label_tag }}</label>#}
+                                {{ filtered_qs.form.appli|add_class:"form-control" }}
+                            </div>
+                            <div class="form-field mb-3">
+                                {#                    <label for="{{ filtered_qs.form.appli.id_for_label }}">{{ filtered_qs.form.appli.label_tag }}</label>#}
+                                {{ filtered_qs.form.action|add_class:"form-control" }}
+                            </div>
+                            <div class="form-field mb-3">
+                                {#                    <label for="{{ filtered_qs.form.text.id_for_label }}">{{ filtered_qs.form.text.label_tag }}</label>#}
+                                {{ filtered_qs.form.text|add_class:"form-control" }}
+                            </div>
+                            <div class="form-field mb-3">
+                                {#                    <label for="{{ filtered_qs.form.date_open.id_for_label }}">{{ filtered_qs.form.date_open.label_tag }}</label>#}
+                                {{ filtered_qs.form.date_open|add_class:"form-control" }}
+                            </div>
+                            <div class="form-field mb-3">
+                                {{ filtered_qs.form.start_date|add_class:"form-control datepicker-here" }}
+                                <span class="error_start_date" style="color:red"></span>
+                            </div>
+                            <div class="form-field mb-3">
+                                {{ filtered_qs.form.end_date|add_class:"form-control datepicker-here" }}
+                                <span class="error_end_date" style="color:red"></span>
+                            </div>
+                            <button class="btn custom-button btn-lg mt-3"><i class="fa fa-filter"></i> Filter</button>
+                            <button type="button" class="btn custom-button btn-lg mt-3" id="reset-button"><i class="fa fa-times"></i> Reset</button>
 
-                    </form>
+                        </form>
 
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-12 col-md-6 col-lg-9">
-            <div class="card">
-                <div class="card-body" data-aos="fade-left" data-aos-delay="100">
-                    <a class="btn custom-button btn-lg mb-3" href="{% url 'log:log_export' %}?{% relative_url export 'export' request.GET.urlencode %}" style="width: 160px">
-                        <i class="fa fa-file-export"></i>
-                        Export CSV
-                    </a>
-                    <div class="table-responsive">
-                        <table class="table table-centered table-nowrap mb-0 rounded">
-                            <thead class="thead-light">
-                            <tr>
-                                <th class="border-0 rounded-start">ID</th>
-                                <th class="border-0">User</th>
-                                <th class="border-0">Action</th>
-                                <th class="border-0">Appli</th>
-                                <th class="border-0">Text</th>
-                                <th class="border-0 rounded-end">Open date</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% now "U" as datenow %}
-                            {% for i in list_items %}
-                                <tr class='clickable-row' data-href="{% url 'log:log_select' i.id %}">
-                                    <td><div><a class="border-0">{{ i.id }}</a></div></td>
-                                    <td><div><a class="border-0">{{ i.user|truncatechars:15 }}</a></div></td>
-                                    <td><div><a class="border-0">{{ i.action|truncatechars:15 }}</a></div></td>
-                                    <td><div><a class="border-0">{{ i.appli|truncatechars:15 }}</a></div></td>
-                                    <td><div><a class="border-0">{{ i.description|truncatechars:50 }}</a></div></td>
-                                    <td><div><a class="border-0">{{ i.date_open|date:"Y-M-d" }}</a></div></td>
+            <div class="col-sm-12 col-md-6 col-lg-9">
+                <div class="card">
+                    <div class="card-body" data-aos="fade-left" data-aos-delay="100">
+                        <a class="btn custom-button btn-lg mb-3" href="{% url 'log:log_export' %}?{% relative_url export 'export' request.GET.urlencode %}" style="width: 160px">
+                            <i class="fa fa-file-export"></i>
+                            Export CSV
+                        </a>
+                        <div class="table-responsive">
+                            <table class="table table-centered table-nowrap mb-0 rounded">
+                                <thead class="thead-light">
+                                <tr>
+                                    <th class="border-0 rounded-start">ID</th>
+                                    <th class="border-0">User</th>
+                                    <th class="border-0">Action</th>
+                                    <th class="border-0">Appli</th>
+                                    <th class="border-0">Text</th>
+                                    <th class="border-0 rounded-end">Open date</th>
                                 </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% if list_items.has_other_pages %}
-                        <ul class="pagination justify-content-center mt-2">
-                            {% if list_items.has_previous %}
-                                <li class="page-item">
-                                    <a class="page-link text-typo2" href="{% relative_url list_items.previous_page_number 'page' request.GET.urlencode %}" aria-label="Previous">
-                                        <span aria-hidden="true">&laquo;</span>
-                                    </a>
-                                </li>
-                                {% if list_items.number > 3 %}
+                                </thead>
+                                <tbody>
+                                {% now "U" as datenow %}
+                                {% for i in list_items %}
+                                    <tr class='clickable-row' data-href="{% url 'log:log_select' i.id %}">
+                                        <td><div><a class="border-0">{{ i.id }}</a></div></td>
+                                        <td><div><a class="border-0">{{ i.user|truncatechars:15 }}</a></div></td>
+                                        <td><div><a class="border-0">{{ i.action|truncatechars:15 }}</a></div></td>
+                                        <td><div><a class="border-0">{{ i.appli|truncatechars:15 }}</a></div></td>
+                                        <td><div><a class="border-0">{{ i.description|truncatechars:50 }}</a></div></td>
+                                        <td><div><a class="border-0">{{ i.date_open|date:"Y-M-d" }}</a></div></td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if list_items.has_other_pages %}
+                            <ul class="pagination justify-content-center mt-2">
+                                {% if list_items.has_previous %}
                                     <li class="page-item">
-                                        <a class="page-link text-typo2 active" href="{% relative_url 1 'page' request.GET.urlencode %}">1</a>
+                                        <a class="page-link text-typo2" href="{% relative_url list_items.previous_page_number 'page' request.GET.urlencode %}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
                                     </li>
-                                    {% if list_items.number > 4 %}
+                                    {% if list_items.number > 3 %}
+                                        <li class="page-item">
+                                            <a class="page-link text-typo2 active" href="{% relative_url 1 'page' request.GET.urlencode %}">1</a>
+                                        </li>
+                                        {% if list_items.number > 4 %}
+                                            <li class="page-item disabled">
+                                                <a class="page-link text-typo2">...</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% for num in list_items.paginator.page_range %}
+                                    {% if list_items.number == num %}
+                                        <li class="page-item disabled">
+                                            <a class="page-link text-typo2"><span aria-hidden="true">{{ num }}</span></a>
+                                        </li>
+                                    {% elif num > list_items.number|add:'-3' and num < list_items.number|add:'3' %}
+                                        <li class="page-item">
+                                            <a class="page-link text-typo2 active" href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% if list_items.has_next %}
+                                    {% if list_items.number < list_items.paginator.num_pages|add:'-3' %}
                                         <li class="page-item disabled">
                                             <a class="page-link text-typo2">...</a>
                                         </li>
+                                        <li class="page-item">
+                                            <a class="page-link text-typo2 active" href="{% relative_url list_items.paginator.num_pages 'page' request.GET.urlencode %}">{{ list_items.paginator.num_pages }}</a>
+                                        </li>
+                                    {% elif list_items.number < list_items.paginator.num_pages|add:'-2' %}
+                                        <li class="page-item">
+                                            <a class="page-link text-typo2 active" href="{% relative_url list_items.paginator.num_pages 'page' request.GET.urlencode %}">{{ list_items.paginator.num_pages }}</a>
+                                        </li>
                                     {% endif %}
-                                {% endif %}
-                            {% endif %}
-
-                            {% for num in list_items.paginator.page_range %}
-                                {% if list_items.number == num %}
-                                    <li class="page-item disabled">
-                                        <a class="page-link text-typo2"><span aria-hidden="true">{{ num }}</span></a>
-                                    </li>
-                                {% elif num > list_items.number|add:'-3' and num < list_items.number|add:'3' %}
                                     <li class="page-item">
-                                        <a class="page-link text-typo2 active" href="{% relative_url num 'page' request.GET.urlencode %}">{{ num }}</a>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-
-                            {% if list_items.has_next %}
-                                {% if list_items.number < list_items.paginator.num_pages|add:'-3' %}
-                                    <li class="page-item disabled">
-                                        <a class="page-link text-typo2">...</a>
-                                    </li>
-                                    <li class="page-item">
-                                        <a class="page-link text-typo2 active" href="{% relative_url list_items.paginator.num_pages 'page' request.GET.urlencode %}">{{ list_items.paginator.num_pages }}</a>
-                                    </li>
-                                {% elif list_items.number < list_items.paginator.num_pages|add:'-2' %}
-                                    <li class="page-item">
-                                        <a class="page-link text-typo2 active" href="{% relative_url list_items.paginator.num_pages 'page' request.GET.urlencode %}">{{ list_items.paginator.num_pages }}</a>
+                                        <a class="page-link text-typo2" href="{% relative_url list_items.next_page_number 'page' request.GET.urlencode %}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
                                     </li>
                                 {% endif %}
                                 <li class="page-item">
-                                    <a class="page-link text-typo2" href="{% relative_url list_items.next_page_number 'page' request.GET.urlencode %}" aria-label="Next">
-                                        <span aria-hidden="true">&raquo;</span>
+                                    <a class="page-link text-typo2" href="{% relative_url all 'all' request.GET.urlencode %}" aria-label="Next">
+                                        <span aria-hidden="true">All</span>
                                     </a>
                                 </li>
-                            {% endif %}
-                            <li class="page-item">
-                                <a class="page-link text-typo2" href="{% relative_url all 'all' request.GET.urlencode %}" aria-label="Next">
-                                    <span aria-hidden="true">All</span>
-                                </a>
-                            </li>
-                        </ul>
-                    {% endif %}
+                            </ul>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 
 {% endblock content %}

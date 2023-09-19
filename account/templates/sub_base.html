@@ -6,23 +6,25 @@
 {% endblock head %}
 
 {% block content %}
-    <div class="row gutters-sm">
-        <div class="col-md-3 d-none d-md-block" data-aos="fade-left" data-aos-delay="300">
-            <div class="card">
-                <div class="card-body">
-                    {% include 'account/profile_tab.html' %}
+    <div class="container-fluid-custom">
+        <div class="row gutters-sm">
+            <div class="col-md-3 d-none d-md-block" data-aos="fade-left" data-aos-delay="300">
+                <div class="card">
+                    <div class="card-body">
+                        {% include 'account/profile_tab.html' %}
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-9" data-aos="fade-left" data-aos-delay="200">
-            <div class="card">
-                <div class="card-header border-bottom mb-3 d-flex d-md-none">
-                    {% include 'account/profile_tab_mobile.html' %}
+            <div class="col-md-9" data-aos="fade-left" data-aos-delay="200">
+                <div class="card">
+                    <div class="card-header border-bottom mb-3 d-flex d-md-none">
+                        {% include 'account/profile_tab_mobile.html' %}
+                    </div>
+                    {% block sub_content %}
+
+                    {% endblock %}
+
                 </div>
-                {% block sub_content %}
-
-                {% endblock %}
-
             </div>
         </div>
     </div>

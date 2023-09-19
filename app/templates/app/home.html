@@ -16,15 +16,89 @@
         }
     </style>
 
-    <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
-        <div class="col-md-5 p-lg-5 mx-auto my-5">
-            <h1 class="display-4 fw-normal"></h1>
-            <p class="lead fw-normal">This page will be soon available to you.</p>
-            <a class="btn btn-outline-secondary" href="#">Coming soon</a>
-        </div>
-        <div class="product-device shadow-sm d-none d-md-block"></div>
-        <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
-    </div>
+    <section id="service" class="services-area pt-125 pb-130">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="section-title" data-aos="fade-down">
+                        <h1>{% trans "Our features" %}</h1>
+                        <p>{% trans "Empower your data security and backup needs with DaStore." %}
+                        </p>
+                    </div> <!-- section title -->
+                </div>
+            </div> <!-- row -->
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-6 col-sm-8">
+                    <div class="single-service text-center mt-30" data-aos="fade-right">
+                        <div class="service-icon">
+                            {#                        <i class="fas fa-certificate"></i>#}
+                            <i class="material-symbols-outlined">subscriptions</i>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title"><a href="{% url 'subscriptions:SubListView' %}">{% trans "Subscription Plans" %}</a>
+                            </h4>
+                            <p>{% trans "Choose from a variety of subscription plans tailored to your storage needs to store and access your data securely." %}</p>
+                        </div>
+                    </div> <!-- single service -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8" data-aos="fade-right" data-aos-delay="400">
+                    <div class="single-service text-center mt-30">
+                        <div class="service-icon">
+                            <i class="material-symbols-outlined">backup</i>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title"><a href="{% url 'subscriptions:SubListView' %}">{% trans "Effortless Data Management:" %}</a></h4>
+                            <p>{% trans "Seamlessly upload, download, and delete your backups using our user-friendly dashboard." %}</p>
+                        </div>
+                    </div> <!-- single service -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8" data-aos="fade-right" data-aos-delay="400">
+                    <div class="single-service text-center mt-30">
+                        <div class="service-icon">
+                            <i class="material-symbols-outlined">encrypted</i>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title"><a href="{% url 'subscriptions:SubListView' %}">{% trans "Advanced Encryption" %}</a></h4>
+                            <p>{% trans "Your data is safeguarded through robust AES and asymmetrical key encryption, providing top-tier security." %}</p>
+                        </div>
+                    </div> <!-- single service -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8" data-aos="fade-right" data-aos-delay="400">
+                    <div class="single-service text-center mt-30">
+                        <div class="service-icon">
+                            <i class="material-symbols-outlined">groups</i>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title"><a href="{% url 'subscriptions:SubListView' %}">{% trans "Team Collaboration" %}</a></h4>
+                            <p>{% trans "Upgrade to higher plans and establish teams with multiple members for seamless cooperation." %}</p>
+                        </div>
+                    </div> <!-- single service -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8" data-aos="fade-right" data-aos-delay="400">
+                    <div class="single-service text-center mt-30">
+                        <div class="service-icon">
+                            <i class="material-symbols-outlined">support_agent</i>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title"><a href="{% url 'subscriptions:SubListView' %}">{% trans "24/7 Customer Support" %}</a></h4>
+                            <p>{% trans "With DaStore, access dedicated support around the clock to ensure a smooth and secure backup process." %}</p>
+                        </div>
+                    </div> <!-- single service -->
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-8" data-aos="fade-right" data-aos-delay="400">
+                    <div class="single-service text-center mt-30">
+                        <div class="service-icon">
+                            <i class="material-symbols-outlined">credit_card</i>
+                        </div>
+                        <div class="service-content">
+                            <h4 class="service-title"><a href="{% url 'subscriptions:SubListView' %}">{% trans "Billing Management" %}</a></h4>
+                            <p>{% trans "Easily manage your billing and payment history through the Stripe portal for a hassle-free experience." %}</p>
+                        </div>
+                    </div> <!-- single service -->
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+    </section>
 
 
 {% endblock content %}

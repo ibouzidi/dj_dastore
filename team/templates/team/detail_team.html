@@ -6,20 +6,22 @@
 
 
 {% block breadcrumbs %}
-    <div class="breadcrumb-container">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-5">
-                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-                    <ol class="breadcrumb mb-4">
-                        {% url 'account:account_profile' as account_url %}
-                        {% url 'team:team_list' as team_list_url %}
-                        {% url 'home' as home_url %}
-                        {% breadcrumb "Home" home_url %}
-                        {% breadcrumb "Profile" account_url%}
-                        {% breadcrumb "Team Detail" team_list_url%}
-                        {% breadcrumb "Edit Team" %}
-                    </ol>
-                </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-5">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'team:team_list' as team_list_url %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url%}
+                            {% breadcrumb "Team Detail" team_list_url%}
+                            {% breadcrumb "Edit Team" %}
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -115,8 +117,8 @@
                         {% elif remaining_invitations == 0 %}
                             <div class="alert alert-warning" role="alert">
                                 <small>
-                                     {% blocktrans with team_members=team_members.count %}
-                                    Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.
+                                    {% blocktrans with team_members=team_members.count %}
+                                        Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.
                                     {% endblocktrans %}
                                 </small>
                             </div>
