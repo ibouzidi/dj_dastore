@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-20 09:47+0200\n"
-"PO-Revision-Date: 2023-09-20 09:48+0000\n"
+"POT-Creation-Date: 2023-09-20 15:53+0200\n"
+"PO-Revision-Date: 2023-09-20 15:55+0000\n"
 "Last-Translator:   <admin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -57,7 +57,7 @@ msgstr "Information sur le stockage"
 msgid "Profile information"
 msgstr "Informations de profil"
 
-#: .\account\templates\account\account.html:112
+#: .\account\templates\account\account.html:112 .\app\forms.py:17
 msgid "First Name"
 msgstr "Prénom"
 
@@ -65,7 +65,7 @@ msgstr "Prénom"
 msgid "Enter your first name"
 msgstr "Saisissez votre prénom"
 
-#: .\account\templates\account\account.html:125
+#: .\account\templates\account\account.html:125 .\app\forms.py:23
 msgid "Last Name"
 msgstr "Nom de famille"
 
@@ -74,7 +74,7 @@ msgid "Also your last name"
 msgstr "Saisissez votre nom de famille"
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:26
 #: .\team\templates\team\detail_team.html:84
 #: .\team\templates\team\detail_team.html:139
 #: .\team\templates\team\membership_detail.html:43
@@ -697,6 +697,43 @@ msgstr "Afficher les codes"
 msgid "Your OTP token is %(token)s"
 msgstr "Votre jeton OTP est %(token)s"
 
+#: .\app\forms.py:31
+msgid "Subject"
+msgstr "Object"
+
+#: .\app\forms.py:36
+msgid "Write your message"
+msgstr "Rédigez votre message"
+
+#: .\app\templates\app\contact.html:11
+msgid "Need Help ?"
+msgstr "Besoin d'aide ?"
+
+#: .\app\templates\app\contact.html:11
+msgid "Fill the form, it's easy."
+msgstr "Remplir le formulaire, c'est facile."
+
+#: .\app\templates\app\contact.html:17
+msgid "First name"
+msgstr "Prénom"
+
+#: .\app\templates\app\contact.html:78
+msgid "Your message was sent, thank you!"
+msgstr "votre message a été envoyé, merci !"
+
+#: .\app\templates\app\contact.html:82
+msgid "Let's talk about everything."
+msgstr "Discutons de tout."
+
+#: .\app\templates\app\contact.html:83
+msgid ""
+"Have questions or need support? We're here to help. Our app aims to protect "
+"your privacy, and your feedback is crucial for us to serve you better."
+msgstr ""
+"Vous avez des questions ou besoin d'aide ? Nous sommes là pour vous aider. "
+"Notre application vise à protéger votre vie privée, et vos commentaires sont"
+" essentiels pour nous permettre de mieux vous servir."
+
 #: .\app\templates\app\hero.html:9
 msgid "Seamless Backup"
 msgstr "Sauvegarde Intégrée"
@@ -938,7 +975,6 @@ msgid "Limit Users"
 msgstr "Limite de comptes"
 
 #: .\subscriptions\templates\subscriptions\sub_cancel_confirm.html:29
-#| msgid "Yes, cancel subscription"
 msgid "Cancel Subscription"
 msgstr "Annuler l'abonnement"
 
@@ -1218,7 +1254,11 @@ msgstr "Logs"
 msgid "Logout"
 msgstr "Déconnexion"
 
-#: .\templates\snippets\header.html:104
+#: .\templates\snippets\header.html:102
+msgid "Contact"
+msgstr "Contact"
+
+#: .\templates\snippets\header.html:105
 msgid "Login"
 msgstr "Connexion"
 

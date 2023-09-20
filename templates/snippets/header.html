@@ -93,12 +93,14 @@
                     <i class="material-symbols-outlined">browse_activity</i><a href="{% url 'log:log_dashboard' %}">{% translate "Logs" %}</a>
                 </li>
             {% endif %}
+            <li><i class="material-symbols-outlined">call</i><a href="{% url 'contact_view' %}">{% translate "Contact" %}</a></li>
             <li>
                 <i class="material-symbols-outlined">logout</i><a href="{% url 'account:logout' %}">{% translate "Logout" %}</a>
             </li>
 
         {% else %}
             <li><a href="{% url 'subscriptions:SubListView' %}"><i class="material-symbols-outlined">rocket_launch</i>{% translate "GET STARTED" %}</a></li>
+            <li><a href="{% url 'contact_view' %}"><i class="material-symbols-outlined">call</i>{% translate "Contact" %}</a></li>
 
             <li>
                 <a href="{% url 'account:login' %}"><i class="material-symbols-outlined">login</i>{% translate "Login" %}</a>

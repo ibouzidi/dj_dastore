@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-20 09:47+0200\n"
+"POT-Creation-Date: 2023-09-20 15:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Profile information"
 msgstr ""
 
-#: .\account\templates\account\account.html:112
+#: .\account\templates\account\account.html:112 .\app\forms.py:17
 msgid "First Name"
 msgstr ""
 
@@ -64,7 +64,7 @@ msgstr ""
 msgid "Enter your first name"
 msgstr ""
 
-#: .\account\templates\account\account.html:125
+#: .\account\templates\account\account.html:125 .\app\forms.py:23
 msgid "Last Name"
 msgstr ""
 
@@ -73,7 +73,7 @@ msgid "Also your last name"
 msgstr ""
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:26
 #: .\team\templates\team\detail_team.html:84
 #: .\team\templates\team\detail_team.html:139
 #: .\team\templates\team\membership_detail.html:43
@@ -625,6 +625,40 @@ msgstr ""
 msgid "Your OTP token is %(token)s"
 msgstr ""
 
+#: .\app\forms.py:31
+msgid "Subject"
+msgstr ""
+
+#: .\app\forms.py:36
+msgid "Write your message"
+msgstr ""
+
+#: .\app\templates\app\contact.html:11
+msgid "Need Help ?"
+msgstr ""
+
+#: .\app\templates\app\contact.html:11
+msgid "Fill the form, it's easy."
+msgstr ""
+
+#: .\app\templates\app\contact.html:17
+msgid "First name"
+msgstr ""
+
+#: .\app\templates\app\contact.html:78
+msgid "Your message was sent, thank you!"
+msgstr ""
+
+#: .\app\templates\app\contact.html:82
+msgid "Let's talk about everything."
+msgstr ""
+
+#: .\app\templates\app\contact.html:83
+msgid ""
+"Have questions or need support? We're here to help. Our app aims to protect "
+"your privacy, and your feedback is crucial for us to serve you better."
+msgstr ""
+
 #: .\app\templates\app\hero.html:9
 msgid "Seamless Backup"
 msgstr ""
@@ -1108,6 +1142,10 @@ msgstr ""
 msgid "Logout"
 msgstr ""
 
-#: .\templates\snippets\header.html:104
+#: .\templates\snippets\header.html:102
+msgid "Contact"
+msgstr ""
+
+#: .\templates\snippets\header.html:105
 msgid "Login"
 msgstr ""
