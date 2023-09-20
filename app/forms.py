@@ -1,3 +1,4 @@
+from captcha.fields import ReCaptchaField
 from django import forms
 
 # Create a RegexValidator for first and last names
@@ -10,6 +11,7 @@ name_validator = RegexValidator(
 )
 
 class ContactForm(forms.Form):
+    captcha = ReCaptchaField()
     fname = forms.CharField(
         min_length=2,
         max_length=50,
