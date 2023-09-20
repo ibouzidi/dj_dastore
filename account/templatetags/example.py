@@ -14,6 +14,8 @@ def add_attrs(value, attrs):
         "username": "Enter your email",
         "password": "Enter your password",
         "otp_token": "Enter your token",
+        "new_password1": "Enter your new password",
+        "new_password2": "Enter confirmation password",
     }
 
     new_attrs = attrs.split(",")

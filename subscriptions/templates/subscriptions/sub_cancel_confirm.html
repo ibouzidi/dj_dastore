@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load i18n %}
 {% load breadcrumb %}
 
 {% block breadcrumbs %}
@@ -25,20 +26,22 @@
 {% block content %}
     <section class="py-5">
         <div class="container">
-            <h2>Cancel Subscription</h2>
-            <p>Are you sure you want to cancel your subscription?</p>
+            <h2>{% trans "Cancel Subscription" %}</h2>
+            <p>{% trans "Are you sure you want to cancel your subscription?" %}</p>
             <p>
+                {% blocktrans trimmed %}
                 Please note that if you cancel your checkout process now,
                 you will have 24 hours to complete your payment.
                 If your payment is not received within this period,
                 your account will be deactivated and potentially removed.
                 Please ensure you complete your payment within the next 24 hours
                 if you wish to continue using our services.
+                {% endblocktrans %}
             </p>
             <form method="post" action="{% url 'subscriptions:CancelConfirmView' %}">
                 {% csrf_token %}
-                <button type="submit" name="cancel" class="custom-button btn" style="background-color: var(--clr-red-purple-1);color:white;">Yes, cancel subscription</button>
-                <button type="submit" name="return_checkout" class="custom-button btn mx-2">Return to checkout</button>
+                <button type="submit" name="cancel" class="custom-button btn" style="background-color: var(--clr-red-purple-1);color:white;">{% trans "Yes, cancel subscription" %}</button>
+                <button type="submit" name="return_checkout" class="custom-button btn mx-2">{% trans "Return to checkout" %}</button>
             </form>
         </div>
     </section>

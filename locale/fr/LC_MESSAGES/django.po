@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-19 15:20+0200\n"
-"PO-Revision-Date: 2023-09-19 15:22+0000\n"
+"POT-Creation-Date: 2023-09-20 09:47+0200\n"
+"PO-Revision-Date: 2023-09-20 09:48+0000\n"
 "Last-Translator:   <admin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -257,8 +257,7 @@ msgstr "S'inscrire à notre plateforme"
 #: .\account\templates\account\password_change.html:12
 #: .\account\templates\account\password_change.html:22
 #: .\account\templates\account\password_change.html:32
-#: .\account\templates\account\register.html:103
-#: .\templates\password_reset\password_reset_confirm.html:23
+#: .\account\templates\account\register.html:106
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -329,49 +328,49 @@ msgstr "Adhésion"
 msgid "Plan choosen"
 msgstr "Plan choisi"
 
-#: .\account\templates\account\register.html:58
+#: .\account\templates\account\register.html:61
 #: .\subscriptions\templates\subscriptions\plan_list.html:73
 msgid "month"
 msgstr "mois"
 
-#: .\account\templates\account\register.html:77
+#: .\account\templates\account\register.html:80
 msgid "Create an account"
 msgstr "Créer un compte"
 
-#: .\account\templates\account\register.html:83
-#: .\templates\password_reset\password_reset.html:18
+#: .\account\templates\account\register.html:86
+#: .\templates\password_reset\password_reset.html:19
 msgid "Your Email"
 msgstr "Votre E-mail"
 
-#: .\account\templates\account\register.html:90
+#: .\account\templates\account\register.html:93
 msgid "Your Username"
 msgstr "Votre nom d'utilisateur"
 
-#: .\account\templates\account\register.html:100
+#: .\account\templates\account\register.html:103
 msgid "Your Password"
 msgstr "Votre mot de passe"
 
-#: .\account\templates\account\register.html:109
+#: .\account\templates\account\register.html:112
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
-#: .\account\templates\account\register.html:119
+#: .\account\templates\account\register.html:122
 msgid "I agree to the"
 msgstr "J'accepte les"
 
-#: .\account\templates\account\register.html:119
+#: .\account\templates\account\register.html:122
 msgid "terms and conditions"
 msgstr "conditions générales"
 
-#: .\account\templates\account\register.html:124
+#: .\account\templates\account\register.html:127
 msgid "Sign in"
 msgstr "S'inscrire"
 
-#: .\account\templates\account\register.html:154
+#: .\account\templates\account\register.html:157
 msgid "Already have an account?"
 msgstr "Vous avez déjà un compte ?"
 
-#: .\account\templates\account\register.html:155
+#: .\account\templates\account\register.html:158
 msgid "Login here"
 msgstr "Se connecter ici"
 
@@ -777,9 +776,6 @@ msgid "24/7 Customer Support"
 msgstr "Support Client 24/7"
 
 #: .\app\templates\app\home.html:84
-#| msgid ""
-#| "Access dedicated support around the clock to ensure a smooth and secure "
-#| "backup process."
 msgid ""
 "With DaStore, access dedicated support around the clock to ensure a smooth "
 "and secure backup process."
@@ -897,6 +893,30 @@ msgstr "Texte"
 msgid "Open date"
 msgstr "Date d'ouverture"
 
+#: .\subscriptions\templates\subscriptions\confirm_checkout.html:7
+msgid "Wait a minute, you already have selected a privious plan !"
+msgstr "Attendez une minute, vous avez déjà sélectionné un plan précédent !"
+
+#: .\subscriptions\templates\subscriptions\confirm_checkout.html:8
+msgid ""
+"Please confirm if you want to proceed to the checkout for your chosen "
+"subscription plan :"
+msgstr ""
+"Veuillez confirmer si vous souhaitez passer à la finalisation de la commande"
+" pour le plan d'abonnement que vous avez choisi :"
+
+#: .\subscriptions\templates\subscriptions\confirm_checkout.html:14
+msgid "Yes, proceed to checkout"
+msgstr "Oui, procéder au paiement"
+
+#: .\subscriptions\templates\subscriptions\confirm_checkout.html:15
+msgid "Change my plan"
+msgstr "Changer de plan"
+
+#: .\subscriptions\templates\subscriptions\confirm_checkout.html:16
+msgid "No, cancel my account"
+msgstr "Non, annuler mon abonnement"
+
 #: .\subscriptions\templates\subscriptions\plan_list.html:31
 msgid "Pricing Plans"
 msgstr "Plans tarifaires"
@@ -916,6 +936,37 @@ msgstr "Populaire"
 #: .\subscriptions\templates\subscriptions\plan_list.html:117
 msgid "Limit Users"
 msgstr "Limite de comptes"
+
+#: .\subscriptions\templates\subscriptions\sub_cancel_confirm.html:29
+#| msgid "Yes, cancel subscription"
+msgid "Cancel Subscription"
+msgstr "Annuler l'abonnement"
+
+#: .\subscriptions\templates\subscriptions\sub_cancel_confirm.html:30
+msgid "Are you sure you want to cancel your subscription?"
+msgstr "Êtes-vous sûr de vouloir annuler votre abonnement ?"
+
+#: .\subscriptions\templates\subscriptions\sub_cancel_confirm.html:32
+msgid ""
+"Please note that if you cancel your checkout process now, you will have 24 "
+"hours to complete your payment. If your payment is not received within this "
+"period, your account will be deactivated and potentially removed. Please "
+"ensure you complete your payment within the next 24 hours if you wish to "
+"continue using our services."
+msgstr ""
+"Veuillez noter que si vous annulez la procédure de paiement maintenant, vous"
+" disposerez de 24 heures pour effectuer votre paiement. Si votre paiement "
+"n'est pas reçu dans ce délai, votre compte sera désactivé et éventuellement "
+"supprimé. Veillez à effectuer votre paiement dans les prochaines 24 heures "
+"si vous souhaitez continuer à utiliser nos services."
+
+#: .\subscriptions\templates\subscriptions\sub_cancel_confirm.html:43
+msgid "Yes, cancel subscription"
+msgstr "Oui, annuler l'abonnement"
+
+#: .\subscriptions\templates\subscriptions\sub_cancel_confirm.html:44
+msgid "Return to checkout"
+msgstr "Retourner au paiement"
 
 #: .\team\templates\team\create_team.html:32
 msgid "Add a team"
@@ -1048,11 +1099,15 @@ msgstr "Éditer"
 msgid "No team found."
 msgstr "Aucune équipe n'a été trouvée."
 
-#: .\templates\password_reset\password_reset.html:9
+#: .\templates\password_reset\password_reset.html:10
 msgid "Back to sign in"
 msgstr "Retour à la connexion"
 
 #: .\templates\password_reset\password_reset.html:13
+msgid "Forgot your password?"
+msgstr "Mot de passe oublié ?"
+
+#: .\templates\password_reset\password_reset.html:14
 msgid ""
 "Don't fret! Just type in your email and we will send you a code to reset "
 "your password!"
@@ -1060,9 +1115,45 @@ msgstr ""
 "Ne vous inquiétez pas ! Saisissez simplement votre adresse électronique et "
 "nous vous enverrons un code pour réinitialiser votre mot de passe !"
 
-#: .\templates\password_reset\password_reset.html:25
+#: .\templates\password_reset\password_reset.html:26
+#: .\templates\password_reset\password_reset_confirm.html:17
+#: .\templates\password_reset\password_reset_confirm.html:40
 msgid "Reset password"
 msgstr "Réinitialiser le mot de passe"
+
+#: .\templates\password_reset\password_reset_complete.html:9
+msgid "Your password has been reset. You may go ahead and"
+msgstr ""
+"Votre mot de passe a été réinitialisé. Vous pouvez aller de l'avant et"
+
+#: .\templates\password_reset\password_reset_complete.html:9
+msgid "login"
+msgstr "connexion"
+
+#: .\templates\password_reset\password_reset_confirm.html:14
+msgid "Back to log in"
+msgstr "Retour à la connexion"
+
+#: .\templates\password_reset\password_reset_done.html:8
+msgid "Back login"
+msgstr "Retour à la connexion"
+
+#: .\templates\password_reset\password_reset_done.html:10
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly. If you "
+"don't receive an email, please make sure you've entered the address you "
+"registered with, and check your spam folder."
+msgstr ""
+"Nous vous avons envoyé par courrier électronique des instructions pour "
+"définir votre mot de passe, si un compte existe avec l'adresse électronique "
+"que vous avez indiquée. Vous devriez les recevoir sous peu. Si vous ne "
+"recevez pas d'e-mail, assurez-vous d'avoir saisi l'adresse avec laquelle "
+"vous vous êtes inscrit et vérifiez votre dossier de courrier indésirable."
+
+#: .\templates\snippets\footer.html:47
+msgid "Useful Links"
+msgstr "Liens utiles"
 
 #: .\templates\snippets\footer.html:49
 msgid "Home"
@@ -1083,6 +1174,10 @@ msgstr "Conditions d'utilisation"
 #: .\templates\snippets\footer.html:53
 msgid "Privacy policy"
 msgstr "Politique de confidentialité"
+
+#: .\templates\snippets\footer.html:58
+msgid "Our Services"
+msgstr "Nos Services"
 
 #: .\templates\snippets\footer.html:61
 msgid "Effortless Data Management"

@@ -33,18 +33,21 @@
                     <div class="card card-body bg-white border-light shadow-sm mb-4">
                         <div class="single_price_plan choice" data-wow-delay="0.2s" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
                             <h2 class="h5 mb-4">{% translate "Plan choosen" %}</h2>
+                            {% get_current_language as LANGUAGE_CODE %}
+                            {% get_available_languages as LANGUAGES %}
+                            {% get_language_info_list for LANGUAGES as languages %}
                             <!-- Side Shape-->
                             <div class="title">
                                 <h3>
                                     {% if LANGUAGE_CODE == "fr" %}
-                                        {{ plan.metadata.fr_name }}
+                                        {{ plan.product.metadata.fr_name }}
                                     {% else %}
                                         {{ plan.product.name }}
                                     {% endif %}
                                 </h3>
                                 <p>
                                     {% if LANGUAGE_CODE == "fr" %}
-                                        {{ plan.metadata.fr_subtitle }}
+                                        {{ plan.product.metadata.fr_subtitle }}
                                     {% else %}
                                         {{ plan.product.metadata.subtitle }}
                                     {% endif %}
@@ -63,7 +66,7 @@
                             </div>
                             <div class="description">
                                 <p> {% if LANGUAGE_CODE == "fr" %}
-                                    {{ plan.metadata.fr_desc }}
+                                    {{ plan.product.metadata.fr_desc }}
                                 {% else %}
                                     {{ plan.product.description }}
                                 {% endif %}</p>
