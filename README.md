@@ -7,18 +7,18 @@ This Django web application provides users with a convenient way to backup and r
 ### Subscription Plans
 - **Basic Plan:** Offers essential backup and restore functionality with a moderate storage capacity.
  - **Premium Plan:** Provides enhanced backup and restore features along with increased storage capacity to accommodate more files.
-- **Enterprise Plan:** Designed for small and large organizations, the Enterprise plan offers multiple users and a substantial storage capacity. This plan is ideal for teams working collaboratively on file management tasks.
+- **Customized Plan:** Designed for small and large organizations, the Customized plan offers multiple users and a substantial storage capacity. This plan is ideal for teams working collaboratively on file management tasks.
 #### Features and Functionality
 - **User Registration:** Users can sign up for the application by selecting a subscription plan and completing the registration process.
 - **File Backup and Restore:** Users can easily backup and restore their files through the application's intuitive interface.
 - **Secure Payment Processing:** Integration with Stripe ensures the security and reliability of payment transactions during the checkout process.
 - **Subscription Management:** Users have control over their subscription plans and can make changes or cancel their subscriptions as needed.
-- **Enterprise Plan Team Management:** Users subscribed to the Enterprise plan can create, edit, and delete teams within their organization.
-- **Team Invitations:** Enterprise plan users can invite others to join their team by sending email invitations containing a registration form.
+- **Customized Plan Team Management:** Users subscribed to the Customized plan can create, edit, and delete teams within their organization.
+- **Team Invitations:** Customized plan users can invite others to join their team by sending email invitations containing a registration form.
 - **Team Member Registration and Login**: Invited team members can register and subsequently log in to access shared files and collaborate with the team.
 - **Limited Team Permissions:** Team members can only manage files and inherit the storage limit set by the team leader at the time of initial subscription. They cannot manage billing details, subscriptions, or overall storage capacity.
 
-This application offers a comprehensive solution for users to securely backup and restore their files, manage subscriptions, and facilitate collaboration within organizations through the Enterprise plan.
+This application offers a comprehensive solution for users to securely backup and restore their files, manage subscriptions, and facilitate collaboration within organizations through the Customized plan.
 
 ## Installation
 

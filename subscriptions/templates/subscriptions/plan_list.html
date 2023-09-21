@@ -67,15 +67,62 @@
                             </div>
                             <!-- Plan Price -->
                             <div class="price">
-                                <h4>
-                                    {{ plan.amount }}
-                                    {% if LANGUAGE_CODE == "fr" %}
-                                        €/{% translate "month" %}
-                                    {% else %}
-                                        $/{{ plan.interval }}
-                                    {% endif %}
-                                </h4>
+                                {% if plan.multi_prices %}
+                                    <!-- Default Price Display -->
+                                    <h4>
+                                        {{ plan.amount }}
+                                        {% if LANGUAGE_CODE == "fr" %}
+                                            €/{% translate "month" %}
+                                        {% else %}
+                                            $/{{ plan.interval }}
+                                        {% endif %}
+                                    </h4>
+                                    <!-- "Or" Separator -->
+                                    <div class="or-separator">or custom price and storage</div>
+                                    <!-- Dropdown for Other Prices -->
+                                    <select id="custom_storage" class="other-prices-dropdown">
+                                        {% for price in plan.multi_prices %}
+                                            <option value="{{ price.id }}">
+                                                {{ price.storage_limit }} GB - ${{ price.amount }}/month
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                {% else %}
+                                    <h4>
+                                        {{ plan.amount }}
+                                        {% if LANGUAGE_CODE == "fr" %}
+                                            €/{% translate "month" %}
+                                        {% else %}
+                                            $/{{ plan.interval }}
+                                        {% endif %}
+                                    </h4>
+                                {% endif %}
                             </div>
+                            <style>
+                                /* Styling for the "or" separator */
+                                .or-separator {
+                                    margin: 0.5rem 0;  /* Vertical spacing around the "or" */
+                                    font-size: 1rem;  /* Font size for "or" */
+                                    color: var(--clr-red-purple-1);  /* Color for "or" */
+                                    text-align: left;  /* Center the "or" */
+                                }
+
+                                /* Basic styling for the dropdown */
+                                .other-prices-dropdown {
+                                    width: 60%;
+                                    padding: 5px;
+                                    font-size: 1rem;  /* Adjust as necessary */
+                                    border: 1px solid #ccc;  /* Simple border */
+                                    border-radius: 5px;  /* Rounded corners */
+                                    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+                                }
+
+                                .other-prices-dropdown:focus {
+                                    border-color: var(--clr-purple-1);
+                                    box-shadow: 0 0 0 0.2rem rgba(129, 0, 255, 0.25);
+                                }
+
+                            </style>
                         </div>
                         <div class="col-12 col-md-6">
                             <!-- Plan Description -->
@@ -136,8 +183,25 @@
 {% block script %}
     <script type="text/javascript">
         const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";
+
         function handleSelectPlan(button) {
             const planId = button.getAttribute("data-id");
+            let storageSize = null;
+            let customPrice = null;
+
+            const customStorageSelect = document.getElementById("custom_storage");
+            console.log("Selected Plan ID:", customStorageSelect.value);
+
+
+            // Check if the Customized dropdown exists and is not empty
+            if (customStorageSelect && customStorageSelect.value) {
+                storageSize = customStorageSelect.value;
+
+                // Extract price from option text e.g. "120 GB - $90/month" -> "90"
+                const selectedOptionText = customStorageSelect.options[customStorageSelect.selectedIndex].textContent;
+                customPrice = selectedOptionText.match(/\$(\d+)/)[1];
+            }
+
             // Send a POST request to set the selected plan in the Django session
             fetch("{% url 'subscriptions:set_selected_plan' %}", {
                 method: 'POST',
@@ -145,7 +209,11 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
                 },
-                body: JSON.stringify({ plan_id: planId })
+                body: JSON.stringify({
+                    plan_id: planId,
+                    custom_storage: storageSize,  // This now refers to the price ID for custom storage
+                    custom_price: customPrice
+                })
             })
                 .then(response => response.json())
                 .then(data => {

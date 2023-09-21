@@ -172,7 +172,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     @property
     def is_company(self):
         active_plan = self.get_active_plan
-        if active_plan is not None and active_plan.product.name == 'Enterprise':
+        if active_plan is not None and active_plan.product.name == 'Customized':
             print("true")
             return True
         else:
