@@ -78,14 +78,38 @@
                                         {% endif %}
                                     </h4>
                                     <!-- "Or" Separator -->
-                                    <div class="or-separator">or custom price and storage</div>
+                                    <div class="or-separator">{% trans "or custom price and storage" %}</div>
                                     <!-- Dropdown for Other Prices -->
                                     <select id="custom_storage" class="other-prices-dropdown">
-                                        {% for price in plan.multi_prices %}
-                                            <option value="{{ price.id }}">
-                                                {{ price.storage_limit }} GB - ${{ price.amount }}/month
-                                            </option>
-                                        {% endfor %}
+                                        <optgroup label="Monthly">
+                                            {% for price in plan.multi_prices %}
+                                                {% if price.interval == "month" %}
+                                                    <option value="{{ price.id }}" data-amount="{{ price.amount }}" data-storage="{{ price.storage_limit }}">
+                                                        {{ price.storage_limit }} GB -
+                                                        {% if LANGUAGE_CODE == "fr" %}
+                                                            {{ price.amount }} €/{% translate "month" %}
+                                                        {% else %}
+                                                            ${{ price.amount }} /{{ plan.interval }}
+                                                        {% endif %}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </optgroup>
+
+                                        <optgroup label="Annually">
+                                            {% for price in plan.multi_prices %}
+                                                {% if price.interval == "year" %}
+                                                    <option value="{{ price.id }}" data-amount="{{ price.amount }}" data-storage="{{ price.storage_limit }}">
+                                                        {{ price.storage_limit }} GB -
+                                                        {% if LANGUAGE_CODE == "fr" %}
+                                                            {{ price.amount }} €/{% translate "year" %}
+                                                        {% else %}
+                                                            ${{ price.amount }} /{{ plan.interval }}
+                                                        {% endif %}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </optgroup>
                                     </select>
                                 {% else %}
                                     <h4>
@@ -186,20 +210,20 @@
 
         function handleSelectPlan(button) {
             const planId = button.getAttribute("data-id");
-            let storageSize = null;
-            let customPrice = null;
 
             const customStorageSelect = document.getElementById("custom_storage");
             console.log("Selected Plan ID:", customStorageSelect.value);
 
+            let customStoragePriceId = null;
+            let customPrice = null;
+            let customStorageLimit = null;
 
             // Check if the Customized dropdown exists and is not empty
             if (customStorageSelect && customStorageSelect.value) {
-                storageSize = customStorageSelect.value;
-
-                // Extract price from option text e.g. "120 GB - $90/month" -> "90"
-                const selectedOptionText = customStorageSelect.options[customStorageSelect.selectedIndex].textContent;
-                customPrice = selectedOptionText.match(/\$(\d+)/)[1];
+                customStoragePriceId = customStorageSelect.value;
+                const selectedOption = customStorageSelect.options[customStorageSelect.selectedIndex];
+                customPrice = selectedOption.getAttribute('data-amount');
+                customStorageLimit = selectedOption.getAttribute('data-storage');
             }
 
             // Send a POST request to set the selected plan in the Django session
@@ -211,7 +235,7 @@
                 },
                 body: JSON.stringify({
                     plan_id: planId,
-                    custom_storage: storageSize,  // This now refers to the price ID for custom storage
+                    custom_storage: customStoragePriceId,  // This now refers to the price ID for custom storage
                     custom_price: customPrice
                 })
             })
@@ -226,9 +250,8 @@
                             window.location.href = "{% url 'account:RegisterView' %}";
                         }
                     } else {
-                        // Handle error
-                        console.error("Failed to set selected plan: " + data.error);
-                        console.error("Failed to set selected plan:", data);
+                        console.error("Failed to set selected plan:", data.error);
+
                     }
                 });
         }
@@ -248,28 +271,5 @@
             }
             return cookieValue;
         }
-
-        {#const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";#}
-        {##}
-        {#function handleSelectPlan(button) {#}
-        {#    const planId = button.getAttribute("data-id");#}
-        {#    localStorage.setItem("selectedPlan", planId);#}
-        {#    setCookie("selectedPlan", planId);#}
-        {#    if (isAuthenticated) {#}
-        {#        window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}"#}
-        {#    }else {#}
-        {#        window.location.href = "{% url 'account:RegisterView' %}"#}
-        {#    }#}
-        {#}#}
-            {##}
-            {#function setCookie(name,value,days) {#}
-            {#    var expires = "";#}
-            {#    if (days) {#}
-            {#        var date = new Date();#}
-            {#        date.setTime(date.getTime() + (days*24*60*60*1000));#}
-            {#        expires = "; expires=" + date.toUTCString();#}
-            {#    }#}
-            {#    document.cookie = name + "=" + (value || "")  + expires + "; path=/";#}
-            {#}#}
     </script>
 {% endblock script %}

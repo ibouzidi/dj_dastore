@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-20 15:53+0200\n"
+"POT-Creation-Date: 2023-09-22 14:53+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Profile information"
 msgstr ""
 
-#: .\account\templates\account\account.html:112 .\app\forms.py:17
+#: .\account\templates\account\account.html:112 .\app\forms.py:19
 msgid "First Name"
 msgstr ""
 
@@ -64,7 +64,7 @@ msgstr ""
 msgid "Enter your first name"
 msgstr ""
 
-#: .\account\templates\account\account.html:125 .\app\forms.py:23
+#: .\account\templates\account\account.html:125 .\app\forms.py:25
 msgid "Last Name"
 msgstr ""
 
@@ -73,7 +73,7 @@ msgid "Also your last name"
 msgstr ""
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:26
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
 #: .\team\templates\team\detail_team.html:84
 #: .\team\templates\team\detail_team.html:139
 #: .\team\templates\team\membership_detail.html:43
@@ -316,7 +316,9 @@ msgid "Plan choosen"
 msgstr ""
 
 #: .\account\templates\account\register.html:61
-#: .\subscriptions\templates\subscriptions\plan_list.html:73
+#: .\subscriptions\templates\subscriptions\plan_list.html:75
+#: .\subscriptions\templates\subscriptions\plan_list.html:90
+#: .\subscriptions\templates\subscriptions\plan_list.html:118
 msgid "month"
 msgstr ""
 
@@ -625,11 +627,11 @@ msgstr ""
 msgid "Your OTP token is %(token)s"
 msgstr ""
 
-#: .\app\forms.py:31
+#: .\app\forms.py:33
 msgid "Subject"
 msgstr ""
 
-#: .\app\forms.py:36
+#: .\app\forms.py:38
 msgid "Write your message"
 msgstr ""
 
@@ -645,15 +647,15 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: .\app\templates\app\contact.html:78
+#: .\app\templates\app\contact.html:87
 msgid "Your message was sent, thank you!"
 msgstr ""
 
-#: .\app\templates\app\contact.html:82
+#: .\app\templates\app\contact.html:91
 msgid "Let's talk about everything."
 msgstr ""
 
-#: .\app\templates\app\contact.html:83
+#: .\app\templates\app\contact.html:92
 msgid ""
 "Have questions or need support? We're here to help. Our app aims to protect "
 "your privacy, and your feedback is crucial for us to serve you better."
@@ -879,7 +881,15 @@ msgstr ""
 msgid "Popular"
 msgstr ""
 
-#: .\subscriptions\templates\subscriptions\plan_list.html:117
+#: .\subscriptions\templates\subscriptions\plan_list.html:81
+msgid "or custom price and storage"
+msgstr ""
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:105
+msgid "year"
+msgstr ""
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:188
 msgid "Limit Users"
 msgstr ""
 
@@ -1122,7 +1132,7 @@ msgstr ""
 msgid "Connect with us on social media and join our thriving online community."
 msgstr ""
 
-#: .\templates\snippets\header.html:68 .\templates\snippets\header.html:101
+#: .\templates\snippets\header.html:68 .\templates\snippets\header.html:102
 msgid "GET STARTED"
 msgstr ""
 
@@ -1138,14 +1148,14 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-#: .\templates\snippets\header.html:97
-msgid "Logout"
-msgstr ""
-
-#: .\templates\snippets\header.html:102
+#: .\templates\snippets\header.html:96 .\templates\snippets\header.html:103
 msgid "Contact"
 msgstr ""
 
-#: .\templates\snippets\header.html:105
+#: .\templates\snippets\header.html:98
+msgid "Logout"
+msgstr ""
+
+#: .\templates\snippets\header.html:106
 msgid "Login"
 msgstr ""
