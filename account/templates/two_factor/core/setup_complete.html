@@ -4,22 +4,24 @@
 {% load breadcrumb %}
 
 {% block breadcrumbs %}
-<div class="breadcrumb-container">
-    <div class="row">
-        <div class="col-12 col-md-6 col-lg-4">
-        <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-            <ol class="breadcrumb mb-4">
-                {% url 'account:account_profile' as account_url %}
-                {% url 'two_factor:setup' as two_factor_setup %}
-                {% url 'home' as home_url %}
-                {% breadcrumb "Home" home_url %}
-                {% breadcrumb "Profile" account_url %}
-                {% breadcrumb "Two Factor Setup" %}
-            </ol>
-        </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'two_factor:setup' as two_factor_setup %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url %}
+                            {% breadcrumb "Two Factor Setup" %}
+                        </ol>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block sub_content %}
@@ -33,12 +35,12 @@
                     <div class="card-body">
                         <p class="text-center">{% blocktrans trimmed %}Congratulations, you've successfully enabled two-factor
                             authentication.{% endblocktrans %}</p>
-                                            <img style="max-height: 200px;margin:auto;display: block;" class="mb-5" src="{% static 'illustrations/success-icon-23194.png' %}" alt="">
+                        <img style="max-height: 200px;margin:auto;display: block;" class="mb-5" src="{% static 'illustrations/success-icon-23194.png' %}" alt="">
 
 
                         {% if not phone_methods %}
                             <p style="text-align: center"><a href="{% url 'two_factor:profile' %}"
-                                  class="custom-button btn">{% trans "Back to Account Security" %}</a></p>
+                                                             class="custom-button btn">{% trans "Back to Account Security" %}</a></p>
                         {% else %}
                             <p>{% blocktrans trimmed %}However, it might happen that you don't have access to
                                 your primary token device. To enable account recovery, add a phone

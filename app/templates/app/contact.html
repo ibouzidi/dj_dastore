@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% load i18n %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="row align-items-center">
+                    <div class="col-lg-7 mb-5 mb-lg-0">
+                        <h2 class="mb-5">{% trans "Need Help ?" %}<br> {% trans "Fill the form, it's easy." %}</h2>
+                        <form class="border-right pr-5 mb-5" action="{% url 'contact_view' %}" method="post" id="contactForm" name="contactForm">
+                            {% csrf_token %}
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                {% trans "First name" as firstname %}
+                                    {{ form.fname|add_class:"form-control" }}
+                                    {% if form.fname.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form.fname.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 form-group">
+                                    {{ form.lname|add_class:"form-control" }}
+                                    {% if form.lname.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form.lname.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row my-2">
+                                <div class="col-md-12 form-group">
+                                    {{ form.email|add_class:"form-control" }}
+                                    {% if form.email.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form.email.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row my-2">
+                                <div class="col-md-12 form-group">
+                                    {{ form.subject|add_class:"form-control" }}
+                                    {% if form.subject.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form.subject.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="row my-2">
+                                <div class="col-md-12 form-group">
+                                    {{ form.message|add_class:"form-control"|attr:"placeholder:Write your message"|attr:"rows:7" }}
+                                    {% if form.message.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form.message.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        <div class="row my-2">
+                            <div class="col-md-12 form-group">
+                                {{ form.captcha }}
+                                {% if form.captcha.errors %}
+                                        <div class="alert alert-danger" role="alert">
+                                            {{ form.captcha.errors.0 }}
+                                        </div>
+                                    {% endif %}
+                            </div>
+                        </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <input type="submit" value="Send Message" class="custom-button btn btn-block">
+                                    <span class="submitting"></span>
+                                </div>
+                            </div>
+
+                        </form>
+                        <div id="form-message-warning mt-4"></div>
+                        <div id="form-message-success">
+                            {% trans "Your message was sent, thank you!" %}
+                        </div>
+                    </div>
+                    <div class="col-lg-4 ml-auto">
+                        <h3 class="mb-4">{% trans "Let's talk about everything." %}</h3>
+                        <p>{% trans "Have questions or need support? We're here to help. Our app aims to protect your privacy, and your feedback is crucial for us to serve you better." %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .form-control {
+            border: none;
+            border-bottom: 1px solid #d9d9d9;
+            padding-left: 0;
+            padding-right: 0;
+            border-radius: 0; }
+        .form-control:active, .form-control:focus {
+            outline: none;
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            border-color: var(--clr-purple-1); }
+
+        .btn, .form-control {
+            height: 55px; }
+
+        form.border-right {
+            padding-right: 6rem !important; }
+        @media (max-width: 991.98px) {
+            form.border-right {
+                padding-right: 0 !important;
+                border-right: none !important; } }
+
+        label.error {
+            font-size: 12px;
+            color: red; }
+
+        #message {
+            resize: vertical; }
+
+        #form-message-warning, #form-message-success {
+            display: none; }
+
+        #form-message-warning {
+            color: #B90B0B; }
+
+        #form-message-success {
+            color: #55A44E;
+            font-size: 18px;
+            font-weight: bold; }
+
+        .submitting {
+            float: left;
+            width: 100%;
+            padding: 10px 0;
+            display: none;
+            font-weight: bold;
+            font-size: 12px;
+            color: #000; }
+    </style>
+{% endblock content %}

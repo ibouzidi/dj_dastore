@@ -6,17 +6,19 @@
 
 
 {% block breadcrumbs %}
-    <div class="breadcrumb-container">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-3">
-                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-                    <ol class="breadcrumb mb-4">
-                        {% url 'account:account_profile' as account_url %}
-                        {% url 'home' as home_url %}
-                        {% breadcrumb "Home" home_url %}
-                        {% breadcrumb "Profile" %}
-                    </ol>
-                </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" %}
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -39,7 +41,7 @@
     </style>
 
     <div class="card-body tab-content">
-        <h6>EDIT YOUR PROFILE INFORMATION</h6>
+        <h6>{% trans "EDIT YOUR PROFILE INFORMATION" %}</h6>
         <hr>
         <div class="row">
             <form method="POST" enctype="multipart/form-data" class="form-signin">
@@ -51,8 +53,8 @@
                                 <div class="card border-light text-center p-0">
 
                                     <div class="mt-3 pl-4 pr-4" id="id_image_crop_confirm">
-                                        <span id="id_cancel" class="btn btn-outline-dark">Cancel</span>
-                                        <span id="id_confirm" class="custom-button btn ml-4"><i class="fa fa-check"></i>Validate</span>
+                                        <span id="id_cancel" class="btn btn-outline-dark">{% trans "Cancel" %}</span>
+                                        <span id="id_confirm" class="custom-button btn ml-4"><i class="fa fa-check"></i>{% trans "Validate" %}</span>
                                     </div>
                                     <div class="card-body py-5">
                                         <div class="image-container" id="id_image_container">
@@ -75,17 +77,17 @@
                                         </div>
                                     </div>
                                     <input class="d-none" type="file" name="profile_image" id="id_profile_image" onchange="readURL(this)">
-                                    <div class="text-gray small">JPG or PNG. Max size of 10 MB.</div>
+                                    <div class="text-gray small">{% trans "JPG or PNG. Max size of 10 MB." %}</div>
                                     <div class="card-body">
                                         <h5>{{ user.username }}</h5>
                                         <p class="custom-button btn purple">
                                             {% if request.user.get_active_subscriptions %}
                                                 Plan : {{ request.user.get_active_subscriptions.0.plan.product.name }}
-                                                <p>Valid till: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
+                                                <p>{% trans "Valid till" %}: {{ request.user.get_active_subscriptions.0.current_period_end }}</p>
                                             {% elif request.user.teams.exists %}
-                                                Member of team : {{ request.user.teams.first.team_name }}
+                                                {% trans "Member of team" %} : {{ request.user.teams.first.team_name }}
                                             {% else %}
-                                                No active subscription
+                                                {% trans "No active subscription" %}
                                             {% endif %}
                                         </p>
 
@@ -95,7 +97,7 @@
                         </div>
                         <div class="col-12 mb-4">
                             <div class="card card-body bg-white border-light shadow-sm mb-4">
-                                <h2 class="h5 mb-4">Storage information</h2>
+                                <h2 class="h5 mb-4">{% trans "Storage information" %}</h2>
                                 <!-- Create a canvas element to display the chart -->
                                 <canvas id="storageUsageChart"></canvas>
                             </div>
@@ -103,13 +105,13 @@
                     </div>
                     <div class="col-12 col-xl-8">
                         <div class="card card-body bg-white border-light shadow-sm mb-4">
-                            <h2 class="h5 mb-4">Profile information</h2>
+                            <h2 class="h5 mb-4">{% trans "Profile information" %}</h2>
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div>
-                                        <label for="first_name">First Name</label>
+                                        <label for="first_name">{% trans "First Name" %}</label>
                                         <input name="first_name" class="form-control" id="first_name" type="text"
-                                               placeholder="Enter your first name" value="{{ form.initial.first_name }}"
+                                               placeholder="{% trans "Enter your first name" %}" value="{{ form.initial.first_name }}"
                                                required>
                                         {% if form.first_name.errors %}
                                             <span style="color: red;margin: 0">
@@ -120,9 +122,9 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div>
-                                        <label for="last_name">Last Name</label>
+                                        <label for="last_name">{% trans "Last Name" %}</label>
                                         <input name="last_name" class="form-control" id="last_name" type="text"
-                                               placeholder="Also your last name" value="{{ form.initial.last_name }}"
+                                               placeholder="{% trans "Also your last name" %}" value="{{ form.initial.last_name }}"
                                                required>
                                         {% if form.last_name.errors %}
                                             <span style="color: red;margin: 0">
@@ -135,7 +137,7 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
-                                        <label for="email">Email</label>
+                                        <label for="email">{% trans "Email" %}</label>
                                         <input name="email" class="form-control" id="email" type="email"
                                                placeholder="name@company.com" value="{{ form.initial.email }}" readonly>
                                         {% if form.email.errors %}
@@ -147,8 +149,8 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
-                                        <label for="username">Username</label>
-                                        <input name="username" class="form-control" id="username" type="username" pattern="[A-Za-z0-9]+" title="Username must contain only letters and numbers"
+                                        <label for="username">{% trans "Username" %}</label>
+                                        <input name="username" class="form-control" id="username" type="text"
                                                placeholder="Username" value="{{ form.initial.username }}" readonly>
                                         {% if form.username.errors %}
                                             <span style="color: red;margin: 0">
@@ -159,7 +161,7 @@
                                 </div>
                                 <div class="col-md-6 mb-3">
                                     <div class="form-group">
-                                        <label for="phone">Phone</label>
+                                        <label for="phone">{% trans "Phone" %}</label>
                                         <input name="phone" class="form-control" id="phone" type="number"
                                                placeholder="+12-345 678 910" value="{{ form.initial.phone }}" required>
                                         {% if form.phone.errors %}
@@ -174,9 +176,9 @@
                             <div class="row">
                                 <div class="col-sm-9 mb-3">
                                     <div class="form-group">
-                                        <label for="address">Address</label>
+                                        <label for="address">{% trans "Address" %}</label>
                                         <input name="address" class="form-control" id="address" type="text"
-                                               placeholder="Enter your home address" value="{{ form.initial.address|default:'' }}" required>
+                                               placeholder="{% trans "Enter your home address" %}" value="{{ form.initial.address|default:'' }}" required>
                                         {% if form.address.errors %}
                                             <span style="color: red;margin: 0">
                                             {{ form.address.errors }}
@@ -186,7 +188,7 @@
                                 </div>
                                 <div class="col-sm-3 mb-3">
                                     <div class="form-group">
-                                        <label for="number">Number</label>
+                                        <label for="number">{% trans "Number" %}</label>
                                         <input name="number" class="form-control" id="number" type="number"
                                                placeholder="No." value="{{ form.initial.number|default:'' }}" required>
                                         {% if form.number.errors %}
@@ -200,8 +202,8 @@
                             <div class="row">
                                 <div class="col-sm-4 mb-3">
                                     <div class="form-group">
-                                        <label for="city">City</label>
-                                        <input name="city" class="form-control" id="city" type="text" placeholder="City"
+                                        <label for="city">{% trans "City" %}</label>
+                                        <input name="city" class="form-control" id="city" type="text" placeholder="{% trans "City" %}"
                                                value="{{ form.initial.city|default:'' }}" required>
                                         {% if form.city.errors %}
                                             <span style="color: red;margin: 0">
@@ -212,8 +214,8 @@
                                 </div>
                                 <div class="col-sm-4">
                                     <div class="form-group">
-                                        <label for="zip">ZIP</label>
-                                        <input name="zip" class="form-control" id="zip" type="tel" placeholder="ZIP"
+                                        <label for="zip">{% trans "ZIP" %}</label>
+                                        <input name="zip" class="form-control" id="zip" type="tel" placeholder="{% trans "ZIP" %}"
                                                value="{{ form.initial.zip|default:'' }}" required>
                                         {% if form.zip.errors %}
                                             <span style="color: red;margin: 0">
@@ -224,7 +226,7 @@
                                 </div>
                             </div>
                             <div class="mt-3">
-                                <button type="submit" class="btn mx-2 custom-button"><i class="fas fa-check"></i>Update Detail</button>
+                                <button type="submit" class="btn mx-2 custom-button"><i class="fas fa-check"></i>{% trans "Update Detail" %}</button>
                             </div>
                         </div>
                     </div>

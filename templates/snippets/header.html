@@ -1,6 +1,48 @@
+{% load i18n %}
+{% load helper_tags %}
 {% load static %}
-<style>
-</style>
+
+<section id="topbar" class="d-none d-lg-block navbar">
+    <div class="container d-flex">
+        <div class="contact-info mr-auto">
+            <i class="icofont-envelope"></i><a href="#">contact@dastore.com</a>
+            <i class="icofont-phone"></i> <span>(416) 555-1234</span>
+        </div>
+        <div class="social-links">
+            <a href="#" class="twitter"><i class="icofont-twitter"></i></a>
+            <a href="#" class="facebook"><i class="icofont-facebook"></i></a>
+            <a href="#" class="youtube"><i class="icofont-youtube"></i></a>
+        </div>
+        <!-- Language Dropdown using Bootstrap -->
+        <nav class="navbar navbar-expand">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        <!-- Display the selected language flag -->
+                        {% if LANGUAGE_CODE == 'en' %}
+                            <img src="{% static 'flags/gb_flag.svg' %}" alt="English">
+                        {% elif LANGUAGE_CODE == 'fr' %}
+                            <img src="{% static 'flags/fr_flag.svg' %}" alt="French">
+                        {% else %}
+                            <!-- Default to some symbol if the language flag is not set -->
+                            <i class="material-symbols-outlined">language</i>
+                        {% endif %}
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right text-center" style="min-width:inherit;" aria-labelledby="languageDropdown">
+                        {% for lang in languages %}
+                            <a class="dropdown-item" href="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% change_lang lang.code %}">
+                                {{ lang.name_local|capfirst }}
+                            </a>
+                        {% endfor %}
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</section>
 <!-- ======= HEADER ======= -->
 {% if request.user.is_authenticated %}
     <header id="nav-header" class="nav-header-two">
@@ -21,12 +63,13 @@
     {% endif %}
 
     <ul>
+
         {% if request.user.is_authenticated %}
-            <li><a href="{% url 'subscriptions:SubListView' %}"><i class="material-symbols-outlined">rocket_launch</i> GET STARTED</a></li>
-            <li><a href="{% url 'folder:folder_list' %}"><i class="material-symbols-outlined">cloud_upload</i> Backup</a></li>
-            <li><a href="{% url 'account:account_profile' %}"><i class="material-symbols-outlined">settings</i> Settings</a></li>
+            <li><a href="{% url 'subscriptions:SubListView' %}"><i class="material-symbols-outlined">rocket_launch</i> {% translate "GET STARTED" %}</a></li>
+            <li><a href="{% url 'folder:folder_list' %}"><i class="material-symbols-outlined">cloud_upload</i> {% translate "Backup" %}</a></li>
+            <li><a href="{% url 'account:account_profile' %}"><i class="material-symbols-outlined">settings</i> {% translate "Settings" %}</a></li>
             <li class="drop-down">
-            <a href="#"><i class="material-symbols-outlined">account_circle</i> My account</a>
+            <a href="#"><i class="material-symbols-outlined">account_circle</i> {% translate "My account" %}</a>
             <ul>
             <li>
                 <div class="user-info">
@@ -43,27 +86,30 @@
             </li>
             <hr>
             <li>
-                <i class="material-symbols-outlined">person</i><a href="{% url 'account:account_profile' %}">Profil</a>
+                <i class="material-symbols-outlined">person</i><a href="{% url 'account:account_profile' %}">{% translate "Profil" %}</a>
             </li>
             {% if request.user.is_authenticated and request.user.is_admin%}
                 <li>
-                    <i class="material-symbols-outlined">browse_activity</i><a href="{% url 'log:log_dashboard' %}">Logs</a>
+                    <i class="material-symbols-outlined">browse_activity</i><a href="{% url 'log:log_dashboard' %}">{% translate "Logs" %}</a>
                 </li>
             {% endif %}
+            <li><i class="material-symbols-outlined">call</i><a href="{% url 'contact_view' %}">{% translate "Contact" %}</a></li>
             <li>
-                <i class="material-symbols-outlined">logout</i><a href="{% url 'account:logout' %}">Logout</a>
+                <i class="material-symbols-outlined">logout</i><a href="{% url 'account:logout' %}">{% translate "Logout" %}</a>
             </li>
 
         {% else %}
-            <li><a href="{% url 'subscriptions:SubListView' %}">GET STARTED</a></li>
+            <li><a href="{% url 'subscriptions:SubListView' %}"><i class="material-symbols-outlined">rocket_launch</i>{% translate "GET STARTED" %}</a></li>
+            <li><a href="{% url 'contact_view' %}"><i class="material-symbols-outlined">call</i>{% translate "Contact" %}</a></li>
 
             <li>
-                <a href="{% url 'account:login' %}">Login</a>
+                <a href="{% url 'account:login' %}"><i class="material-symbols-outlined">login</i>{% translate "Login" %}</a>
             </li>
         {% endif %}
         </ul>
+        <!-- NAVIGATION -->
     </nav>
-    <!-- NAVIGATION -->
+
 </div>
 </header>
 <!-- ======= END HEADER ======= -->

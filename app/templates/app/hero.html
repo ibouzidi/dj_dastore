@@ -1,14 +1,16 @@
+{% load i18n %}
 <header id="header" class="header">
     <div class="header-content">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="text-container">
-                        <h1 data-aos="fade-right"><span>DaStore, Privacy by Design</span></h1>
-                        <h2 data-aos="fade-right" data-aos-delay="100"><span>Backup, Restore, Download...</span></h2>
-                        <a href="#service" class="target-scroll" data-aos="fade-right" data-aos-delay="100">
-                            {% include 'partials/icons/icon_chevron_down.html' %}
-                        </a>
+                        <h1 data-aos="fade-right"><span>DaStore <br>Privacy by design</span></h1>
+                        <h2 data-aos="fade-right" data-aos-delay="100"><span> - {% trans "Seamless Backup" %}</span></h2>
+                        <h2 data-aos="fade-right" data-aos-delay="150"><span> - {% trans "Secure Download" %}</span></h2>
+                        <h2 data-aos="fade-right" data-aos-delay="150"><span> - {% trans "Team Collaboration" %}</span></h2>
+                        <button data-aos="fade-right" data-aos-delay="200" type="button" class="custom-button btn mx-2">{% trans "Learn more" %}</button>
+                        <button data-aos="fade-right" data-aos-delay="200" type="button" class="custom-button btn mx-2">{% trans "Subscribe" %}</button>
                     </div>
                 </div>
             </div>

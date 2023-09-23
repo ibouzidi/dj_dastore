@@ -11,6 +11,4 @@ mykey = BASE_DIR / 'mykey.key'
 with open(str(mykey), 'rb') as mykey:
     key = mykey.read()
 
-print(key)
-
 

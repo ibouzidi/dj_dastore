@@ -9,10 +9,18 @@
             '/account/statistics/': 'a[data-id="statistics"]',
         };
 
+        // Remove language prefix from the current URL pathname
+        var currentPath = window.location.pathname.split("/").slice(2).join("/");
+
+        // Add a leading '/' if it's missing after slicing
+        if (!currentPath.startsWith('/')) {
+            currentPath = '/' + currentPath;
+        }
+
         // Iterate over each path in the pathMap
         $.each(pathMap, function(path, selector) {
-            // If the current URL starts with this path
-            if (window.location.pathname.startsWith(path)) {
+            // If the current URL (without language prefix) starts with this path
+            if (currentPath.startsWith(path)) {
                 // Remove the 'active' class from all nav links
                 $(".nav-pills .nav-link").removeClass('active');
                 // Add the 'active' class to the current nav link
@@ -22,5 +30,6 @@
             }
         });
     });
+
 
 </script>

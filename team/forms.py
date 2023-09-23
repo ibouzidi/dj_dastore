@@ -1,6 +1,8 @@
 import re
 from django import forms
 from django.core.exceptions import ValidationError
+from setuptools._entry_points import _
+
 from team.models import Team
 from account.models import Account
 

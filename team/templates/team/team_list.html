@@ -1,21 +1,24 @@
 {% extends "../sub_base.html" %}
+{% load i18n %}
 {% load static %}
 {% load breadcrumb %}
 
 
 {% block breadcrumbs %}
-    <div class="breadcrumb-container">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
-                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-                    <ol class="breadcrumb mb-4">
-                        {% url 'account:account_profile' as account_url %}
-                        {% url 'home' as home_url %}
-                        {% breadcrumb "Home" home_url %}
-                        {% breadcrumb "Profile" account_url%}
-                        {% breadcrumb "Teams Detail" %}
-                    </ol>
-                </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url%}
+                            {% breadcrumb "Teams Detail" %}
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -23,10 +26,10 @@
 
 {% block sub_content %}
     <div class="card-body tab-content">
-    <h6>Teams Detail</h6>
+    <h6>{% trans "Teams Detail" %}</h6>
     <hr>
 
-    <a class="custom-button btn" href="{% url 'team:create_team' %}"><i class="fa fa-plus"></i>Create Team</a>
+    <a class="custom-button btn" href="{% url 'team:create_team' %}"><i class="fa fa-plus"></i>{% trans "Create Team" %}</a>
     <style>
         table {
             width: 100%;
@@ -52,13 +55,13 @@
             <tr>
                 <td scope="row">{{ team.team_name }}</td>
                 <td>
-                    <a href="{% url 'team:team_detail' team.team_id %}" class="custom-button btn"><i class="fa fa-edit"></i>Edit</a> |
-                    <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash"></i> Delete</a>
+                    <a href="{% url 'team:team_detail' team.team_id %}" class="custom-button btn"><i class="fa fa-edit"></i>{% trans "Edit" %}</a> |
+                    <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash"></i> {% trans "Delete" %}</a>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="2">No team found.</td>
+                <td colspan="2">{% trans "No team found." %}</td>
             </tr>
         {% endif %}
         </tbody>

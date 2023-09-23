@@ -1,7 +1,8 @@
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_view
 from two_factor.urls import urlpatterns as tf_urls
 import app.views
@@ -11,9 +12,10 @@ from app.views import (
     home_screen_view
 )
 
-urlpatterns = [
+localized_patterns  = [
     # path('', HomeView.as_view(), name='HomeView'),
-    path("stripe/", include("djstripe.urls", namespace="djstripe")),
+    path('set_language/', app.views.set_language, name='set_language'),
+    path('contact/', app.views.contact_view, name='contact_view'),
     path("subscriptions/", include("subscriptions.urls")),
     path('backup/', include('extbackup.urls')),
     path('folder/', include('folder.urls')),
@@ -47,11 +49,20 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += static(settings.STATIC_URL,
-                          document_root=settings.STATIC_ROOT)
-    urlpatterns += static(settings.MEDIA_URL,
-                          document_root=settings.MEDIA_ROOT)
+    localized_patterns += static(settings.STATIC_URL,
+                                 document_root=settings.STATIC_ROOT)
+    localized_patterns += static(settings.MEDIA_URL,
+                                 document_root=settings.MEDIA_ROOT)
 
 handler403 = 'app.views.handle403'
 handler404 = 'app.views.handle404'
 handler500 = 'app.views.handle500'
+
+urlpatterns = [
+    # path('set_language/', app.views.set_language, name='set_language'),
+    path("stripe/", include("djstripe.urls", namespace="djstripe")),
+    re_path(r'^rosetta/', include('rosetta.urls')),
+
+]
+
+urlpatterns += i18n_patterns(*localized_patterns)

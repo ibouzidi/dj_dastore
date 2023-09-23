@@ -4,22 +4,24 @@
 {% load breadcrumb %}
 
 {% block breadcrumbs %}
-<div class="breadcrumb-container">
-    <div class="row">
-        <div class="col-12 col-md-6 col-lg-4">
-        <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-            <ol class="breadcrumb mb-4">
-                {% url 'account:account_profile' as account_url %}
-                {% url 'two_factor:setup' as two_factor_setup %}
-                {% url 'home' as home_url %}
-                {% breadcrumb "Home" home_url %}
-                {% breadcrumb "Profile" account_url %}
-                {% breadcrumb "Two Factor Setup" %}
-            </ol>
-        </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'two_factor:setup' as two_factor_setup %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url %}
+                            {% breadcrumb "Two Factor Setup" %}
+                        </ol>
+                    </nav>
+                </div>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block extra_media %}
@@ -46,12 +48,12 @@
                                             <br><br>
                                             By enabling two-factor authentication, you're adding an extra layer of protection
                                             to safeguard your valuable data.
-                                             <br><br>
+                                            <br><br>
                                             Two-factor authentication, often referred to as 2FA,
                                             requires not only a password and username but also something
                                             that only the user has on them, i.e., a piece of information only
                                             they should know or have immediately on hand - like a physical token.
-                                             <br><br>
+                                            <br><br>
                                             Follow the steps in this wizard to enable two-factor
                                             authentication.
                                         {% endblocktrans %}</p>
@@ -109,9 +111,9 @@
                                 </div>
                             </div>
                         </div>
-                    <div class="col-md-6 mb-3">
-                        <img src="{% static 'illustrations/2fa.jpg' %}" alt="">
-                    </div>
+                        <div class="col-md-5">
+                            <img src="{% static 'illustrations/2fa.jpg' %}" alt="">
+                        </div>
                     </div>
                 </div>
             </div>

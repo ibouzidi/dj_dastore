@@ -6,20 +6,22 @@
 
 
 {% block breadcrumbs %}
-    <div class="breadcrumb-container">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-5">
-                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-                    <ol class="breadcrumb mb-4">
-                        {% url 'account:account_profile' as account_url %}
-                        {% url 'team:team_list' as team_list_url %}
-                        {% url 'home' as home_url %}
-                        {% breadcrumb "Home" home_url %}
-                        {% breadcrumb "Profile" account_url%}
-                        {% breadcrumb "Team Detail" team_list_url%}
-                        {% breadcrumb "Edit Team" %}
-                    </ol>
-                </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-5">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'team:team_list' as team_list_url %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url%}
+                            {% breadcrumb "Team Detail" team_list_url%}
+                            {% breadcrumb "Edit Team" %}
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -44,7 +46,7 @@
     </style>
 
     <div class="card-body tab-content">
-        <h6>Edit Team : {{ team.team_name }}</h6>
+        <h6>{% trans "Edit Team :" %} {{ team.team_name }}</h6>
         <hr>
         <div id="teamDetail" data-aos="fade-left" data-aos-delay="200">
             <div class="card-body tab-content">
@@ -52,7 +54,7 @@
                     <form method="post">
                         {% csrf_token %}
                         <div class="form-group mb-4">
-                            <label for="{{ form.team_name.id_for_label }}">Team Name</label>
+                            <label for="{{ form.team_name.id_for_label }}">{% trans "Team Name" %}</label>
                             <div class="input-group">
                                 <span class="input-group-text" id="basic-addon3"><span class="fas fa-user-friends"></span></span>
                                 {% render_field form.team_name class="form-control" placeholder="Team Name"%}
@@ -69,18 +71,18 @@
                         </div>
 
                         <button type="submit" class="btn custom-button">
-                            <i class="fas fa-check"></i> Save Team
+                            <i class="fas fa-check"></i> {% trans "Save Team" %}
                         </button>
                     </form>
                 </div>
                 <hr>
-                <h6>Team Members</h6>
+                <h6>{% trans "Team Members" %}</h6>
                 <div class="table-responsive">
                     <table class="table">
                         <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
+                            <th>{% trans  "Username" %}</th>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Role" %}</th>
                         </tr>
                         {% for member in team_members %}
                             <tr>
@@ -92,7 +94,7 @@
                     </table>
                 </div>
                 <hr>
-                <h6 class="mb-3">Invite Team Members</h6>
+                <h6 class="mb-3">{% trans "Invite Team Members" %}</h6>
                 <form method="post" action="{% url 'team:send_invitation' %}">
                     {% csrf_token %}
                     <input type="hidden" name="team_id" value="{{ team.team_id }}">
@@ -101,20 +103,28 @@
                         <div class="input-group mb-3 w-75">
                             <input type="email" name="email" class="form-control" placeholder="example@company.com" aria-label="Recipient's username" aria-describedby="button-addon2" required>
                             <div class="input-group-append">
-                                <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>Invite</button>
+                                <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>{% trans "Invite" %}</button>
                             </div>
                         </div>
                         {% if remaining_invitations > 0 %}
                             <div class="alert alert-info" role="alert">
-                                <small>Remember, you can only invite {{ remaining_invitations }} more members.</small>
+                                <small>
+                                    {% blocktrans with remaining_invitations=remaining_invitations %}
+                                        <small>Remember, you can only invite {{ remaining_invitations }} more members.</small>
+                                    {% endblocktrans %}
+                                </small>
                             </div>
                         {% elif remaining_invitations == 0 %}
                             <div class="alert alert-warning" role="alert">
-                                <small>Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.</small>
+                                <small>
+                                    {% blocktrans with team_members=team_members.count %}
+                                        Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.
+                                    {% endblocktrans %}
+                                </small>
                             </div>
                         {% else %}
                             <div class="alert alert-danger" role="alert">
-                                <small>Something went wrong. Please contact support.</small>
+                                <small>{% trans "Something went wrong. Please contact support." %}</small>
                             </div>
                         {% endif %}
 
@@ -122,19 +132,19 @@
                 </form>
                 {% if pending_invitations %}
                     <hr>
-                    <h6>Pending invitation</h6>
+                    <h6>{% trans "Pending invitation" %}</h6>
                     <div class="table-responsive">
                         <table class="table">
                             <tr>
-                                <th>Email</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>{% trans "Email" %}</th>
+                                <th>{% trans "Status" %}</th>
+                                <th>{% trans "Action" %}</th>
                             </tr>
                             {% for invitation in pending_invitations %}
                                 <tr>
                                     <td>{{ invitation.email }}</td>
                                     <td>{{ invitation.get_status_display }}</td>
-                                    <td> <a href="{% url 'team:cancel_invitation' invitation.code %}">Cancel Invitation</a></td>
+                                    <td> <a href="{% url 'team:cancel_invitation' invitation.code %}">{% trans "Cancel Invitation" %}</a></td>
                                 </tr>
                             {% endfor %}
                         </table>

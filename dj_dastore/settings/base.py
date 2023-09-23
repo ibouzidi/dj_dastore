@@ -5,14 +5,14 @@ from django.contrib.messages import constants as messages
 from django.core.management.utils import get_random_secret_key
 
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config("SECRET_KEY", default=get_random_secret_key())
 
-print("SECRET_KEY")
-print(SECRET_KEY)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=True, cast=bool)
 
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'captcha',
 
     'djstripe',
+    'rosetta',
 ]
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -65,6 +66,8 @@ ROOT_URLCONF = 'dj_dastore.urls'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'app.middleware.langhandlermiddleware.LangBasedOnUrlMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -133,15 +136,19 @@ AUTH_PASSWORD_VALIDATORS = [
 # INTERNATIONALIZATION AND LOCALIZATION SETTINGS
 # =====================================================================
 
+
+
+# LANGUAGE_CODE = 'en-us'
+
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 
 BASE_URL = "http://127.0.0.1:8000"
@@ -201,3 +208,5 @@ DJSTRIPE_USE_NATIVE_JSONFIELD = True
 
 # LOAD Fixtures
 # python manage.py loaddata <fixturename>
+
+

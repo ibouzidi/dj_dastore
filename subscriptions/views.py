@@ -159,7 +159,7 @@ class CancelConfirmView(View):
             if user_id:
                 try:
                     user = Account.objects.get(id=user_id)
-                    group = Group.objects.get(name='inactive_subscribers')
+                    group = Group.objects.get(name='g_inactive_subscribers')
                     user.groups.add(group)
                     messages.error(request, "Subscription canceled")
                 except Account.DoesNotExist:
@@ -207,8 +207,8 @@ def move_user_to_group(user, old_group_name, new_group_name):
 #                 cancel_at_period_end=True,
 #             )
 #             # Move user to 'Inactive Subscribers' group
-#             move_user_to_group(request.user, 'active_subscribers',
-#                                'inactive_subscribers')
+#             move_user_to_group(request.user, 'g_active_subscribers',
+#                                'g_inactive_subscribers')
 #
 #             messages.success(request, "Subscription will be cancelled at"
 #                                       " the end of the billing period")
@@ -288,7 +288,7 @@ def subscription_cancelled_event_listener(event, **kwargs):
         subscription.save()
 
         # Move user to 'Inactive Subscribers' group
-        move_user_to_group(user, 'active_subscribers', 'inactive_subscribers')
+        move_user_to_group(user, 'g_active_subscribers', 'g_inactive_subscribers')
 
     except Subscription.DoesNotExist:
         print("Subscription does not exist in the database")

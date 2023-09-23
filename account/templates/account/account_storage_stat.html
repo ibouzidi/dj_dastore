@@ -6,18 +6,20 @@
 
 
 {% block breadcrumbs %}
-    <div class="breadcrumb-container">
-        <div class="row">
-            <div class="col-12 col-md-6 col-lg-4">
-                <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
-                    <ol class="breadcrumb mb-4">
-                        {% url 'account:account_profile' as account_url %}
-                        {% url 'home' as home_url %}
-                        {% breadcrumb "Home" home_url %}
-                        {% breadcrumb "Profile" account_url%}
-                        {% breadcrumb "Security Account" %}
-                    </ol>
-                </nav>
+    <div class="container-fluid-custom2">
+        <div class="breadcrumb-container">
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-4">
+                    <nav data-aos="fade-left" data-aos-delay="100" aria-label="breadcrumb" class="breadcrumb-nav">
+                        <ol class="breadcrumb mb-4">
+                            {% url 'account:account_profile' as account_url %}
+                            {% url 'home' as home_url %}
+                            {% breadcrumb "Home" home_url %}
+                            {% breadcrumb "Profile" account_url%}
+                            {% breadcrumb "Security Account" %}
+                        </ol>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>
@@ -25,24 +27,24 @@
 
 {% block sub_content %}
     <div class="card-body tab-content">
-    <h6>STORAGE STATISTICS</h6>
+    <h6>{% trans "STORAGE STATISTICS" %}</h6>
     <hr>
     <div class="row custom-content-row justify-content-evenly" data-aos="fade-left" data-aos-delay="100">
         <div class="col-md-6 col-lg-2">
             <div class="numbersquare">
-                <div class="intermsquaretext">File number</div>
+                <div class="intermsquaretext">{% trans "File number" %}</div>
                 <div class="intermsquarenb numbertextxl">{{ file_count }}</div>
             </div>
         </div>
         <div class="col-md-6 col-lg-2">
             <div class="numbersquare">
-                <div class="intermsquaretext">Folder number</div>
+                <div class="intermsquaretext">{% trans "Folder number" %}</div>
                 <div class="intermsquarenb numbertextxl">{{ folder_count }}</div>
             </div>
         </div>
         <div class="col-md-6 col-lg-2">
             <div class="numbersquare">
-                <div class="intermsquaretext">File size Total</div>
+                <div class="intermsquaretext">{% trans "File size Total" %}</div>
                 <div class="intermsquarenb numbertextxxxl">{{ storage_used_bytes.0 }} {{ storage_used_bytes.1 }}</div>
             </div>
         </div>
@@ -52,22 +54,22 @@
             <canvas id="storageUsageChart"></canvas>
         </div>
         <div class="col-md-6 col-lg-6">
-<canvas id="uploadSizeChart"></canvas>
+            <canvas id="uploadSizeChart"></canvas>
 
         </div>
     </div>
 {% endblock %}
 
 {% block script %}
-        {% include 'partials/chartlines/js_chartline.html' %}
+    {% include 'partials/chartlines/js_chartline.html' %}
 
 
 
     <script type="text/javascript">
 
-let chart_datasets = JSON.parse("{{ chart_datasets_json|escapejs }}");
-let labels = {{ label|safe }};
-createLineChart("uploadSizeChart", labels, chart_datasets);
+        let chart_datasets = JSON.parse("{{ chart_datasets_json|escapejs }}");
+        let labels = {{ label|safe }};
+        createLineChart("uploadSizeChart", labels, chart_datasets);
 
         function getRandomColor() {
             let letters = '0123456789ABCDEF';
