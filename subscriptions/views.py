@@ -1,8 +1,6 @@
 import datetime
 import hashlib
 import json
-import secrets
-
 from django.conf import settings
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -12,15 +10,11 @@ from django.views.decorators.http import require_POST
 from django.views.generic import View, TemplateView
 from django.http.response import JsonResponse
 from djstripe.models import Customer, Plan, Product, Price
-from django.contrib.auth import get_user_model, authenticate, login
-from django.contrib.auth.mixins import LoginRequiredMixin
 from djstripe import webhooks
 from djstripe.models import Subscription, Invoice
 from django.contrib import messages
 import stripe
 from django.contrib.auth.models import Group
-from stripe.error import StripeError
-from functools import cmp_to_key
 from account.models import Account
 from dj_dastore.decorator import user_is_active_subscriber
 
@@ -82,7 +76,7 @@ class SubListView(View):
         context = {
             "plans": plans
         }
-        print(plans)
+        # print(plans)
 
         return render(request, "subscriptions/plan_list.html", context)
 
@@ -105,32 +99,29 @@ def set_selected_plan(request):
         data = json.loads(request.body)
         plan_id = data.get("plan_id")
         custom_storage_price_id = data.get("custom_storage")
-        custom_price = data.get("custom_price")  # Extract the custom_price
-        print("Received plan_id:", plan_id)
-        print("Received custom_storage_price_id:", custom_storage_price_id)
-        print("Received custom_price:", custom_price)
+        custom_price = data.get("custom_price")
     except (json.JSONDecodeError, TypeError):
         return JsonResponse({"error": "Invalid JSON request body"}, status=400)
 
-    # Make sure the plan_id is valid
+    # Validate plan_id
     if not Price.objects.filter(id=plan_id).exists():
         return JsonResponse({"error": "Invalid plan_id"}, status=400)
 
-    # If there's a custom_storage_price_id, ensure it's a valid Price ID
-    if custom_storage_price_id and not Price.objects.filter(
-            id=custom_storage_price_id).exists():
-        return JsonResponse({"error": "Invalid custom_storage price_id"},
-                            status=400)
+    # Validate custom_storage_price_id if provided
+    if custom_storage_price_id and not Price.objects.filter(id=custom_storage_price_id).exists():
+        return JsonResponse({"error": "Invalid custom_storage price_id"}, status=400)
 
-    print("Setting plan_id in session:", plan_id)
-    # Store the plan_id and custom values into Django's session
-    request.session["plan_id"] = custom_storage_price_id
-    print("After setting, plan_id in session:", request.session.get("plan_id"))
+    # Store the plan_id in the session by default
+    request.session["plan_id"] = plan_id
+
+    # If there's a custom_storage_price_id, store it in the session, overwriting the plan_id
     if custom_storage_price_id:
+        request.session["plan_id"] = custom_storage_price_id
         request.session["custom_storage"] = custom_storage_price_id
+
+    # Store the custom price in the session if provided
     if custom_price:
-        request.session[
-            "custom_price"] = custom_price  # Store the custom price
+        request.session["custom_price"] = custom_price
 
     return JsonResponse({"status": "success"})
 
@@ -323,8 +314,9 @@ def payment_intent_succeeded_event_listener(event, **kwargs):
                     print("plan_id")
                     print(plan_id)
                     price = get_object_or_404(Price, id=plan_id)
-                    user.storage_limit = price.metadata[
-                        "storage_limit"]  # Get storage_limit from Price's metadata
+                    # Get storage_limit from Price's metadata
+                    user.storage_limit = int(price.metadata[
+                        "storage_limit"])
                     test = price.metadata["storage_limit"]
                     print("test metadata ")
                     print(test)
