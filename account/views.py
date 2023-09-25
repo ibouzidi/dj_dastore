@@ -1,4 +1,5 @@
 import math
+import time
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib import messages
@@ -10,7 +11,7 @@ from django.core.mail import send_mail, BadHeaderError
 from django.db.models import Q, Sum
 from django.db.models.functions import TruncDate
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy, reverse
@@ -394,3 +395,24 @@ def account_billing(request, *args, **kwargs):
         context['invoices'] = invoices
 
     return render(request, 'account/account_billing.html', context)
+
+
+@method_decorator(user_is_active_subscriber, name='dispatch')
+class DeleteAccountView(View):
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        user.is_active = False
+        user.save()
+
+        # Simulate a delay for account deletion (e.g., 3 seconds)
+        time.sleep(3)
+
+        # Logout the user after disabling the account
+        logout(request)
+
+        # Inform the user about the account deletion
+        messages.success(request,
+                         'Your account has been successfully deleted.')
+
+        return HttpResponseRedirect(reverse('home'))

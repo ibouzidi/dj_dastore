@@ -14,7 +14,8 @@ urlpatterns = [
     path('edit/cropImage/', views.crop_image, name="account_crop_image"),
     path('statistics/', views.account_storage_stat,
          name="account_storage_stat"),
-
+    path('delete-account/', views.DeleteAccountView.as_view(),
+         name='delete_account'),
     path('password_change/', views.CustomPasswordChangeView.as_view(),
          name='password_change'),
 
