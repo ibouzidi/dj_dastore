@@ -3,16 +3,18 @@ from hashlib import sha256
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime, timedelta
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views import View
 from account.forms import RegistrationForm
 from account.models import Account
 from dj_dastore.decorator import user_is_company, user_is_active_subscriber, \
     user_is_only_team_member
-from team.forms import AddTeamForm
+from team.forms import AddTeamForm, InvitationForm
 from team.models import Membership, Team, Invitation, RoleChoices
 
 
@@ -85,10 +87,14 @@ def team_detail(request, team_id):
     remaining_invitations = 0
     if request.user.is_team_leader and request.user.is_company:
         remaining_invitations = int(request.user.limit_users()) - \
-                                request.user.total_members_all_teams
+                                (request.user.total_members_all_teams +
+                                 pending_invitations.count())
+
+    form_inv = InvitationForm(initial={'team_id': team_id})
 
     context = {
         'form': form,
+        'form_inv': form_inv,
         'team_members': team_members,
         'team': team,
         'pending_invitations': pending_invitations,
@@ -101,58 +107,81 @@ def team_detail(request, team_id):
 @method_decorator(user_is_only_team_member, name='dispatch')
 class MembershipDetailView(View):
     def get(self, request):
-        memberships = Membership.objects.filter(user=request.user)  # updated line
+        memberships = Membership.objects.filter(
+            user=request.user)  # updated line
         context = {
             'memberships': memberships
         }
         return render(request, 'team/membership_detail.html', context)
 
 
-@user_is_company
-def send_invitation(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        selected_team_id = request.POST.get('team_id')
+@method_decorator(user_is_company, name='dispatch')
+class SendInvitation(View):
 
-        team = Team.objects.filter(team_id=selected_team_id).first()
-        membership = Membership.objects.filter(user=request.user, team=team,
-                                               role=RoleChoices.LEADER).first()
-        if membership:
-            if membership.user.is_team_leader:
-                limit_users = membership.user.limit_users()  # Get limit from user's plan
-                print("limit_users")
-                print(limit_users)
-                if limit_users is None:  # In case of None limit, convert it to 0
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['team'] = Team.objects.filter(id=self.kwargs['team_id']).first()
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = InvitationForm(request.POST)
+        response_data = {}
+
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            storage_limit = form.cleaned_data['storage_limit']
+            selected_team_id = form.cleaned_data['team_id']
+
+            if storage_limit <= 0 or int(storage_limit) != storage_limit:
+                response_data['result'] = 'error'
+                response_data['message'] = 'Invalid storage limit.'
+                return JsonResponse(response_data)
+
+            team = Team.objects.filter(team_id=selected_team_id).first()
+            membership = Membership.objects.filter(user=request.user,
+                                                   team=team,
+                                                   role=RoleChoices.LEADER).first()
+            if membership:
+                limit_users = membership.user.limit_users()
+                if limit_users is None:
                     limit_users = 0
-                # Total members in the specific team
+
                 total_members_in_team = team.memberships.count()
-                print("total_members_in_team")
-                print(total_members_in_team)
 
-                # Check if total members in team exceeds the limit
-                if total_members_in_team >= int(limit_users):
-                    messages.error(request, 'The team is already at capacity.')
-                    return redirect('team:team_detail', team_id=team.team_id)
+                # Count the number of pending invitations
+                total_pending_invitations = Invitation.objects.filter(
+                    team=team,
+                    status=Invitation.InvitationStatusChoices.PENDING
+                ).count()
 
-            existing_invitation = Invitation.objects.filter(
-                email=email, team=team,
-                status__in=[Invitation.InvitationStatusChoices.PENDING,
-                            Invitation.InvitationStatusChoices.ACCEPTED]).first()
-            if existing_invitation:
-                messages.error(request,
-                               'An invitation to this email has already '
-                               'been sent or accepted.')
-                return redirect('team:team_detail', team_id=team.team_id)
-            else:
+                if total_members_in_team + + total_pending_invitations >= int(limit_users):
+                    response_data['result'] = 'error'
+                    response_data[
+                        'message'] = 'The team is already at capacity, ' \
+                                     'including pending invitations'
+                    return JsonResponse(response_data)
+
+                existing_invitation = Invitation.objects.filter(
+                    email=email, team=team,
+                    status__in=[Invitation.InvitationStatusChoices.PENDING,
+                                Invitation.InvitationStatusChoices.ACCEPTED]).first()
+
+                if existing_invitation:
+                    response_data['result'] = 'error'
+                    response_data[
+                        'message'] = 'An invitation to this email has ' \
+                                     'already been sent or accepted.'
+                    return JsonResponse(response_data)
+
                 # All checks pass, send invitation
-                # Define the expiry date
-                expiry_date = datetime.now() + timedelta(hours=24)
-                # Create the invitation
+                expiry_date = timezone.now() + timedelta(hours=24)
                 invitation = Invitation.objects.create(email=email,
                                                        team=team,
                                                        expiry_date=expiry_date,
-                                                       sender=request.user
+                                                       sender=request.user,
+                                                       storage_limit=storage_limit
                                                        )
+
                 signup_link = request.build_absolute_uri(reverse(
                     'team:invitation_landing', args=[invitation.code]))
                 leader_email = membership.user.email
@@ -165,11 +194,24 @@ def send_invitation(request):
                     settings.DEFAULT_FROM_EMAIL,
                     [email],
                 )
-                messages.success(request, 'Invitation sent.')
-                return redirect('team:team_detail', team_id=team.team_id)
+
+                return JsonResponse({
+                    'result': 'success',
+                    'message': 'Invitation sent',
+                    'new_invitation': {
+                        'email': invitation.email,
+                        'status': invitation.status.capitalize(),
+                        'code': invitation.code
+                    }
+                })
+
+            else:
+                response_data['result'] = 'error'
+                response_data['message'] = 'You are not a team leader.'
+                return JsonResponse(response_data)
+
         else:
-            messages.error(request, 'You are not a team leader.')
-    return render(request, 'account/account.html')
+            return JsonResponse({'result': 'error', 'message': 'Invalid input'})
 
 
 class InvitationLandingView(View):
@@ -201,95 +243,88 @@ class InvitationLandingView(View):
 
 
 class GuestRegisterView(View):
+
+    def _get_invitation(self, code):
+        try:
+            return Invitation.objects.get(
+                code=code,
+                status=Invitation.InvitationStatusChoices.PENDING
+            )
+        except Invitation.DoesNotExist:
+            return None
+
+    def _is_email_matching_invitation(self, form_email, invitation):
+        return form_email.lower() == invitation.email.lower()
+
+    def _is_team_full(self, leader):
+        limit_users = leader.limit_users()
+        total_members_all_teams = leader.total_members_all_teams
+        return total_members_all_teams >= int(limit_users)
+
     def get(self, request, code):
         form = RegistrationForm()
-        try:
-            invitation_id = request.session.get('invitation_id')
-            invitation = Invitation.objects.get(
-                id=invitation_id,
-                code=code,
-                status=Invitation.InvitationStatusChoices.PENDING)
-            if invitation.expiry_date < datetime.now():
-                messages.error(request, 'This invitation has expired.')
-                return redirect('home')
-            form = RegistrationForm(initial={'email': invitation.email})
-            return render(request, 'team/guest_register.html', {'form': form})
-        except Invitation.DoesNotExist:
+        invitation = self._get_invitation(code)
+
+        if not invitation:
             messages.error(request, 'Invalid or expired invitation code.')
             return redirect('home')
 
+        if invitation.expiry_date < timezone.now():
+            messages.error(request, 'This invitation has expired.')
+            return redirect('home')
+
+        form = RegistrationForm(initial={'email': invitation.email})
+        return render(request, 'team/guest_register.html', {'form': form})
+
     def post(self, request, code):
         form = RegistrationForm(request.POST)
-        if form.is_valid():
-            try:
-                invitation = Invitation.objects.get(
-                    code=code,
-                    status=Invitation.InvitationStatusChoices.PENDING)
+        if not form.is_valid():
+            return render(request, 'team/guest_register.html', {'form': form})
 
-                # Ensure the email matches the invitation
-                if form.cleaned_data.get('email').lower() != invitation.email:
-                    messages.error(request,
-                                   'Email does not match the invitation.')
-                    return redirect('team:guest_register', code=code)
-
-                leader_membership = Membership.objects.filter(
-                    team=invitation.team, role=RoleChoices.LEADER).first()
-
-                # Added this check
-                if leader_membership.user.is_team_leader:
-                    limit_users = leader_membership.user.limit_users()
-
-                    # Check total members across all team lead by the user
-                    total_members_all_teams = leader_membership.user.total_members_all_teams
-
-                    if total_members_all_teams >= int(limit_users):
-                        messages.error(request,
-                                       'The team is already at capacity.')
-                        return redirect('account:login')
-
-                leader_active_subscriptions = \
-                    leader_membership.user.get_active_subscriptions
-
-                if leader_active_subscriptions.exists():
-                    leader_plan = leader_active_subscriptions[0].plan
-                    storage_limit = leader_plan.product.metadata[
-                        "storage_limit"]
-                else:
-                    storage_limit = 0
-
-                # Create user account with specified storage limit
-                account = Account.objects.create_user(
-                    email=form.cleaned_data.get('email').lower(),
-                    password=form.cleaned_data.get('password1'),
-                    username=form.cleaned_data.get('username'),
-                )
-                # storage_limit is str class
-                if isinstance(storage_limit, str):
-                    try:
-                        account.storage_limit = int(storage_limit)
-                    except ValueError:
-                        account.storage_limit = 0
-                else:
-                    account.storage_limit = 0
-                account.is_active = True
-                account.save()
-
-                # Create membership and update invitation status
-                Membership.objects.create(user=account, team=invitation.team,
-                                          role=RoleChoices.MEMBER)
-                invitation.status = Invitation.InvitationStatusChoices.ACCEPTED
-                invitation.save()
-                del request.session['invitation_id']
-
-                # Update the total_members count of the team
-                invitation.team.save()
-
-                messages.success(request,
-                                 'Registration and team joining successful.')
-            except Invitation.DoesNotExist:
-                messages.error(request, 'Problem in accepting the invitation.')
+        invitation = self._get_invitation(code)
+        if not invitation:
+            messages.error(request, 'Problem in accepting the invitation.')
             return redirect('account:login')
-        return render(request, 'team/guest_register.html', {'form': form})
+
+        if not self._is_email_matching_invitation(
+                form.cleaned_data.get('email'), invitation):
+            messages.error(request, 'Email does not match the invitation.')
+            return redirect('team:guest_register', code=code)
+
+        leader_membership = Membership.objects.filter(
+            team=invitation.team, role=RoleChoices.LEADER
+        ).first()
+        if not leader_membership:
+            # This is a fallback in case a leader membership isn't found.
+            messages.error(request, 'Team leader not found.')
+            return redirect('account:login')
+
+        if self._is_team_full(leader_membership.user):
+            messages.error(request, 'The team is already at capacity.')
+            return redirect('account:login')
+
+        storage_limit = invitation.storage_limit if leader_membership.user.get_active_subscriptions.exists() else 0
+
+        account = Account.objects.create_user(
+            email=form.cleaned_data.get('email').lower(),
+            password=form.cleaned_data.get('password1'),
+            username=form.cleaned_data.get('username'),
+        )
+        account.storage_limit = storage_limit
+        account.is_active = True
+        account.save()
+        # Create membership and update invitation status
+        Membership.objects.create(user=account, team=invitation.team,
+                                  role=RoleChoices.MEMBER)
+        invitation.status = Invitation.InvitationStatusChoices.ACCEPTED
+        invitation.save()
+        del request.session['invitation_id']
+
+        # Update the total_members count of the team
+        invitation.team.save()
+
+        messages.success(request, 'Registration and team joining successful.')
+        return redirect('account:login')
 
 
 @user_is_company
@@ -299,8 +334,12 @@ def cancel_invitation(request, code):
             invitation.status == Invitation.InvitationStatusChoices.PENDING:
         invitation.status = Invitation.InvitationStatusChoices.CANCELLED_LEADER
         invitation.save()
-        messages.success(request, 'Invitation cancelled.')
+        return JsonResponse({
+            'result': 'success',
+            'message': 'Invitation cancelled.'})
     else:
-        messages.error(request, 'You do not have permission to do that or '
-                                'the invitation is not pending.')
-    return redirect('team:team_detail', team_id=invitation.team.team_id)
+        return JsonResponse({
+            'result': 'error',
+            'message': 'You do not have permission to do that or '
+                       'the invitation is not pending.'
+        })

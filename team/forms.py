@@ -1,6 +1,7 @@
 import re
 from django import forms
 from django.core.exceptions import ValidationError
+from django.core.validators import EmailValidator, RegexValidator
 from setuptools._entry_points import _
 
 from team.models import Team
@@ -59,6 +60,28 @@ class AddTeamForm(forms.ModelForm):
                 'Team name should only contain letters, numbers, and spaces.')
         return team_name
 
+
+class InvitationForm(forms.Form):
+    email = forms.EmailField(
+        required=True,
+        validators=[
+            EmailValidator(message="Enter a valid email address"),
+            RegexValidator(
+                r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
+                message='Invalid email format'
+            )
+        ],
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'example@company.com'})
+    )
+    storage_limit = forms.IntegerField(
+        min_value=1,
+        required=True,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Set storage limit in GB'})
+    )
+    team_id = forms.CharField(
+        widget=forms.HiddenInput(attrs={'class': 'form-control'}),
+        required=True
+    )
 
 # class InvitationForm(forms.ModelForm):
 # 	class Meta:

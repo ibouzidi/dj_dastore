@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-25 11:58+0200\n"
+"POT-Creation-Date: 2023-09-26 08:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgstr ""
 #: .\account\templates\account\account.html:140
 #: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
 #: .\team\templates\team\detail_team.html:84
-#: .\team\templates\team\detail_team.html:139
+#: .\team\templates\team\detail_team.html:140
 #: .\team\templates\team\membership_detail.html:43
 msgid "Email"
 msgstr ""
@@ -157,7 +157,7 @@ msgid "Paid At"
 msgstr ""
 
 #: .\account\templates\account\account_billing.html:94
-#: .\team\templates\team\detail_team.html:140
+#: .\team\templates\team\detail_team.html:141
 msgid "Status"
 msgstr ""
 
@@ -972,11 +972,11 @@ msgstr ""
 msgid "Invite Team Members"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:106
+#: .\team\templates\team\detail_team.html:107
 msgid "Invite"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:112
+#: .\team\templates\team\detail_team.html:113
 #, python-format
 msgid ""
 "\n"
@@ -985,7 +985,7 @@ msgid ""
 "                                    "
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:120
+#: .\team\templates\team\detail_team.html:121
 #, python-format
 msgid ""
 "\n"
@@ -994,20 +994,24 @@ msgid ""
 "                                    "
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:127
+#: .\team\templates\team\detail_team.html:128
 msgid "Something went wrong. Please contact support."
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:135
+#: .\team\templates\team\detail_team.html:136
 msgid "Pending invitation"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:141
+#: .\team\templates\team\detail_team.html:142
 msgid "Action"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:147
+#: .\team\templates\team\detail_team.html:148
 msgid "Cancel Invitation"
+msgstr ""
+
+#: .\team\templates\team\guest_register.html:30
+msgid "Sign up"
 msgstr ""
 
 #: .\team\templates\team\invitation_landing.html:30
@@ -1018,13 +1022,12 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"                    <p>You have been invited by <strong><u>"
-"%(invitation.sender.email)s</u></strong> to join the team: <strong><u>"
-"%(invitation.team.team_name)s</u></strong></p>\n"
+"                    <p>You have been invited by <strong><u>%(sender_email)s</"
+"u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
 "                "
 msgstr ""
 
-#: .\team\templates\team\invitation_landing.html:36
+#: .\team\templates\team\invitation_landing.html:37
 msgid "Accept Invitation"
 msgstr ""
 

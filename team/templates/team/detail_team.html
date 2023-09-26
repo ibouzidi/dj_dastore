@@ -95,62 +95,164 @@
                 </div>
                 <hr>
                 <h6 class="mb-3">{% trans "Invite Team Members" %}</h6>
-                <form method="post" action="{% url 'team:send_invitation' %}">
+                <form method="post" action="{% url 'team:send_invitation' %}" id="invitation_form">
                     {% csrf_token %}
-                    <input type="hidden" name="team_id" value="{{ team.team_id }}">
 
-                    <div class="col-8 invite-email">
-                        <div class="input-group mb-3 w-75">
-                            <input type="email" name="email" class="form-control" placeholder="example@company.com" aria-label="Recipient's username" aria-describedby="button-addon2" required>
-                            <div class="input-group-append">
-                                <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>{% trans "Invite" %}</button>
-                            </div>
+                    {{ form_inv.team_id }}
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_inv.email }}
                         </div>
-                        {% if remaining_invitations > 0 %}
-                            <div class="alert alert-info" role="alert">
-                                <small>
-                                    {% blocktrans with remaining_invitations=remaining_invitations %}
-                                        <small>Remember, you can only invite {{ remaining_invitations }} more members.</small>
-                                    {% endblocktrans %}
-                                </small>
-                            </div>
-                        {% elif remaining_invitations == 0 %}
-                            <div class="alert alert-warning" role="alert">
-                                <small>
-                                    {% blocktrans with team_members=team_members.count %}
-                                        Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.
-                                    {% endblocktrans %}
-                                </small>
-                            </div>
-                        {% else %}
-                            <div class="alert alert-danger" role="alert">
-                                <small>{% trans "Something went wrong. Please contact support." %}</small>
-                            </div>
-                        {% endif %}
+                        <div class="col-md-4">
+                            {{ form_inv.storage_limit }}
+                        </div>
+                        <div class="col-md-4">
+                            <button class="custom-button btn" type="submit" id="button-invite"><i class="fa fa-paper-plane"></i>{% trans "Invite" %}</button>
+                        </div>
+                    </div>
 
+                    <div class="row">
+                        <div class="col-md-6 my-3">
+                            {% if remaining_invitations > 0 %}
+                                <div class="alert alert-info" id="remaining-invitations-alert" role="alert">
+                                    <small>
+                                        {% blocktrans with remaining_invitations=remaining_invitations %}
+                                            <small>Remember, you can only invite {{ remaining_invitations }} more members.</small>
+                                        {% endblocktrans %}
+                                    </small>
+                                </div>
+                            {% elif remaining_invitations == 0 %}
+                                <div class="alert alert-warning" role="alert">
+                                    <small>
+                                        {% blocktrans with team_members=team_members.count %}
+                                            Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.
+                                        {% endblocktrans %}
+                                    </small>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-danger" role="alert">
+                                    <small>{% trans "Something went wrong. Please contact support." %} :
+                                        <a href="{% url 'contact_view' %}">Contact us</a></small>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </form>
-                {% if pending_invitations %}
-                    <hr>
-                    <h6>{% trans "Pending invitation" %}</h6>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <tr>
-                                <th>{% trans "Email" %}</th>
-                                <th>{% trans "Status" %}</th>
-                                <th>{% trans "Action" %}</th>
-                            </tr>
+
+                <hr>
+                <h6>{% trans "Pending invitation" %}</h6>
+                <div class="table-responsive table-pending-inv">
+                    <table class="table">
+                        <tr>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Action" %}</th>
+                        </tr>
+                        {% if pending_invitations %}
                             {% for invitation in pending_invitations %}
-                                <tr>
+                                <tr id="row-for-invite-{{ invitation.code }}">
                                     <td>{{ invitation.email }}</td>
                                     <td>{{ invitation.get_status_display }}</td>
-                                    <td> <a href="{% url 'team:cancel_invitation' invitation.code %}">{% trans "Cancel Invitation" %}</a></td>
+                                    <td>
+                                        {#                                        <button class="btn btn-outline-purple btn-sm cancel-invite-btn" data-code="{{ invitation.code }}"></button>#}
+                                        <button class="btn btn-outline-purple btn-sm cancel-invitation-button" data-invitation-code="{{ invitation.code }}">{% trans "Cancel Invitation" %}</button>
+                                    </td>
                                 </tr>
                             {% endfor %}
-                        </table>
-                    </div>
-                {% endif %}
+                        {% endif %}
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block script %}
+    <script>
+        const notyf = new Notyf();
+
+        $(document).ready(function(){
+            $("#invitation_form").submit(function(e){
+                e.preventDefault();
+                // Serialize Form Data
+                const inviteButton = $("#button-invite");
+                inviteButton.prop("disabled", true);
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: '{% url 'team:send_invitation' %}',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.result === 'success') {
+                            // Enable the button back
+                            setTimeout(function(){
+                                inviteButton.prop("disabled", false);
+                            }, 2000);  // Re-enable after 5 seconds
+                            notyf.success(response.message);
+                            let newRow = '';
+                            if (response.new_invitation) {
+                                newRow = `
+                                        <tr id="row-for-invite-${response.new_invitation.code}">
+                                            <td>${response.new_invitation.email}</td>
+                                            <td>${response.new_invitation.status}</td>
+                                            <td>
+                                                <button class="btn btn-outline-purple btn-sm p-1 cancel-invitation-button"
+                                                        data-invitation-code="${response.new_invitation.code}">
+                                                    {% trans "Cancel Invitation" %}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                $('.table-pending-inv .table').append(newRow);
+                            } else {
+                                console.log('new_invitation not found in response');
+                            }
+                        }else{
+                            // Enable the button back in case of an error
+                            setTimeout(function(){
+                                inviteButton.prop("disabled", false);
+                            }, 2000);
+                            notyf.error(response.message);
+                        }
+                    }
+                });
+            });
+        });
+
+        $(document).on('click', '.cancel-invitation-button', function(e) {
+            var code = $(this).data('invitation-code'); // Get the code from the button attribute
+
+            // Set the modal title
+            $("#confirmModalLabel").text("Cancel Invitation");
+            $("#confirmButton").text("Confirm");
+            $("#dismissButton").text("Cancel");
+            // Set the modal body with the form
+            var confirmationMessage = "Are you sure you want to cancel this invitation ?";
+            $("#confirmMessage").html(confirmationMessage);
+            // Show the modal
+            $("#confirmModal").modal("show");
+            $("#confirmButton").off('click').on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/account/team/cancel_invitation/' + code + '/',
+                    type: 'POST',
+                    data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function (response) {
+                        if (response.result === 'success') {
+                            // Remove the row or entry corresponding to the canceled invitation
+                            // Assuming you have a div with a unique ID or class containing this
+                            $('#row-for-invite-' + code).remove();
+                            notyf.success(response.message);
+                        } else {
+                            // Handle the error appropriately
+                            notyf.error(response.message);
+                        }
+                    }
+                });
+                // Close the modal
+                $("#confirmModal").modal("hide");
+            });
+        });
+
+    </script>
 {% endblock %}
