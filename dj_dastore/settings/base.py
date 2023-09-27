@@ -3,6 +3,7 @@ from decouple import Csv, config
 import os
 from django.contrib.messages import constants as messages
 from django.core.management.utils import get_random_secret_key
+from django.utils.translation import gettext_lazy as _
 
 
 
@@ -137,12 +138,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # =====================================================================
 
 
+LANGUAGE_CODE = 'en'
 
-# LANGUAGE_CODE = 'en-us'
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'Europe/Paris'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -150,6 +148,14 @@ USE_L10N = True
 
 USE_TZ = True
 
+LANGUAGES = [
+    ('en', _('English')),
+    ('fr', _('French')),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR.parent / 'locale',
+]
 
 BASE_URL = "http://127.0.0.1:8000"
 

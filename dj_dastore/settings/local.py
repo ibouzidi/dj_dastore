@@ -43,19 +43,6 @@ DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 #
 # MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
-from django.utils.translation import gettext_lazy as _
-
-LANGUAGE_CODE = 'en-us'
-
-LANGUAGES = [
-    ('en', _('English')),
-    ('fr', _('French')),
-]
-
-LOCALE_PATHS = [
-    BASE_DIR.parent / 'locale',
-]
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_HOST = config('EMAIL_HOST', cast=str)
 # EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast=str)
