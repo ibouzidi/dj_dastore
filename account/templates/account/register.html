@@ -58,10 +58,21 @@
                                 <h4 style="font-size: 28px">
                                     {{ plan.amount }}
                                     {% if LANGUAGE_CODE == "fr" %}
-                                        €/{% translate "month" %}
+                                        €/
                                     {% else %}
-                                        $/{{ plan.interval }}
+                                        $/
                                     {% endif %}
+                                    {% if plan.interval == "month" and LANGUAGE_CODE == "fr" %}
+                                        {% translate "month" %}
+                                    {% elif plan.interval == "month" %}
+                                        {{ plan.interval }}
+                                    {% elif plan.interval == "year" and LANGUAGE_CODE == "fr" %}
+                                        {% translate "year" %}
+                                    {% else %}
+                                        {{ plan.interval }}
+
+                                    {% endif %}
+                                {{ plan.metadata.storage_limit }} GB
                                 </h4>
                             </div>
                             <div class="description">

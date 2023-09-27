@@ -39,7 +39,9 @@
             {% get_current_language as LANGUAGE_CODE %}
             {% for plan in plans %}
                 <!-- Single Price Plan Area-->
-                <div data-aos="fade-right" data-aos-delay="150" class="single_price_plan" style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;">
+                <div data-aos="fade-right" data-aos-delay="150" class="single_price_plan"
+                     style="visibility: visible; animation-delay: 0.2s; animation-name: fadeInUp;"
+                     data-id="{{ plan.id }}" data-is-custom="{% if plan.metadata.is_entreprise == 'true' %}true{% else %}false{% endif %}">
                     <div class="row plan-row">
                         <div class="col-12 col-md-4">
                             <!-- Plan Title -->
@@ -67,14 +69,60 @@
                             </div>
                             <!-- Plan Price -->
                             <div class="price">
-                                <h4>
-                                    {{ plan.amount }}
-                                    {% if LANGUAGE_CODE == "fr" %}
-                                        €/{% translate "month" %}
-                                    {% else %}
-                                        $/{{ plan.interval }}
-                                    {% endif %}
-                                </h4>
+                                {% if plan.multi_prices %}
+                                    <!-- Default Price Display -->
+                                    <h4>
+                                        {{ plan.amount }}
+                                        {% if LANGUAGE_CODE == "fr" %}
+                                            €/{% translate "month" %}
+                                        {% else %}
+                                            $/{{ plan.interval }}
+                                        {% endif %}
+                                    </h4>
+                                    <!-- "Or" Separator -->
+                                    <div class="or-separator">{% trans "or custom price and storage" %}</div>
+                                    <!-- Dropdown for Other Prices -->
+                                    <select id="custom_storage" class="other-prices-dropdown">
+                                        <optgroup label="Monthly">
+                                            {% for price in plan.multi_prices %}
+                                                {% if price.interval == "month" %}
+                                                    <option value="{{ price.id }}" data-amount="{{ price.amount }}" data-storage="{{ price.storage_limit }}">
+                                                        {{ price.storage_limit }} GB -
+                                                        {% if LANGUAGE_CODE == "fr" %}
+                                                            {{ price.amount }} €/{% translate "month" %}
+                                                        {% else %}
+                                                            ${{ price.amount }} /{{ plan.interval }}
+                                                        {% endif %}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </optgroup>
+
+                                        <optgroup label="Annually">
+                                            {% for price in plan.multi_prices %}
+                                                {% if price.interval == "year" %}
+                                                    <option value="{{ price.id }}" data-amount="{{ price.amount }}" data-storage="{{ price.storage_limit }}">
+                                                        {{ price.storage_limit }} GB -
+                                                        {% if LANGUAGE_CODE == "fr" %}
+                                                            {{ price.amount }} €/{% translate "year" %}
+                                                        {% else %}
+                                                            ${{ price.amount }} /{{ plan.interval }}
+                                                        {% endif %}
+                                                    </option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </optgroup>
+                                    </select>
+                                {% else %}
+                                    <h4>
+                                        {{ plan.amount }}
+                                        {% if LANGUAGE_CODE == "fr" %}
+                                            €/{% translate "month" %}
+                                        {% else %}
+                                            $/{{ plan.interval }}
+                                        {% endif %}
+                                    </h4>
+                                {% endif %}
                             </div>
                         </div>
                         <div class="col-12 col-md-6">
@@ -131,39 +179,94 @@
             {% endfor %}
         </div>
     </section>
+
+    <style>
+        /* Styling for the "or" separator */
+        .or-separator {
+            margin: 0.5rem 0;  /* Vertical spacing around the "or" */
+            font-size: 1rem;  /* Font size for "or" */
+            color: var(--clr-red-purple-1);  /* Color for "or" */
+            text-align: left;  /* Center the "or" */
+        }
+
+        /* Basic styling for the dropdown */
+        .other-prices-dropdown {
+            width: 60%;
+            padding: 5px;
+            font-size: 1rem;  /* Adjust as necessary */
+            border: 1px solid #ccc;  /* Simple border */
+            border-radius: 5px;  /* Rounded corners */
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        .other-prices-dropdown:focus {
+            border-color: var(--clr-purple-1);
+            box-shadow: 0 0 0 0.2rem rgba(129, 0, 255, 0.25);
+        }
+
+    </style>
 {% endblock content %}
 
 {% block script %}
     <script type="text/javascript">
         const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";
-        function handleSelectPlan(button) {
-            const planId = button.getAttribute("data-id");
-            // Send a POST request to set the selected plan in the Django session
-            fetch("{% url 'subscriptions:set_selected_plan' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ plan_id: planId })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        // The selected plan was successfully set in the Django session
-                        // Redirect the user to the registration page or the checkout page as before
-                        if (isAuthenticated) {
-                            window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}";
-                        } else {
-                            window.location.href = "{% url 'account:RegisterView' %}";
-                        }
-                    } else {
-                        // Handle error
-                        console.error("Failed to set selected plan: " + data.error);
-                        console.error("Failed to set selected plan:", data);
-                    }
-                });
+
+       function handleSelectPlan(slider) {
+    // Using the provided slider element, find its closest '.single_price_plan' parent
+    const $planContainer = $(slider).closest('.single_price_plan');
+
+    // Extract attributes/data from the plan container
+    const isCustomizedPlan = $planContainer.data('is-custom');
+    const planId = $planContainer.data('id');
+
+    console.log('Is Customized Plan:', isCustomizedPlan);
+
+    let customStoragePriceId = null;
+    let customPrice = null;
+
+    // If it's a customized plan, get additional details
+    if (isCustomizedPlan) {
+        const $customStorageSelect = $planContainer.find('#custom_storage');
+        customStoragePriceId = $customStorageSelect.val();
+        const selectedOption = $customStorageSelect.find('option:selected');
+        customPrice = selectedOption.data('amount');
+
+        console.log('Custom Storage Price ID:', customStoragePriceId);
+        console.log('Custom Price:', customPrice);
+    }
+
+    // Send a POST request to set the selected plan in the Django session
+    $.ajax({
+        url: "{% url 'subscriptions:set_selected_plan' %}",
+        method: 'POST',
+        dataType: 'json',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        },
+        data: JSON.stringify({
+            plan_id: planId,
+            custom_storage: customStoragePriceId,
+            custom_price: customPrice
+        }),
+        success: function(data) {
+            if (data.status === 'success') {
+                // The selected plan was successfully set in the Django session
+                // Redirect the user to the registration page or the checkout page as before
+                if (isAuthenticated) {
+                    window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}";
+                } else {
+                    window.location.href = "{% url 'account:RegisterView' %}";
+                }
+            } else {
+                console.error("Failed to set selected plan:", data.error);
+            }
+        },
+        error: function(err) {
+            console.error("Ajax error:", err);
         }
+    });
+}
 
         function getCookie(name) {
             let cookieValue = null;
@@ -180,28 +283,5 @@
             }
             return cookieValue;
         }
-
-        {#const isAuthenticated = "{{ request.user.is_authenticated }}" === "True";#}
-        {##}
-        {#function handleSelectPlan(button) {#}
-        {#    const planId = button.getAttribute("data-id");#}
-        {#    localStorage.setItem("selectedPlan", planId);#}
-        {#    setCookie("selectedPlan", planId);#}
-        {#    if (isAuthenticated) {#}
-        {#        window.location.href = "{% url 'subscriptions:CreateCheckoutSession' %}"#}
-        {#    }else {#}
-        {#        window.location.href = "{% url 'account:RegisterView' %}"#}
-        {#    }#}
-        {#}#}
-            {##}
-            {#function setCookie(name,value,days) {#}
-            {#    var expires = "";#}
-            {#    if (days) {#}
-            {#        var date = new Date();#}
-            {#        date.setTime(date.getTime() + (days*24*60*60*1000));#}
-            {#        expires = "; expires=" + date.toUTCString();#}
-            {#    }#}
-            {#    document.cookie = name + "=" + (value || "")  + expires + "; path=/";#}
-            {#}#}
     </script>
 {% endblock script %}

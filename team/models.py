@@ -56,6 +56,7 @@ class Invitation(models.Model):
                              related_name='invitations')
     created_at = models.DateTimeField(auto_now_add=True)
     expiry_date = models.DateTimeField(null=True, blank=True)
+    storage_limit = models.PositiveIntegerField(null=True, blank=True)
 
     sender = models.ForeignKey(
         settings.AUTH_USER_MODEL,

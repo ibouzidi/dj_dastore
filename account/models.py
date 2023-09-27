@@ -75,6 +75,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     plan_id = models.CharField(max_length=255, null=True, blank=True)
     request_counts = models.PositiveIntegerField(default=0)
     last_request_timestamp = models.DateTimeField(null=True, blank=True)
+    disable_date = models.DateTimeField(null=True, blank=True)
 
     teams = models.ManyToManyField(
         'team.Team',  # updated to reference the 'team' app
@@ -172,7 +173,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
     @property
     def is_company(self):
         active_plan = self.get_active_plan
-        if active_plan is not None and active_plan.product.name == 'Enterprise':
+        if active_plan is not None and active_plan.product.name == 'Customized':
             print("true")
             return True
         else:

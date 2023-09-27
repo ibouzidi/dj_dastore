@@ -41,7 +41,7 @@
     },
     {
         "model": "auth.group",
-        "pk": 5,
+        "pk": 6,
         "fields": {
             "name": "g_inactive_subscribers",
             "permissions": []
@@ -49,7 +49,7 @@
     },
     {
         "model": "auth.group",
-        "pk": 5,
+        "pk": 7,
         "fields": {
             "name": "g_active_subscribers",
             "permissions": []

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-20 15:53+0200\n"
+"POT-Creation-Date: 2023-09-27 13:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "Profile information"
 msgstr ""
 
-#: .\account\templates\account\account.html:112 .\app\forms.py:17
+#: .\account\templates\account\account.html:112 .\app\forms.py:19
 msgid "First Name"
 msgstr ""
 
@@ -64,7 +64,7 @@ msgstr ""
 msgid "Enter your first name"
 msgstr ""
 
-#: .\account\templates\account\account.html:125 .\app\forms.py:23
+#: .\account\templates\account\account.html:125 .\app\forms.py:25
 msgid "Last Name"
 msgstr ""
 
@@ -73,9 +73,9 @@ msgid "Also your last name"
 msgstr ""
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:26
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
 #: .\team\templates\team\detail_team.html:84
-#: .\team\templates\team\detail_team.html:139
+#: .\team\templates\team\detail_team.html:157
 #: .\team\templates\team\membership_detail.html:43
 msgid "Email"
 msgstr ""
@@ -157,7 +157,7 @@ msgid "Paid At"
 msgstr ""
 
 #: .\account\templates\account\account_billing.html:94
-#: .\team\templates\team\detail_team.html:140
+#: .\team\templates\team\detail_team.html:158
 msgid "Status"
 msgstr ""
 
@@ -216,6 +216,21 @@ msgid ""
 "account by requiring more than just a password to log in."
 msgstr ""
 
+#: .\account\templates\account\account_security.html:57
+msgid "Delete Account"
+msgstr ""
+
+#: .\account\templates\account\account_security.html:107
+msgid ""
+"Are you sure you want to delete your account? This action is irreversible."
+msgstr ""
+
+#: .\account\templates\account\account_security.html:108
+msgid ""
+"All your data will be retained for two years and you won't be able to access "
+"your account during this period."
+msgstr ""
+
 #: .\account\templates\account\account_storage_stat.html:30
 msgid "STORAGE STATISTICS"
 msgstr ""
@@ -244,7 +259,7 @@ msgstr ""
 #: .\account\templates\account\password_change.html:12
 #: .\account\templates\account\password_change.html:22
 #: .\account\templates\account\password_change.html:32
-#: .\account\templates\account\register.html:106
+#: .\account\templates\account\register.html:117
 msgid "Password"
 msgstr ""
 
@@ -315,49 +330,56 @@ msgstr ""
 msgid "Plan choosen"
 msgstr ""
 
-#: .\account\templates\account\register.html:61
-#: .\subscriptions\templates\subscriptions\plan_list.html:73
+#: .\account\templates\account\register.html:66
+#: .\subscriptions\templates\subscriptions\plan_list.html:77
+#: .\subscriptions\templates\subscriptions\plan_list.html:92
+#: .\subscriptions\templates\subscriptions\plan_list.html:120
 msgid "month"
 msgstr ""
 
-#: .\account\templates\account\register.html:80
+#: .\account\templates\account\register.html:70
+#: .\subscriptions\templates\subscriptions\plan_list.html:107
+msgid "year"
+msgstr ""
+
+#: .\account\templates\account\register.html:91
 msgid "Create an account"
 msgstr ""
 
-#: .\account\templates\account\register.html:86
+#: .\account\templates\account\register.html:97
 #: .\templates\password_reset\password_reset.html:19
 msgid "Your Email"
 msgstr ""
 
-#: .\account\templates\account\register.html:93
+#: .\account\templates\account\register.html:104
 msgid "Your Username"
 msgstr ""
 
-#: .\account\templates\account\register.html:103
+#: .\account\templates\account\register.html:114
 msgid "Your Password"
 msgstr ""
 
-#: .\account\templates\account\register.html:112
+#: .\account\templates\account\register.html:123
 msgid "Confirm Password"
 msgstr ""
 
-#: .\account\templates\account\register.html:122
+#: .\account\templates\account\register.html:133
 msgid "I agree to the"
 msgstr ""
 
-#: .\account\templates\account\register.html:122
+#: .\account\templates\account\register.html:133
 msgid "terms and conditions"
 msgstr ""
 
-#: .\account\templates\account\register.html:127
+#: .\account\templates\account\register.html:138
 msgid "Sign in"
 msgstr ""
 
-#: .\account\templates\account\register.html:157
+#: .\account\templates\account\register.html:168
 msgid "Already have an account?"
 msgstr ""
 
-#: .\account\templates\account\register.html:158
+#: .\account\templates\account\register.html:169
 msgid "Login here"
 msgstr ""
 
@@ -625,11 +647,11 @@ msgstr ""
 msgid "Your OTP token is %(token)s"
 msgstr ""
 
-#: .\app\forms.py:31
+#: .\app\forms.py:33
 msgid "Subject"
 msgstr ""
 
-#: .\app\forms.py:36
+#: .\app\forms.py:38
 msgid "Write your message"
 msgstr ""
 
@@ -645,15 +667,15 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
-#: .\app\templates\app\contact.html:78
+#: .\app\templates\app\contact.html:87
 msgid "Your message was sent, thank you!"
 msgstr ""
 
-#: .\app\templates\app\contact.html:82
+#: .\app\templates\app\contact.html:91
 msgid "Let's talk about everything."
 msgstr ""
 
-#: .\app\templates\app\contact.html:83
+#: .\app\templates\app\contact.html:92
 msgid ""
 "Have questions or need support? We're here to help. Our app aims to protect "
 "your privacy, and your feedback is crucial for us to serve you better."
@@ -875,11 +897,15 @@ msgstr ""
 msgid "Choose your plan, take what you need for you."
 msgstr ""
 
-#: .\subscriptions\templates\subscriptions\plan_list.html:50
+#: .\subscriptions\templates\subscriptions\plan_list.html:52
 msgid "Popular"
 msgstr ""
 
-#: .\subscriptions\templates\subscriptions\plan_list.html:117
+#: .\subscriptions\templates\subscriptions\plan_list.html:83
+msgid "or custom price and storage"
+msgstr ""
+
+#: .\subscriptions\templates\subscriptions\plan_list.html:165
 msgid "Limit Users"
 msgstr ""
 
@@ -946,42 +972,68 @@ msgstr ""
 msgid "Invite Team Members"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:106
+#: .\team\templates\team\detail_team.html:111
 msgid "Invite"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:112
-#, python-format
-msgid ""
-"\n"
-"                                        <small>Remember, you can only invite "
-"%(remaining_invitations)s more members.</small>\n"
-"                                    "
+#: .\team\templates\team\detail_team.html:117
+msgid "Remaining Storage:"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:120
+#: .\team\templates\team\detail_team.html:119
+msgid ""
+"Your storage is deducted based on the storage limit you set for each member."
+msgstr ""
+
+#: .\team\templates\team\detail_team.html:129
 #, python-format
 msgid ""
 "\n"
-"                                        Your team is at full capacity "
+"                                            <small>Remember, you can only "
+"invite %(remaining_invitations)s more members.</small>\n"
+"                                        "
+msgstr ""
+
+#: .\team\templates\team\detail_team.html:137
+#, python-format
+msgid ""
+"\n"
+"                                            Your team is at full capacity "
 "(%(team_members.count)s), you can no longer invite more members.\n"
-"                                    "
+"                                        "
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:127
+#: .\team\templates\team\detail_team.html:144
 msgid "Something went wrong. Please contact support."
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:135
+#: .\team\templates\team\detail_team.html:153
 msgid "Pending invitation"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:141
+#: .\team\templates\team\detail_team.html:159
 msgid "Action"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:147
+#: .\team\templates\team\detail_team.html:168
+#: .\team\templates\team\detail_team.html:210
 msgid "Cancel Invitation"
+msgstr ""
+
+#: .\team\templates\team\detail_team.html:289
+msgid "Your remaining storage after deduction:"
+msgstr ""
+
+#: .\team\templates\team\detail_team.html:291
+msgid "Insufficient"
+msgstr ""
+
+#: .\team\templates\team\detail_team.html:292
+msgid "Insufficient storage for this allocation"
+msgstr ""
+
+#: .\team\templates\team\guest_register.html:30
+msgid "Sign up"
 msgstr ""
 
 #: .\team\templates\team\invitation_landing.html:30
@@ -992,13 +1044,12 @@ msgstr ""
 #, python-format
 msgid ""
 "\n"
-"                    <p>You have been invited by <strong><u>"
-"%(invitation.sender.email)s</u></strong> to join the team: <strong><u>"
-"%(invitation.team.team_name)s</u></strong></p>\n"
+"                    <p>You have been invited by <strong><u>%(sender_email)s</"
+"u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
 "                "
 msgstr ""
 
-#: .\team\templates\team\invitation_landing.html:36
+#: .\team\templates\team\invitation_landing.html:37
 msgid "Accept Invitation"
 msgstr ""
 
@@ -1122,7 +1173,7 @@ msgstr ""
 msgid "Connect with us on social media and join our thriving online community."
 msgstr ""
 
-#: .\templates\snippets\header.html:68 .\templates\snippets\header.html:101
+#: .\templates\snippets\header.html:68 .\templates\snippets\header.html:102
 msgid "GET STARTED"
 msgstr ""
 
@@ -1138,14 +1189,14 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-#: .\templates\snippets\header.html:97
-msgid "Logout"
-msgstr ""
-
-#: .\templates\snippets\header.html:102
+#: .\templates\snippets\header.html:96 .\templates\snippets\header.html:103
 msgid "Contact"
 msgstr ""
 
-#: .\templates\snippets\header.html:105
+#: .\templates\snippets\header.html:98
+msgid "Logout"
+msgstr ""
+
+#: .\templates\snippets\header.html:106
 msgid "Login"
 msgstr ""

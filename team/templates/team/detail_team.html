@@ -95,62 +95,205 @@
                 </div>
                 <hr>
                 <h6 class="mb-3">{% trans "Invite Team Members" %}</h6>
-                <form method="post" action="{% url 'team:send_invitation' %}">
+                <form method="post" action="{% url 'team:send_invitation' %}" id="invitation_form">
                     {% csrf_token %}
-                    <input type="hidden" name="team_id" value="{{ team.team_id }}">
 
-                    <div class="col-8 invite-email">
-                        <div class="input-group mb-3 w-75">
-                            <input type="email" name="email" class="form-control" placeholder="example@company.com" aria-label="Recipient's username" aria-describedby="button-addon2" required>
-                            <div class="input-group-append">
-                                <button class="custom-button btn" type="submit" id="button-addon2"><i class="fa fa-paper-plane"></i>{% trans "Invite" %}</button>
-                            </div>
+                    {{ form_inv.team_id }}
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            {{ form_inv.email }}
                         </div>
-                        {% if remaining_invitations > 0 %}
-                            <div class="alert alert-info" role="alert">
-                                <small>
-                                    {% blocktrans with remaining_invitations=remaining_invitations %}
-                                        <small>Remember, you can only invite {{ remaining_invitations }} more members.</small>
-                                    {% endblocktrans %}
-                                </small>
-                            </div>
-                        {% elif remaining_invitations == 0 %}
-                            <div class="alert alert-warning" role="alert">
-                                <small>
-                                    {% blocktrans with team_members=team_members.count %}
-                                        Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.
-                                    {% endblocktrans %}
-                                </small>
-                            </div>
-                        {% else %}
-                            <div class="alert alert-danger" role="alert">
-                                <small>{% trans "Something went wrong. Please contact support." %}</small>
-                            </div>
-                        {% endif %}
+                        <div class="col-md-4">
+                            {{ form_inv.storage_limit }}
+                        </div>
+                        <div class="col-md-4">
+                            <button class="custom-button btn" type="submit" id="button-invite">
+                                <i class="fa fa-paper-plane"></i>{% trans "Invite" %}
+                            </button>
+                        </div>
+                    </div>
 
+                    <!-- Add a new div to display remaining storage -->
+                    <div class="col-md-4 mt-3">
+                        <label>{% trans "Remaining Storage:" %}</label>
+                        <span id="remaining_storage"></span>
+                        <span data-toggle="tooltip" title="{% trans "Your storage is deducted based on the storage limit you set for each member." %}">
+                            <i class="fa fa-question-circle"></i></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 my-3">
+                            {% if remaining_invitations > 0 %}
+                                <div class="alert alert-info" id="remaining-invitations-alert" role="alert">
+                                    <small>
+                                        {% blocktrans with remaining_invitations=remaining_invitations %}
+                                            <small>Remember, you can only invite {{ remaining_invitations }} more members.</small>
+                                        {% endblocktrans %}
+                                    </small>
+                                </div>
+                            {% elif remaining_invitations == 0 %}
+                                <div class="alert alert-warning" role="alert">
+                                    <small>
+                                        {% blocktrans with team_members=team_members.count %}
+                                            Your team is at full capacity ({{ team_members.count }}), you can no longer invite more members.
+                                        {% endblocktrans %}
+                                    </small>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-danger" role="alert">
+                                    <small>{% trans "Something went wrong. Please contact support." %} :
+                                        <a href="{% url 'contact_view' %}">Contact us</a></small>
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
                 </form>
-                {% if pending_invitations %}
-                    <hr>
-                    <h6>{% trans "Pending invitation" %}</h6>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <tr>
-                                <th>{% trans "Email" %}</th>
-                                <th>{% trans "Status" %}</th>
-                                <th>{% trans "Action" %}</th>
-                            </tr>
+
+                <hr>
+                <h6>{% trans "Pending invitation" %}</h6>
+                <div class="table-responsive table-pending-inv">
+                    <table class="table">
+                        <tr>
+                            <th>{% trans "Email" %}</th>
+                            <th>{% trans "Status" %}</th>
+                            <th>{% trans "Action" %}</th>
+                        </tr>
+                        {% if pending_invitations %}
                             {% for invitation in pending_invitations %}
-                                <tr>
+                                <tr id="row-for-invite-{{ invitation.code }}">
                                     <td>{{ invitation.email }}</td>
                                     <td>{{ invitation.get_status_display }}</td>
-                                    <td> <a href="{% url 'team:cancel_invitation' invitation.code %}">{% trans "Cancel Invitation" %}</a></td>
+                                    <td>
+                                        {#                                        <button class="btn btn-outline-purple btn-sm cancel-invite-btn" data-code="{{ invitation.code }}"></button>#}
+                                        <button class="btn btn-outline-purple btn-sm cancel-invitation-button" data-invitation-code="{{ invitation.code }}">{% trans "Cancel Invitation" %}</button>
+                                    </td>
                                 </tr>
                             {% endfor %}
-                        </table>
-                    </div>
-                {% endif %}
+                        {% endif %}
+                    </table>
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+{% block script %}
+    <script>
+        const notyf = new Notyf();
+
+        $(document).ready(function(){
+            $("#invitation_form").submit(function(e){
+                e.preventDefault();
+                // Serialize Form Data
+                const inviteButton = $("#button-invite");
+                inviteButton.prop("disabled", true);
+                var formData = $(this).serialize();
+                $.ajax({
+                    url: '{% url 'team:send_invitation' %}',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        if (response.result === 'success') {
+                            // Enable the button back
+                            setTimeout(function(){
+                                inviteButton.prop("disabled", false);
+                            }, 2000);  // Re-enable after 5 seconds
+                            notyf.success(response.message);
+                            let newRow = '';
+                            if (response.new_invitation) {
+                                newRow = `
+                                        <tr id="row-for-invite-${response.new_invitation.code}">
+                                            <td>${response.new_invitation.email}</td>
+                                            <td>${response.new_invitation.status}</td>
+                                            <td>
+                                                <button class="btn btn-outline-purple btn-sm p-1 cancel-invitation-button"
+                                                        data-invitation-code="${response.new_invitation.code}">
+                                                    {% trans "Cancel Invitation" %}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                $('.table-pending-inv .table').append(newRow);
+                                updateStorageLimit();
+                            } else {
+                                console.log('new_invitation not found in response');
+                            }
+                        }else{
+                            // Enable the button back in case of an error
+                            setTimeout(function(){
+                                inviteButton.prop("disabled", false);
+                            }, 2000);
+                            notyf.error(response.message);
+                        }
+                    }
+                });
+            });
+        });
+        var initial_remaining_storage;
+
+        // Function to fetch and update the storage limit
+        function updateStorageLimit() {
+            $.ajax({
+                url: '{% url 'team:fetch_leader_storage_limit' %}',
+                method: 'GET',
+                success: function(data) {
+                    initial_remaining_storage = data.current_storage_limit;
+                    $("#remaining_storage").text(initial_remaining_storage + ' GB');
+                }
+            });
+        }
+
+        // Code for the cancel invitation button
+        $(document).on('click', '.cancel-invitation-button', function(e) {
+            var code = $(this).data('invitation-code');
+            $("#confirmModalLabel").text("Cancel Invitation");
+            $("#confirmButton").text("Confirm");
+            $("#dismissButton").text("Cancel");
+            var confirmationMessage = "Are you sure you want to cancel this invitation ?";
+            $("#confirmMessage").html(confirmationMessage);
+
+            $("#confirmModal").modal("show");
+            $("#confirmButton").off('click').on('click', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/account/team/cancel_invitation/' + code + '/',
+                    type: 'POST',
+                    data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                    success: function (response) {
+                        if (response.result === 'success') {
+                            updateStorageLimit();
+                            $('#row-for-invite-' + code).remove();
+                            notyf.success(response.message);
+                        } else {
+                            notyf.error(response.message);
+                        }
+                    }
+                });
+                $("#confirmModal").modal("hide");
+            });
+        });
+
+        // Code that runs on document ready
+        $(document).ready(function () {
+            updateStorageLimit();  // Initial fetch
+
+            // Initialize tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Listen for changes to the storage_limit input field
+            $("input[name='storage_limit']").on('input', function () {
+                var input_storage = parseInt($(this).val()) || 0;
+                var new_remaining_storage = initial_remaining_storage - input_storage;
+
+                if (new_remaining_storage >= 0) {
+                    $("#remaining_storage").text(new_remaining_storage + ' GB').css('color', 'green');
+                } else {
+                    $("#remaining_storage").text('Insufficient').css('color', 'red');
+                }
+            });
+        });
+
+
+
+    </script>
 {% endblock %}

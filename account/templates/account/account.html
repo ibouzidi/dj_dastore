@@ -450,9 +450,8 @@
 
             let storageUsed = "{{ storage_used_bytes.0 }} {{ storage_used_bytes.1 }}";
             let storageLimit = "{{ storage_limit_bytes.0 }} {{ storage_limit_bytes.1 }}";
-            let usedPercentage = {{ used_percentage }};
-            let availablePercentage = {{ available_percentage }};
-
+            let usedPercentage = {{ used_percentage|escapejs }};
+            let availablePercentage = {{ available_percentage|escapejs }};
             let ctx = document.getElementById('storageUsageChart').getContext('2d');
             let storageUsageChart = new Chart(ctx, {
                 type: 'pie',

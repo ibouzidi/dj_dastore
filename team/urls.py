@@ -5,7 +5,8 @@ app_name = 'team'
 
 urlpatterns = [
     # Teams & Member Management
-    path('send_invitation/', views.send_invitation, name='send_invitation'),
+    path('send_invitation/', views.SendInvitation.as_view(),
+         name='send_invitation'),
     path('', views.team_list, name='team_list'),
     path('create/', views.create_team, name='create_team'),
     path('<str:team_id>/detail/', views.team_detail, name='team_detail'),
@@ -17,4 +18,7 @@ urlpatterns = [
          name='guest_register'),
     path('cancel_invitation/<uuid:code>/', views.cancel_invitation,
          name='cancel_invitation'),
+
+    path('fetch_storage_limit/', views.fetch_leader_storage_limit,
+         name='fetch_leader_storage_limit'),
 ]
