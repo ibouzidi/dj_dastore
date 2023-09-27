@@ -3,6 +3,7 @@ from hashlib import sha256
 from django.conf import settings
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db import transaction
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime, timedelta
@@ -115,12 +116,43 @@ class MembershipDetailView(View):
         return render(request, 'team/membership_detail.html', context)
 
 
+@user_is_company
+def fetch_leader_storage_limit(request):
+    user = request.user
+    response_data = {}
+
+    # Check if the user is a leader
+    if not user.is_team_leader:
+        response_data['result'] = 'error'
+        response_data['message'] = 'You are not a team leader.'
+        return JsonResponse(response_data)
+
+    # Check if the leader has a team
+    if not user.has_teams:
+        response_data['result'] = 'error'
+        response_data['message'] = 'You do not have a team.'
+        return JsonResponse(response_data)
+
+    # Retrieve the active customer's storage limit
+    active_subscriptions = user.get_active_subscriptions
+    if active_subscriptions:
+        storage_limit = user.storage_limit
+        response_data['result'] = 'success'
+        response_data['current_storage_limit'] = storage_limit
+    else:
+        response_data['result'] = 'error'
+        response_data['message'] = 'No active subscription found.'
+
+    return JsonResponse(response_data)
+
+
 @method_decorator(user_is_company, name='dispatch')
 class SendInvitation(View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['team'] = Team.objects.filter(id=self.kwargs['team_id']).first()
+        context['team'] = Team.objects.filter(
+            id=self.kwargs['team_id']).first()
         return context
 
     def post(self, request, *args, **kwargs):
@@ -142,6 +174,20 @@ class SendInvitation(View):
                                                    team=team,
                                                    role=RoleChoices.LEADER).first()
             if membership:
+
+                # Step 1: Fetch the Leader's Available Storage
+                leader_storage_limit = membership.user.storage_limit
+                print("leader_storage_limit", leader_storage_limit)
+                # Step 2: Check for Sufficient Storage
+                if storage_limit > leader_storage_limit:
+                    response_data['result'] = 'error'
+                    response_data[
+                        'message'] = 'Insufficient storage to send this invitation.'
+                    return JsonResponse(response_data)
+                # Step 3: Deduct Storage
+                membership.user.storage_limit -= storage_limit
+                membership.user.save()
+
                 limit_users = membership.user.limit_users()
                 if limit_users is None:
                     limit_users = 0
@@ -154,7 +200,8 @@ class SendInvitation(View):
                     status=Invitation.InvitationStatusChoices.PENDING
                 ).count()
 
-                if total_members_in_team + + total_pending_invitations >= int(limit_users):
+                if total_members_in_team + + total_pending_invitations >= int(
+                        limit_users):
                     response_data['result'] = 'error'
                     response_data[
                         'message'] = 'The team is already at capacity, ' \
@@ -211,7 +258,8 @@ class SendInvitation(View):
                 return JsonResponse(response_data)
 
         else:
-            return JsonResponse({'result': 'error', 'message': 'Invalid input'})
+            return JsonResponse(
+                {'result': 'error', 'message': 'Invalid input'})
 
 
 class InvitationLandingView(View):
@@ -328,15 +376,28 @@ class GuestRegisterView(View):
 
 
 @user_is_company
+@transaction.atomic
 def cancel_invitation(request, code):
     invitation = get_object_or_404(Invitation, code=code)
     if request.user.is_team_leader and \
             invitation.status == Invitation.InvitationStatusChoices.PENDING:
+
+        deducted_storage_limit = invitation.storage_limit
+
         invitation.status = Invitation.InvitationStatusChoices.CANCELLED_LEADER
         invitation.save()
+
+        initial_storage_limit = request.user.storage_limit + \
+                                deducted_storage_limit
+
+        request.user.storage_limit = initial_storage_limit
+        request.user.save()
+
         return JsonResponse({
             'result': 'success',
-            'message': 'Invitation cancelled.'})
+            'message': 'Invitation cancelled.',
+            'updated_storage_limit': initial_storage_limit
+        })
     else:
         return JsonResponse({
             'result': 'error',

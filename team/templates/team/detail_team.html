@@ -108,8 +108,18 @@
                             {{ form_inv.storage_limit }}
                         </div>
                         <div class="col-md-4">
-                            <button class="custom-button btn" type="submit" id="button-invite"><i class="fa fa-paper-plane"></i>{% trans "Invite" %}</button>
+                            <button class="custom-button btn" type="submit" id="button-invite">
+                                <i class="fa fa-paper-plane"></i>{% trans "Invite" %}
+                            </button>
                         </div>
+                    </div>
+
+                    <!-- Add a new div to display remaining storage -->
+                    <div class="col-md-4 mt-3">
+                        <label>{% trans "Remaining Storage:" %}</label>
+                        <span id="remaining_storage"></span>
+                        <span data-toggle="tooltip" title="{% trans "Your storage is deducted based on the storage limit you set for each member." %}">
+                            <i class="fa fa-question-circle"></i></span>
                     </div>
 
                     <div class="row">
@@ -204,6 +214,7 @@
                                         </tr>
                                     `;
                                 $('.table-pending-inv .table').append(newRow);
+                                updateStorageLimit();
                             } else {
                                 console.log('new_invitation not found in response');
                             }
@@ -218,18 +229,29 @@
                 });
             });
         });
+        var initial_remaining_storage;
 
+        // Function to fetch and update the storage limit
+        function updateStorageLimit() {
+            $.ajax({
+                url: '{% url 'team:fetch_leader_storage_limit' %}',
+                method: 'GET',
+                success: function(data) {
+                    initial_remaining_storage = data.current_storage_limit;
+                    $("#remaining_storage").text(initial_remaining_storage + ' GB');
+                }
+            });
+        }
+
+        // Code for the cancel invitation button
         $(document).on('click', '.cancel-invitation-button', function(e) {
-            var code = $(this).data('invitation-code'); // Get the code from the button attribute
-
-            // Set the modal title
+            var code = $(this).data('invitation-code');
             $("#confirmModalLabel").text("Cancel Invitation");
             $("#confirmButton").text("Confirm");
             $("#dismissButton").text("Cancel");
-            // Set the modal body with the form
             var confirmationMessage = "Are you sure you want to cancel this invitation ?";
             $("#confirmMessage").html(confirmationMessage);
-            // Show the modal
+
             $("#confirmModal").modal("show");
             $("#confirmButton").off('click').on('click', function(e) {
                 e.preventDefault();
@@ -239,20 +261,39 @@
                     data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
                     success: function (response) {
                         if (response.result === 'success') {
-                            // Remove the row or entry corresponding to the canceled invitation
-                            // Assuming you have a div with a unique ID or class containing this
+                            updateStorageLimit();
                             $('#row-for-invite-' + code).remove();
                             notyf.success(response.message);
                         } else {
-                            // Handle the error appropriately
                             notyf.error(response.message);
                         }
                     }
                 });
-                // Close the modal
                 $("#confirmModal").modal("hide");
             });
         });
+
+        // Code that runs on document ready
+        $(document).ready(function () {
+            updateStorageLimit();  // Initial fetch
+
+            // Initialize tooltip
+            $('[data-toggle="tooltip"]').tooltip();
+
+            // Listen for changes to the storage_limit input field
+            $("input[name='storage_limit']").on('input', function () {
+                var input_storage = parseInt($(this).val()) || 0;
+                var new_remaining_storage = initial_remaining_storage - input_storage;
+
+                if (new_remaining_storage >= 0) {
+                    $("#remaining_storage").text(new_remaining_storage + ' GB').css('color', 'green');
+                } else {
+                    $("#remaining_storage").text('Insufficient').css('color', 'red');
+                }
+            });
+        });
+
+
 
     </script>
 {% endblock %}

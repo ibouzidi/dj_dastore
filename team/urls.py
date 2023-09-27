@@ -18,4 +18,7 @@ urlpatterns = [
          name='guest_register'),
     path('cancel_invitation/<uuid:code>/', views.cancel_invitation,
          name='cancel_invitation'),
+
+    path('fetch_storage_limit/', views.fetch_leader_storage_limit,
+         name='fetch_leader_storage_limit'),
 ]

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-26 08:55+0200\n"
-"PO-Revision-Date: 2023-09-26 08:57+0009\n"
+"POT-Creation-Date: 2023-09-27 13:56+0200\n"
+"PO-Revision-Date: 2023-09-27 13:56+0009\n"
 "Last-Translator:   <admin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -76,7 +76,7 @@ msgstr "Saisissez votre nom de famille"
 #: .\account\templates\account\account.html:140
 #: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
 #: .\team\templates\team\detail_team.html:84
-#: .\team\templates\team\detail_team.html:140
+#: .\team\templates\team\detail_team.html:157
 #: .\team\templates\team\membership_detail.html:43
 msgid "Email"
 msgstr "E-mail"
@@ -158,7 +158,7 @@ msgid "Paid At"
 msgstr "Payé le"
 
 #: .\account\templates\account\account_billing.html:94
-#: .\team\templates\team\detail_team.html:141
+#: .\team\templates\team\detail_team.html:158
 msgid "Status"
 msgstr "Status"
 
@@ -230,7 +230,6 @@ msgstr ""
 "connecter...."
 
 #: .\account\templates\account\account_security.html:57
-#| msgid "Create account"
 msgid "Delete Account"
 msgstr "Supprimer compte"
 
@@ -1073,50 +1072,73 @@ msgstr "Rôle"
 msgid "Invite Team Members"
 msgstr "Inviter des membres"
 
-#: .\team\templates\team\detail_team.html:107
+#: .\team\templates\team\detail_team.html:111
 msgid "Invite"
 msgstr "Inviter"
 
-#: .\team\templates\team\detail_team.html:113
+#: .\team\templates\team\detail_team.html:117
+msgid "Remaining Storage:"
+msgstr "Stockage restant:"
+
+#: .\team\templates\team\detail_team.html:119
+msgid ""
+"Your storage is deducted based on the storage limit you set for each member."
+msgstr ""
+"Votre stockage est déduit en fonction de la limite de stockage que vous avez"
+" fixée pour chaque membre."
+
+#: .\team\templates\team\detail_team.html:129
 #, python-format
 msgid ""
 "\n"
-"                                        <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
-"                                    "
+"                                            <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
+"                                        "
 msgstr ""
 "\n"
 "                                        <small>N'oubliez pas que vous ne pouvez inviter que %(remaining_invitations)s de membres.</small>\n"
 "                                    "
 
-#: .\team\templates\team\detail_team.html:121
+#: .\team\templates\team\detail_team.html:137
 #, python-format
 msgid ""
 "\n"
-"                                        Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
-"                                    "
+"                                            Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
+"                                        "
 msgstr ""
 "\n"
 "Votre équipe est au maximum de ses capacités (%(team_members.count)s), vous ne pouvez plus inviter d'autres membres.\n"
 "                                    "
 
-#: .\team\templates\team\detail_team.html:128
+#: .\team\templates\team\detail_team.html:144
 msgid "Something went wrong. Please contact support."
 msgstr "Un problème s'est produit. Veuillez contacter le support."
 
-#: .\team\templates\team\detail_team.html:136
+#: .\team\templates\team\detail_team.html:153
 msgid "Pending invitation"
 msgstr "Invitation en attente"
 
-#: .\team\templates\team\detail_team.html:142
+#: .\team\templates\team\detail_team.html:159
 msgid "Action"
 msgstr "Action"
 
-#: .\team\templates\team\detail_team.html:148
+#: .\team\templates\team\detail_team.html:168
+#: .\team\templates\team\detail_team.html:210
 msgid "Cancel Invitation"
 msgstr "Annuler une invitation"
 
+#: .\team\templates\team\detail_team.html:289
+msgid "Your remaining storage after deduction:"
+msgstr "Votre stockage restant après déduction:"
+
+#: .\team\templates\team\detail_team.html:291
+msgid "Insufficient"
+msgstr "Insuffisant"
+
+#: .\team\templates\team\detail_team.html:292
+msgid "Insufficient storage for this allocation"
+msgstr "Stockage insuffisant pour cette allocation"
+
 #: .\team\templates\team\guest_register.html:30
-#| msgid "Sign in"
 msgid "Sign up"
 msgstr "S'inscrire"
 
@@ -1126,10 +1148,6 @@ msgstr "Invitation à rejoindre une équipe"
 
 #: .\team\templates\team\invitation_landing.html:31
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                    <p>You have been invited by <strong><u>%(invitation.sender.email)s</u></strong> to join the team: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
-#| "                "
 msgid ""
 "\n"
 "                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
