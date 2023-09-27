@@ -140,7 +140,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -157,7 +157,7 @@ LOCALE_PATHS = [
     BASE_DIR.parent / 'locale',
 ]
 
-BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = "http://127.0.0.1:8000/"
 
 # =====================================================================
 # THIRD-PARTY SETTINGS SETTINGS

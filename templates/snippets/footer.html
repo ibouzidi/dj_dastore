@@ -34,7 +34,7 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right text-center" style="min-width:inherit;" aria-labelledby="languageDropdown">
                                     {% for lang in languages %}
-                                        <a class="dropdown-item" href="{{ request.scheme }}://{{ request.META.HTTP_HOST }}{% change_lang lang.code %}">
+                                        <a class="dropdown-item" href="{% change_lang lang.code %}">
                                             {{ lang.name_local|capfirst }}
                                         </a>
                                     {% endfor %}

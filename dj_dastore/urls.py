@@ -4,6 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_view
+from django.views.generic import RedirectView
 from two_factor.urls import urlpatterns as tf_urls
 import app.views
 from account import views
@@ -59,6 +60,7 @@ handler404 = 'app.views.handle404'
 handler500 = 'app.views.handle500'
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/en/'), name='root_redirect'),
     # path('set_language/', app.views.set_language, name='set_language'),
     path("stripe/", include("djstripe.urls", namespace="djstripe")),
     re_path(r'^rosetta/', include('rosetta.urls')),
