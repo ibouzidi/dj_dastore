@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-27 13:56+0200\n"
+"POT-Creation-Date: 2023-09-28 15:52+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -75,7 +75,7 @@ msgstr ""
 #: .\account\templates\account\account.html:140
 #: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
 #: .\team\templates\team\detail_team.html:84
-#: .\team\templates\team\detail_team.html:157
+#: .\team\templates\team\detail_team.html:158
 #: .\team\templates\team\membership_detail.html:43
 msgid "Email"
 msgstr ""
@@ -157,7 +157,7 @@ msgid "Paid At"
 msgstr ""
 
 #: .\account\templates\account\account_billing.html:94
-#: .\team\templates\team\detail_team.html:158
+#: .\team\templates\team\detail_team.html:159
 msgid "Status"
 msgstr ""
 
@@ -301,7 +301,7 @@ msgid "Change password"
 msgstr ""
 
 #: .\account\templates\account\profile_tab.html:8
-#: .\templates\snippets\header.html:70
+#: .\templates\snippets\header.html:71
 msgid "Settings"
 msgstr ""
 
@@ -310,19 +310,19 @@ msgid "Security"
 msgstr ""
 
 #: .\account\templates\account\profile_tab.html:19
+#: .\account\templates\account\profile_tab.html:32
 msgid "Statistics"
 msgstr ""
 
-#: .\account\templates\account\profile_tab.html:24
+#: .\account\templates\account\profile_tab.html:25
 msgid "Billing"
 msgstr ""
 
-#: .\account\templates\account\profile_tab.html:32
+#: .\account\templates\account\profile_tab.html:39
 msgid "Teams"
 msgstr ""
 
-#: .\account\templates\account\profile_tab.html:39
-#: .\account\templates\account\profile_tab_mobile.html:48
+#: .\account\templates\account\profile_tab.html:46
 msgid "Membership"
 msgstr ""
 
@@ -681,6 +681,30 @@ msgid ""
 "your privacy, and your feedback is crucial for us to serve you better."
 msgstr ""
 
+#: .\app\templates\app\error\404.html:11
+msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
+msgstr ""
+
+#: .\app\templates\app\error\404.html:12
+msgid ""
+"Oops! Looks like you followed a bad link. If you think this is a problem "
+"with us, please tell us."
+msgstr ""
+
+#: .\app\templates\app\error\404.html:13 .\app\templates\app\error\500.html:13
+msgid "Go back home"
+msgstr ""
+
+#: .\app\templates\app\error\500.html:10
+msgid "Something has gone <span class=\"text-primary\">seriously</span> wrong"
+msgstr ""
+
+#: .\app\templates\app\error\500.html:11
+msgid ""
+"It's always time for a coffee break. We should be back by the time you "
+"finish your coffee."
+msgstr ""
+
 #: .\app\templates\app\hero.html:9
 msgid "Seamless Backup"
 msgstr ""
@@ -765,16 +789,16 @@ msgid ""
 "a hassle-free experience."
 msgstr ""
 
-#: .\dj_dastore\settings\local.py:51
+#: .\dj_dastore\settings\base.py:152
 msgid "English"
 msgstr ""
 
-#: .\dj_dastore\settings\local.py:52
+#: .\dj_dastore\settings\base.py:153
 msgid "French"
 msgstr ""
 
 #: .\folder\templates\folder\folder_list.html:6
-#: .\templates\snippets\header.html:69
+#: .\templates\snippets\header.html:70
 msgid "Backup"
 msgstr ""
 
@@ -972,20 +996,20 @@ msgstr ""
 msgid "Invite Team Members"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:111
+#: .\team\templates\team\detail_team.html:112
 msgid "Invite"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:117
+#: .\team\templates\team\detail_team.html:119
 msgid "Remaining Storage:"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:119
+#: .\team\templates\team\detail_team.html:121
 msgid ""
 "Your storage is deducted based on the storage limit you set for each member."
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:129
+#: .\team\templates\team\detail_team.html:130
 #, python-format
 msgid ""
 "\n"
@@ -994,7 +1018,7 @@ msgid ""
 "                                        "
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:137
+#: .\team\templates\team\detail_team.html:138
 #, python-format
 msgid ""
 "\n"
@@ -1003,33 +1027,21 @@ msgid ""
 "                                        "
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:144
+#: .\team\templates\team\detail_team.html:145
 msgid "Something went wrong. Please contact support."
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:153
+#: .\team\templates\team\detail_team.html:154
 msgid "Pending invitation"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:159
+#: .\team\templates\team\detail_team.html:160
 msgid "Action"
 msgstr ""
 
-#: .\team\templates\team\detail_team.html:168
-#: .\team\templates\team\detail_team.html:210
+#: .\team\templates\team\detail_team.html:169
+#: .\team\templates\team\detail_team.html:211
 msgid "Cancel Invitation"
-msgstr ""
-
-#: .\team\templates\team\detail_team.html:289
-msgid "Your remaining storage after deduction:"
-msgstr ""
-
-#: .\team\templates\team\detail_team.html:291
-msgid "Insufficient"
-msgstr ""
-
-#: .\team\templates\team\detail_team.html:292
-msgid "Insufficient storage for this allocation"
 msgstr ""
 
 #: .\team\templates\team\guest_register.html:30
@@ -1173,30 +1185,30 @@ msgstr ""
 msgid "Connect with us on social media and join our thriving online community."
 msgstr ""
 
-#: .\templates\snippets\header.html:68 .\templates\snippets\header.html:102
+#: .\templates\snippets\header.html:69 .\templates\snippets\header.html:103
 msgid "GET STARTED"
 msgstr ""
 
-#: .\templates\snippets\header.html:72
+#: .\templates\snippets\header.html:73
 msgid "My account"
 msgstr ""
 
-#: .\templates\snippets\header.html:89
+#: .\templates\snippets\header.html:90
 msgid "Profil"
 msgstr ""
 
-#: .\templates\snippets\header.html:93
+#: .\templates\snippets\header.html:94
 msgid "Logs"
 msgstr ""
 
-#: .\templates\snippets\header.html:96 .\templates\snippets\header.html:103
+#: .\templates\snippets\header.html:97 .\templates\snippets\header.html:104
 msgid "Contact"
 msgstr ""
 
-#: .\templates\snippets\header.html:98
+#: .\templates\snippets\header.html:99
 msgid "Logout"
 msgstr ""
 
-#: .\templates\snippets\header.html:106
+#: .\templates\snippets\header.html:107
 msgid "Login"
 msgstr ""
