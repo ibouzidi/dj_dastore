@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 15:52+0200\n"
+"POT-Creation-Date: 2023-09-28 16:56+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -667,6 +667,10 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
+#: .\app\templates\app\contact.html:79
+msgid "Send Message"
+msgstr ""
+
 #: .\app\templates\app\contact.html:87
 msgid "Your message was sent, thank you!"
 msgstr ""
@@ -681,17 +685,17 @@ msgid ""
 "your privacy, and your feedback is crucial for us to serve you better."
 msgstr ""
 
-#: .\app\templates\app\error\404.html:11
+#: .\app\templates\app\error\404.html:12
 msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
 msgstr ""
 
-#: .\app\templates\app\error\404.html:12
+#: .\app\templates\app\error\404.html:13
 msgid ""
 "Oops! Looks like you followed a bad link. If you think this is a problem "
 "with us, please tell us."
 msgstr ""
 
-#: .\app\templates\app\error\404.html:13 .\app\templates\app\error\500.html:13
+#: .\app\templates\app\error\404.html:14 .\app\templates\app\error\500.html:13
 msgid "Go back home"
 msgstr ""
 

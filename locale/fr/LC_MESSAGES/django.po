@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 15:52+0200\n"
-"PO-Revision-Date: 2023-09-28 15:52+0009\n"
+"POT-Creation-Date: 2023-09-28 16:56+0200\n"
+"PO-Revision-Date: 2023-09-28 16:56+0009\n"
 "Last-Translator:   <admin@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -172,7 +172,8 @@ msgstr "PARAMÈTRES DE SÉCURITÉ"
 
 #: .\account\templates\account\account_security.html:36
 #: .\account\templates\two_factor\core\setup_complete.html:36
-msgid "Congratulations, you've successfully enabled two-factor authentication."
+msgid ""
+"Congratulations, you've successfully enabled two-factor authentication."
 msgstr ""
 "Félicitations, vous avez activé avec succès l'authentification à deux "
 "facteurs."
@@ -180,12 +181,12 @@ msgstr ""
 #: .\account\templates\account\account_security.html:38
 #: .\account\templates\two_factor\profile\profile.html:77
 msgid ""
-"However we strongly discourage you to do so, you can also disable two-factor "
-"authentication for your account."
+"However we strongly discourage you to do so, you can also disable two-factor"
+" authentication for your account."
 msgstr ""
 "Bien que nous vous déconseillions fortement de le faire, vous pouvez "
-"également désactiver l'authentification à deux facteurs l'authentification à "
-"deux facteurs pour votre compte."
+"également désactiver l'authentification à deux facteurs l'authentification à"
+" deux facteurs pour votre compte."
 
 #: .\account\templates\account\account_security.html:43
 #: .\account\templates\two_factor\profile\profile.html:76
@@ -205,8 +206,8 @@ msgstr "Retour à Sécurité du compte"
 #: .\account\templates\two_factor\core\otp_required.html:11
 #: .\account\templates\two_factor\profile\profile.html:82
 msgid ""
-"Two-factor authentication is not enabled for your account. Enable two-factor "
-"authentication for enhanced account security."
+"Two-factor authentication is not enabled for your account. Enable two-factor"
+" authentication for enhanced account security."
 msgstr ""
 "L'authentification à deux facteurs n'est pas activée pour votre compte. "
 "Activez l'authentification à deux facteurs l'authentification à deux "
@@ -241,11 +242,11 @@ msgstr ""
 
 #: .\account\templates\account\account_security.html:108
 msgid ""
-"All your data will be retained for two years and you won't be able to access "
-"your account during this period."
+"All your data will be retained for two years and you won't be able to access"
+" your account during this period."
 msgstr ""
-"Toutes vos données seront conservées pendant deux ans et vous ne pourrez pas "
-"accéder à votre compte pendant cette période."
+"Toutes vos données seront conservées pendant deux ans et vous ne pourrez pas"
+" accéder à votre compte pendant cette période."
 
 #: .\account\templates\account\account_storage_stat.html:30
 msgid "STORAGE STATISTICS"
@@ -465,8 +466,8 @@ msgid ""
 "been generated for you to print and keep safe. Please enter one of these "
 "backup tokens to login to your account."
 msgstr ""
-"Utilisez ce formulaire pour saisir des jetons de sauvegarde pour l'ouverture "
-"d'une session. Ces jetons ont ont été générés pour que vous puissiez les "
+"Utilisez ce formulaire pour saisir des jetons de sauvegarde pour l'ouverture"
+" d'une session. Ces jetons ont ont été générés pour que vous puissiez les "
 "imprimer et les conserver. Veuillez saisir l'un de ces de sauvegarde pour "
 "vous connecter à votre compte."
 
@@ -541,13 +542,13 @@ msgid ""
 "By enabling two-factor authentication, you're adding an extra layer of "
 "protection to safeguard your valuable data. <br><br> Two-factor "
 "authentication, often referred to as 2FA, requires not only a password and "
-"username but also something that only the user has on them, i.e., a piece of "
-"information only they should know or have immediately on hand - like a "
+"username but also something that only the user has on them, i.e., a piece of"
+" information only they should know or have immediately on hand - like a "
 "physical token. <br><br> Follow the steps in this wizard to enable two-"
 "factor authentication."
 msgstr ""
-"Félicitations pour votre décision de renforcer la sécurité de votre compte ! "
-"<br><br> En activant l'authentification à deux facteurs, vous ajoutez une "
+"Félicitations pour votre décision de renforcer la sécurité de votre compte !"
+" <br><br> En activant l'authentification à deux facteurs, vous ajoutez une "
 "couche supplémentaire de protection pour protéger vos données précieuses. "
 "<br><br> L'authentification à deux facteurs, souvent appelée 2FA, nécessite "
 "non seulement un mot de passe et un nom d'utilisateur, mais aussi quelque "
@@ -589,8 +590,8 @@ msgstr "Ensuite, saisissez le jeton généré par l'application."
 
 #: .\account\templates\two_factor\core\setup.html:75
 msgid ""
-"Please enter the phone number you wish to receive the text messages on. This "
-"number will be validated in the next step."
+"Please enter the phone number you wish to receive the text messages on. This"
+" number will be validated in the next step."
 msgstr ""
 "Veuillez entrer le numéro de téléphone sur lequel vous souhaitez recevoir "
 "les messages texte. Ce numéro sera validé à l'étape suivante."
@@ -606,14 +607,14 @@ msgstr ""
 #: .\account\templates\two_factor\core\setup.html:84
 msgid "We are calling your phone right now, please enter the digits you hear."
 msgstr ""
-"Nous appelons votre téléphone en ce moment, veuillez saisir les chiffres que "
-"vous entendez."
+"Nous appelons votre téléphone en ce moment, veuillez saisir les chiffres que"
+" vous entendez."
 
 #: .\account\templates\two_factor\core\setup.html:87
 msgid "We sent you a text message, please enter the tokens we sent."
 msgstr ""
-"Nous vous avons envoyé un message texte, veuillez saisir les jetons que nous "
-"avons envoyés."
+"Nous vous avons envoyé un message texte, veuillez saisir les jetons que nous"
+" avons envoyés."
 
 #: .\account\templates\two_factor\core\setup.html:91
 msgid ""
@@ -625,16 +626,16 @@ msgstr ""
 "Nous avons rencontré un problème avec la méthode d'authentification "
 "sélectionnée. Veuillez revenir en arrière et vérifier que vous avez saisi "
 "correctement vos informations, réessayez ou utilisez une méthode "
-"d'authentification différente à la place. Si le problème persiste, contactez "
-"l'administrateur du site."
+"d'authentification différente à la place. Si le problème persiste, contactez"
+" l'administrateur du site."
 
 #: .\account\templates\two_factor\core\setup.html:98
 msgid ""
 "To identify and verify your YubiKey, please insert a token in the field "
 "below. Your YubiKey will be linked to your account."
 msgstr ""
-"Pour identifier et vérifier votre YubiKey, veuillez insérer un jeton dans le "
-"champ ci-dessous. Votre YubiKey sera liée à votre compte."
+"Pour identifier et vérifier votre YubiKey, veuillez insérer un jeton dans le"
+" champ ci-dessous. Votre YubiKey sera liée à votre compte."
 
 #: .\account\templates\two_factor\core\setup_complete.html:33
 msgid "Two-Factor Authentication Activated"
@@ -645,8 +646,8 @@ msgid ""
 "However, it might happen that you don't have access to your primary token "
 "device. To enable account recovery, add a phone number."
 msgstr ""
-"Cependant, il peut arriver que vous n'ayez pas accès à votre jeton principal "
-"Pour permettre la récupération du compte, ajoutez un numéro de téléphone."
+"Cependant, il peut arriver que vous n'ayez pas accès à votre jeton principal"
+" Pour permettre la récupération du compte, ajoutez un numéro de téléphone."
 
 #: .\account\templates\two_factor\core\setup_complete.html:52
 #: .\account\templates\two_factor\profile\profile.html:61
@@ -724,7 +725,7 @@ msgstr "Votre jeton OTP est %(token)s"
 
 #: .\app\forms.py:33
 msgid "Subject"
-msgstr "Object"
+msgstr "Objet"
 
 #: .\app\forms.py:38
 msgid "Write your message"
@@ -742,6 +743,10 @@ msgstr "Remplir le formulaire, c'est facile."
 msgid "First name"
 msgstr "Prénom"
 
+#: .\app\templates\app\contact.html:79
+msgid "Send Message"
+msgstr "Envoyer le message"
+
 #: .\app\templates\app\contact.html:87
 msgid "Your message was sent, thank you!"
 msgstr "votre message a été envoyé, merci !"
@@ -756,15 +761,14 @@ msgid ""
 "your privacy, and your feedback is crucial for us to serve you better."
 msgstr ""
 "Vous avez des questions ou besoin d'aide ? Nous sommes là pour vous aider. "
-"Notre application vise à protéger votre vie privée, et vos commentaires sont "
-"essentiels pour nous permettre de mieux vous servir."
-
-#: .\app\templates\app\error\404.html:11
-msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
-msgstr ""
-"Page non <span class=\"font-weight-bolder text-primary\">trouvée</span>"
+"Notre application vise à protéger votre vie privée, et vos commentaires sont"
+" essentiels pour nous permettre de mieux vous servir."
 
 #: .\app\templates\app\error\404.html:12
+msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
+msgstr "Page non <span class=\"font-weight-bolder text-primary\">trouvée</span>"
+
+#: .\app\templates\app\error\404.html:13
 msgid ""
 "Oops! Looks like you followed a bad link. If you think this is a problem "
 "with us, please tell us."
@@ -772,7 +776,7 @@ msgstr ""
 "Oups ! Il semble que vous ayez suivi un mauvais lien. Si vous pensez qu'il "
 "s'agit d'un problème, veuillez nous le signaler."
 
-#: .\app\templates\app\error\404.html:13 .\app\templates\app\error\500.html:13
+#: .\app\templates\app\error\404.html:14 .\app\templates\app\error\500.html:13
 msgid "Go back home"
 msgstr "Revenir à l'accueil"
 
@@ -836,8 +840,8 @@ msgstr "Gestion Facile des Données"
 
 #: .\app\templates\app\home.html:51
 msgid ""
-"Seamlessly upload, download, and delete your backups using our user-friendly "
-"dashboard."
+"Seamlessly upload, download, and delete your backups using our user-friendly"
+" dashboard."
 msgstr ""
 "Chargez, téléchargez et supprimez vos sauvegardes en toute fluidité grâce à "
 "notre tableau de bord convivial."
@@ -848,8 +852,8 @@ msgstr "Cryptage Avancé"
 
 #: .\app\templates\app\home.html:62
 msgid ""
-"Your data is safeguarded through robust AES and asymmetrical key encryption, "
-"providing top-tier security."
+"Your data is safeguarded through robust AES and asymmetrical key encryption,"
+" providing top-tier security."
 msgstr ""
 "Vos données sont protégées par un cryptage AES robuste et des clés "
 "asymétriques, garantissant une sécurité de premier ordre."
@@ -880,8 +884,8 @@ msgstr "Gestion de l'abonnement"
 
 #: .\app\templates\app\home.html:95
 msgid ""
-"Easily manage your billing and payment history through the Stripe portal for "
-"a hassle-free experience."
+"Easily manage your billing and payment history through the Stripe portal for"
+" a hassle-free experience."
 msgstr ""
 "Gérez facilement votre abonnement et votre historique de paiement via le "
 "portail Stripe pour une expérience sans tracas."
@@ -993,8 +997,8 @@ msgid ""
 "Please confirm if you want to proceed to the checkout for your chosen "
 "subscription plan :"
 msgstr ""
-"Veuillez confirmer si vous souhaitez passer à la finalisation de la commande "
-"pour le plan d'abonnement que vous avez choisi :"
+"Veuillez confirmer si vous souhaitez passer à la finalisation de la commande"
+" pour le plan d'abonnement que vous avez choisi :"
 
 #: .\subscriptions\templates\subscriptions\confirm_checkout.html:14
 msgid "Yes, proceed to checkout"
@@ -1048,8 +1052,8 @@ msgid ""
 "ensure you complete your payment within the next 24 hours if you wish to "
 "continue using our services."
 msgstr ""
-"Veuillez noter que si vous annulez la procédure de paiement maintenant, vous "
-"disposerez de 24 heures pour effectuer votre paiement. Si votre paiement "
+"Veuillez noter que si vous annulez la procédure de paiement maintenant, vous"
+" disposerez de 24 heures pour effectuer votre paiement. Si votre paiement "
 "n'est pas reçu dans ce délai, votre compte sera désactivé et éventuellement "
 "supprimé. Veillez à effectuer votre paiement dans les prochaines 24 heures "
 "si vous souhaitez continuer à utiliser nos services."
@@ -1112,33 +1116,29 @@ msgstr "Stockage restant:"
 msgid ""
 "Your storage is deducted based on the storage limit you set for each member."
 msgstr ""
-"Votre stockage est déduit en fonction de la limite de stockage que vous avez "
-"fixée pour chaque membre."
+"Votre stockage est déduit en fonction de la limite de stockage que vous avez"
+" fixée pour chaque membre."
 
 #: .\team\templates\team\detail_team.html:130
 #, python-format
 msgid ""
 "\n"
-"                                            <small>Remember, you can only "
-"invite %(remaining_invitations)s more members.</small>\n"
+"                                            <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
 "                                        "
 msgstr ""
 "\n"
-"                                        <small>N'oubliez pas que vous ne "
-"pouvez inviter que %(remaining_invitations)s de membres.</small>\n"
+"                                        <small>N'oubliez pas que vous ne pouvez inviter que %(remaining_invitations)s de membres.</small>\n"
 "                                    "
 
 #: .\team\templates\team\detail_team.html:138
 #, python-format
 msgid ""
 "\n"
-"                                            Your team is at full capacity "
-"(%(team_members.count)s), you can no longer invite more members.\n"
+"                                            Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
 "                                        "
 msgstr ""
 "\n"
-"Votre équipe est au maximum de ses capacités (%(team_members.count)s), vous "
-"ne pouvez plus inviter d'autres membres.\n"
+"Votre équipe est au maximum de ses capacités (%(team_members.count)s), vous ne pouvez plus inviter d'autres membres.\n"
 "                                    "
 
 #: .\team\templates\team\detail_team.html:145
@@ -1170,14 +1170,11 @@ msgstr "Invitation à rejoindre une équipe"
 #, python-format
 msgid ""
 "\n"
-"                    <p>You have been invited by <strong><u>%(sender_email)s</"
-"u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
+"                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
 "                "
 msgstr ""
 "\n"
-"<p>Vous avez été invité par <strong><u>%(invitation.sender.email)s</u></"
-"strong> à rejoindre l'équipe: <strong><u>%(invitation.team.team_name)s</u></"
-"strong></p>\n"
+"<p>Vous avez été invité par <strong><u>%(invitation.sender.email)s</u></strong> à rejoindre l'équipe: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
 "                "
 
 #: .\team\templates\team\invitation_landing.html:37
@@ -1240,7 +1237,8 @@ msgstr "Réinitialiser le mot de passe"
 
 #: .\templates\password_reset\password_reset_complete.html:9
 msgid "Your password has been reset. You may go ahead and"
-msgstr "Votre mot de passe a été réinitialisé. Vous pouvez aller de l'avant et"
+msgstr ""
+"Votre mot de passe a été réinitialisé. Vous pouvez aller de l'avant et"
 
 #: .\templates\password_reset\password_reset_complete.html:9
 msgid "login"
@@ -1308,7 +1306,8 @@ msgid "Our Social Networks"
 msgstr "Nos Réseaux Sociaux"
 
 #: .\templates\snippets\footer.html:71
-msgid "Connect with us on social media and join our thriving online community."
+msgid ""
+"Connect with us on social media and join our thriving online community."
 msgstr ""
 "Connectez-vous avec nous sur les médias sociaux et rejoignez notre "
 "communauté en ligne prospère."
