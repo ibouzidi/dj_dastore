@@ -1,5 +1,5 @@
 {% load i18n %}
-{% load helper_tags %}
+{#{% load helper_tags %}#}
 {% load static %}
 <!-- ======= Footer ======= -->
 <footer id="footer">
@@ -34,7 +34,7 @@
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-right text-center" style="min-width:inherit;" aria-labelledby="languageDropdown">
                                     {% for lang in languages %}
-                                        <a class="dropdown-item" href="{% change_lang lang.code %}">
+                                        <a class="dropdown-item" href="/{{ lang.code }}{{ request.get_full_path|slice:'3:' }}">
                                             {{ lang.name_local|capfirst }}
                                         </a>
                                     {% endfor %}

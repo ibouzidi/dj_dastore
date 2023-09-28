@@ -9,16 +9,15 @@ from django.utils import translation
 from app.forms import ContactForm
 
 
-def set_language(request):
-    user_language = request.POST.get('language')
-    next_url = request.POST.get('next', '/')  # Fallback to root if 'next' is not provided
-
-    if user_language:
-        translation.activate(user_language)
-        request.session[translation.LANGUAGE_SESSION_KEY] = user_language
-        request.session.modified = True
-
-    return HttpResponseRedirect(next_url)
+# def set_language(request):
+#     lang_code = request.GET.get('lang', 'en')  # default to English if no language is specified
+#     translation.activate(lang_code)
+#     request.session[translation.LANGUAGE_SESSION_KEY] = lang_code
+#
+#     next = request.GET.get('next', '/')
+#     response = HttpResponseRedirect(next)
+#
+#     return response
 
 
 def home_screen_view(request):

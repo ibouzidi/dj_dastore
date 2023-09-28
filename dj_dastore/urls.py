@@ -15,7 +15,6 @@ from app.views import (
 
 localized_patterns  = [
     # path('', HomeView.as_view(), name='HomeView'),
-    path('set_language/', app.views.set_language, name='set_language'),
     path('contact/', app.views.contact_view, name='contact_view'),
     path("subscriptions/", include("subscriptions.urls")),
     path('backup/', include('extbackup.urls')),
@@ -61,7 +60,6 @@ handler500 = 'app.views.handle500'
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/en/'), name='root_redirect'),
-    # path('set_language/', app.views.set_language, name='set_language'),
     path("stripe/", include("djstripe.urls", namespace="djstripe")),
     re_path(r'^rosetta/', include('rosetta.urls')),
 
