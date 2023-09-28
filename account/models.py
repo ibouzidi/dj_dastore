@@ -70,7 +70,7 @@ class Account(AbstractBaseUser, PermissionsMixin):
                                       upload_to=get_profile_image_filepath,
                                       null=True, blank=True,
                                       default=get_default_profile_image)
-    storage_usage = models.BigIntegerField(default=0)
+    storage_usage = models.PositiveBigIntegerField(default=0)
     storage_limit = models.BigIntegerField(default=0)
     plan_id = models.CharField(max_length=255, null=True, blank=True)
     request_counts = models.PositiveIntegerField(default=0)

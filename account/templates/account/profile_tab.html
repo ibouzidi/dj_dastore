@@ -18,12 +18,19 @@
             {% include 'partials/icons/icon_pie_chart.html' %}
             {% trans "Statistics" %}
         </a>
+
         <a href="{% url 'account:account_billing' %}"
            class="nav-item nav-link has-icon nav-link-faded" data-id="billing">
             {% include 'partials/icons/icon_credit_card.html' %}
             {% trans "Billing" %}
         </a>
-
+    {% endif %}
+    {% if request.user.has_teams and not request.user.get_active_subscriptions %}
+        <a href="{% url 'account:account_storage_stat' %}"
+           class="nav-item nav-link has-icon nav-link-faded" data-id="statistics">
+            {% include 'partials/icons/icon_pie_chart.html' %}
+            {% trans "Statistics" %}
+        </a>
     {% endif %}
     {% if request.user.is_company or request.user.is_admin %}
         <a href="{% url 'team:team_list' %}"
