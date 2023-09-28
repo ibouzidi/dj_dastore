@@ -27,7 +27,7 @@
         "model": "auth.group",
         "pk": 4,
         "fields": {
-            "name": "g_team_member",
+            "name": "g_inactive_team_member",
             "permissions": []
         }
     },
@@ -52,6 +52,14 @@
         "pk": 7,
         "fields": {
             "name": "g_active_subscribers",
+            "permissions": []
+        }
+    },
+        {
+        "model": "auth.group",
+        "pk": 8,
+        "fields": {
+            "name": "g_active_team_member",
             "permissions": []
         }
     }
