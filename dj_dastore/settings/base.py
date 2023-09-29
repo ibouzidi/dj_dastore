@@ -195,8 +195,8 @@ LOGIN_URL = 'two_factor:login'
 LOGIN_REDIRECT_URL = 'account:account_profile'
 
 
-RECAPTCHA_PUBLIC_KEY = '6LdEG1smAAAAAAEn-_8vrhE4eUeVgMKhiW8Tr_eP'
-RECAPTCHA_PRIVATE_KEY = '6LdEG1smAAAAAFNBtdDqDaUJrFWknkdtz-fETWIB'
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', cast=str)
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', cast=str)
 # SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 # Stripe And Dj-stripe config

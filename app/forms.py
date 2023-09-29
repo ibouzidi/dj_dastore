@@ -10,8 +10,9 @@ name_validator = RegexValidator(
     'Only alphabetic characters are allowed.'
 )
 
+
 class ContactForm(forms.Form):
-    # captcha = ReCaptchaField()
+    captcha = ReCaptchaField()
     fname = forms.CharField(
         min_length=2,
         max_length=50,
