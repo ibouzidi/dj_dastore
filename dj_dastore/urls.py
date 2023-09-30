@@ -6,7 +6,7 @@ from django.urls import path, include, re_path
 from django.contrib.auth import views as auth_view
 from two_factor.urls import urlpatterns as tf_urls
 import app.views
-from account import views
+
 
 from app.views import (
     home_screen_view
@@ -16,6 +16,7 @@ localized_patterns  = [
     # path('', HomeView.as_view(), name='HomeView'),
     path('set_language/', app.views.set_language, name='set_language'),
     path('contact/', app.views.contact_view, name='contact_view'),
+    path('footer/', include("app.footer.urls")),
     path("subscriptions/", include("subscriptions.urls")),
     path('backup/', include('extbackup.urls')),
     path('folder/', include('folder.urls')),
