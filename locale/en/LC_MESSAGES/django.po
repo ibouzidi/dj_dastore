@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 16:56+0200\n"
+"POT-Creation-Date: 2023-10-05 18:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,7 +57,7 @@ msgstr ""
 msgid "Profile information"
 msgstr ""
 
-#: .\account\templates\account\account.html:112 .\app\forms.py:19
+#: .\account\templates\account\account.html:112 .\app\forms.py:20
 msgid "First Name"
 msgstr ""
 
@@ -65,7 +65,7 @@ msgstr ""
 msgid "Enter your first name"
 msgstr ""
 
-#: .\account\templates\account\account.html:125 .\app\forms.py:25
+#: .\account\templates\account\account.html:125 .\app\forms.py:26
 msgid "Last Name"
 msgstr ""
 
@@ -74,7 +74,7 @@ msgid "Also your last name"
 msgstr ""
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:29
 #: .\team\templates\team\detail_team.html:84
 #: .\team\templates\team\detail_team.html:158
 #: .\team\templates\team\membership_detail.html:43
@@ -260,7 +260,7 @@ msgstr ""
 #: .\account\templates\account\password_change.html:12
 #: .\account\templates\account\password_change.html:22
 #: .\account\templates\account\password_change.html:32
-#: .\account\templates\account\register.html:107
+#: .\account\templates\account\register.html:118
 msgid "Password"
 msgstr ""
 
@@ -356,31 +356,31 @@ msgstr ""
 msgid "Your Username"
 msgstr ""
 
-#: .\account\templates\account\register.html:104
+#: .\account\templates\account\register.html:115
 msgid "Your Password"
 msgstr ""
 
-#: .\account\templates\account\register.html:113
+#: .\account\templates\account\register.html:124
 msgid "Confirm Password"
 msgstr ""
 
-#: .\account\templates\account\register.html:123
+#: .\account\templates\account\register.html:134
 msgid "I agree to the"
 msgstr ""
 
-#: .\account\templates\account\register.html:123
+#: .\account\templates\account\register.html:134
 msgid "terms and conditions"
 msgstr ""
 
-#: .\account\templates\account\register.html:128
+#: .\account\templates\account\register.html:139
 msgid "Sign in"
 msgstr ""
 
-#: .\account\templates\account\register.html:158
+#: .\account\templates\account\register.html:169
 msgid "Already have an account?"
 msgstr ""
 
-#: .\account\templates\account\register.html:159
+#: .\account\templates\account\register.html:170
 msgid "Login here"
 msgstr ""
 
@@ -648,11 +648,11 @@ msgstr ""
 msgid "Your OTP token is %(token)s"
 msgstr ""
 
-#: .\app\forms.py:33
+#: .\app\forms.py:34
 msgid "Subject"
 msgstr ""
 
-#: .\app\forms.py:38
+#: .\app\forms.py:39
 msgid "Write your message"
 msgstr ""
 
@@ -668,6 +668,10 @@ msgstr ""
 msgid "First name"
 msgstr ""
 
+#: .\app\templates\app\contact.html:79
+msgid "Send Message"
+msgstr ""
+
 #: .\app\templates\app\contact.html:87
 msgid "Your message was sent, thank you!"
 msgstr ""
@@ -680,6 +684,30 @@ msgstr ""
 msgid ""
 "Have questions or need support? We're here to help. Our app aims to protect "
 "your privacy, and your feedback is crucial for us to serve you better."
+msgstr ""
+
+#: .\app\templates\app\error\404.html:12
+msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
+msgstr ""
+
+#: .\app\templates\app\error\404.html:13
+msgid ""
+"Oops! Looks like you followed a bad link. If you think this is a problem "
+"with us, please tell us."
+msgstr ""
+
+#: .\app\templates\app\error\404.html:14 .\app\templates\app\error\500.html:13
+msgid "Go back home"
+msgstr ""
+
+#: .\app\templates\app\error\500.html:10
+msgid "Something has gone <span class=\"text-primary\">seriously</span> wrong"
+msgstr ""
+
+#: .\app\templates\app\error\500.html:11
+msgid ""
+"It's always time for a coffee break. We should be back by the time you "
+"finish your coffee."
 msgstr ""
 
 #: .\app\templates\app\footer\about_us.html:38
@@ -858,30 +886,6 @@ msgid ""
 "We reserve the right to modify this privacy policy at any time. The changes "
 "will be posted on this page. By continuing to use this site after the "
 "changes are posted, you accept the terms of the updated privacy policy."
-msgstr ""
-
-#: .\app\templates\app\error\404.html:12
-msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
-msgstr ""
-
-#: .\app\templates\app\error\404.html:13
-msgid ""
-"Oops! Looks like you followed a bad link. If you think this is a problem "
-"with us, please tell us."
-msgstr ""
-
-#: .\app\templates\app\error\404.html:14 .\app\templates\app\error\500.html:13
-msgid "Go back home"
-msgstr ""
-
-#: .\app\templates\app\error\500.html:10
-msgid "Something has gone <span class=\"text-primary\">seriously</span> wrong"
-msgstr ""
-
-#: .\app\templates\app\error\500.html:11
-msgid ""
-"It's always time for a coffee break. We should be back by the time you "
-"finish your coffee."
 msgstr ""
 
 #: .\app\templates\app\hero.html:9
@@ -1364,7 +1368,7 @@ msgstr ""
 msgid "Connect with us on social media and join our thriving online community."
 msgstr ""
 
-#: .\templates\snippets\header.html:68 .\templates\snippets\header.html:102
+#: .\templates\snippets\header.html:69 .\templates\snippets\header.html:103
 msgid "GET STARTED"
 msgstr ""
 
@@ -1380,14 +1384,14 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-#: .\templates\snippets\header.html:96 .\templates\snippets\header.html:103
+#: .\templates\snippets\header.html:97 .\templates\snippets\header.html:104
 msgid "Contact"
 msgstr ""
 
-#: .\templates\snippets\header.html:98
+#: .\templates\snippets\header.html:99
 msgid "Logout"
 msgstr ""
 
-#: .\templates\snippets\header.html:106
+#: .\templates\snippets\header.html:107
 msgid "Login"
 msgstr ""

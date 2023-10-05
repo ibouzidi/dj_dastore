@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-30 21:17+0200\n"
-"PO-Revision-Date: 2023-09-27 14:39+0000\n"
-"Last-Translator: Yuli Calderon <benoit@gmail.com>\n"
+"POT-Creation-Date: 2023-10-05 18:44+0200\n"
+"PO-Revision-Date: 2023-10-05 18:49+0009\n"
+"Last-Translator:   <lucas42@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "Information sur le stockage"
 msgid "Profile information"
 msgstr "Informations de profil"
 
-#: .\account\templates\account\account.html:112 .\app\forms.py:19
+#: .\account\templates\account\account.html:112 .\app\forms.py:20
 msgid "First Name"
 msgstr "Prénom"
 
@@ -65,7 +65,7 @@ msgstr "Prénom"
 msgid "Enter your first name"
 msgstr "Saisissez votre prénom"
 
-#: .\account\templates\account\account.html:125 .\app\forms.py:25
+#: .\account\templates\account\account.html:125 .\app\forms.py:26
 msgid "Last Name"
 msgstr "Nom de famille"
 
@@ -74,7 +74,7 @@ msgid "Also your last name"
 msgstr "Saisissez votre nom de famille"
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:29
 #: .\team\templates\team\detail_team.html:84
 #: .\team\templates\team\detail_team.html:158
 #: .\team\templates\team\membership_detail.html:43
@@ -172,7 +172,8 @@ msgstr "PARAMÈTRES DE SÉCURITÉ"
 
 #: .\account\templates\account\account_security.html:36
 #: .\account\templates\two_factor\core\setup_complete.html:36
-msgid "Congratulations, you've successfully enabled two-factor authentication."
+msgid ""
+"Congratulations, you've successfully enabled two-factor authentication."
 msgstr ""
 "Félicitations, vous avez activé avec succès l'authentification à deux "
 "facteurs."
@@ -180,12 +181,12 @@ msgstr ""
 #: .\account\templates\account\account_security.html:38
 #: .\account\templates\two_factor\profile\profile.html:77
 msgid ""
-"However we strongly discourage you to do so, you can also disable two-factor "
-"authentication for your account."
+"However we strongly discourage you to do so, you can also disable two-factor"
+" authentication for your account."
 msgstr ""
 "Bien que nous vous déconseillions fortement de le faire, vous pouvez "
-"également désactiver l'authentification à deux facteurs l'authentification à "
-"deux facteurs pour votre compte."
+"également désactiver l'authentification à deux facteurs l'authentification à"
+" deux facteurs pour votre compte."
 
 #: .\account\templates\account\account_security.html:43
 #: .\account\templates\two_factor\profile\profile.html:76
@@ -205,8 +206,8 @@ msgstr "Retour à Sécurité du compte"
 #: .\account\templates\two_factor\core\otp_required.html:11
 #: .\account\templates\two_factor\profile\profile.html:82
 msgid ""
-"Two-factor authentication is not enabled for your account. Enable two-factor "
-"authentication for enhanced account security."
+"Two-factor authentication is not enabled for your account. Enable two-factor"
+" authentication for enhanced account security."
 msgstr ""
 "L'authentification à deux facteurs n'est pas activée pour votre compte. "
 "Activez l'authentification à deux facteurs l'authentification à deux "
@@ -275,7 +276,7 @@ msgstr "S'inscrire à notre plateforme"
 #: .\account\templates\account\password_change.html:12
 #: .\account\templates\account\password_change.html:22
 #: .\account\templates\account\password_change.html:32
-#: .\account\templates\account\register.html:117
+#: .\account\templates\account\register.html:118
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -371,31 +372,31 @@ msgstr "Votre E-mail"
 msgid "Your Username"
 msgstr "Votre nom d'utilisateur"
 
-#: .\account\templates\account\register.html:104
+#: .\account\templates\account\register.html:115
 msgid "Your Password"
 msgstr "Votre mot de passe"
 
-#: .\account\templates\account\register.html:113
+#: .\account\templates\account\register.html:124
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
-#: .\account\templates\account\register.html:123
+#: .\account\templates\account\register.html:134
 msgid "I agree to the"
 msgstr "J'accepte les"
 
-#: .\account\templates\account\register.html:123
+#: .\account\templates\account\register.html:134
 msgid "terms and conditions"
 msgstr "conditions générales"
 
-#: .\account\templates\account\register.html:128
+#: .\account\templates\account\register.html:139
 msgid "Sign in"
 msgstr "S'inscrire"
 
-#: .\account\templates\account\register.html:158
+#: .\account\templates\account\register.html:169
 msgid "Already have an account?"
 msgstr "Vous avez déjà un compte ?"
 
-#: .\account\templates\account\register.html:159
+#: .\account\templates\account\register.html:170
 msgid "Login here"
 msgstr "Se connecter ici"
 
@@ -465,8 +466,8 @@ msgid ""
 "been generated for you to print and keep safe. Please enter one of these "
 "backup tokens to login to your account."
 msgstr ""
-"Utilisez ce formulaire pour saisir des jetons de sauvegarde pour l'ouverture "
-"d'une session. Ces jetons ont ont été générés pour que vous puissiez les "
+"Utilisez ce formulaire pour saisir des jetons de sauvegarde pour l'ouverture"
+" d'une session. Ces jetons ont ont été générés pour que vous puissiez les "
 "imprimer et les conserver. Veuillez saisir l'un de ces de sauvegarde pour "
 "vous connecter à votre compte."
 
@@ -541,13 +542,13 @@ msgid ""
 "By enabling two-factor authentication, you're adding an extra layer of "
 "protection to safeguard your valuable data. <br><br> Two-factor "
 "authentication, often referred to as 2FA, requires not only a password and "
-"username but also something that only the user has on them, i.e., a piece of "
-"information only they should know or have immediately on hand - like a "
+"username but also something that only the user has on them, i.e., a piece of"
+" information only they should know or have immediately on hand - like a "
 "physical token. <br><br> Follow the steps in this wizard to enable two-"
 "factor authentication."
 msgstr ""
-"Félicitations pour votre décision de renforcer la sécurité de votre compte ! "
-"<br><br> En activant l'authentification à deux facteurs, vous ajoutez une "
+"Félicitations pour votre décision de renforcer la sécurité de votre compte !"
+" <br><br> En activant l'authentification à deux facteurs, vous ajoutez une "
 "couche supplémentaire de protection pour protéger vos données précieuses. "
 "<br><br> L'authentification à deux facteurs, souvent appelée 2FA, nécessite "
 "non seulement un mot de passe et un nom d'utilisateur, mais aussi quelque "
@@ -589,8 +590,8 @@ msgstr "Ensuite, saisissez le jeton généré par l'application."
 
 #: .\account\templates\two_factor\core\setup.html:75
 msgid ""
-"Please enter the phone number you wish to receive the text messages on. This "
-"number will be validated in the next step."
+"Please enter the phone number you wish to receive the text messages on. This"
+" number will be validated in the next step."
 msgstr ""
 "Veuillez entrer le numéro de téléphone sur lequel vous souhaitez recevoir "
 "les messages texte. Ce numéro sera validé à l'étape suivante."
@@ -606,14 +607,14 @@ msgstr ""
 #: .\account\templates\two_factor\core\setup.html:84
 msgid "We are calling your phone right now, please enter the digits you hear."
 msgstr ""
-"Nous appelons votre téléphone en ce moment, veuillez saisir les chiffres que "
-"vous entendez."
+"Nous appelons votre téléphone en ce moment, veuillez saisir les chiffres que"
+" vous entendez."
 
 #: .\account\templates\two_factor\core\setup.html:87
 msgid "We sent you a text message, please enter the tokens we sent."
 msgstr ""
-"Nous vous avons envoyé un message texte, veuillez saisir les jetons que nous "
-"avons envoyés."
+"Nous vous avons envoyé un message texte, veuillez saisir les jetons que nous"
+" avons envoyés."
 
 #: .\account\templates\two_factor\core\setup.html:91
 msgid ""
@@ -625,16 +626,16 @@ msgstr ""
 "Nous avons rencontré un problème avec la méthode d'authentification "
 "sélectionnée. Veuillez revenir en arrière et vérifier que vous avez saisi "
 "correctement vos informations, réessayez ou utilisez une méthode "
-"d'authentification différente à la place. Si le problème persiste, contactez "
-"l'administrateur du site."
+"d'authentification différente à la place. Si le problème persiste, contactez"
+" l'administrateur du site."
 
 #: .\account\templates\two_factor\core\setup.html:98
 msgid ""
 "To identify and verify your YubiKey, please insert a token in the field "
 "below. Your YubiKey will be linked to your account."
 msgstr ""
-"Pour identifier et vérifier votre YubiKey, veuillez insérer un jeton dans le "
-"champ ci-dessous. Votre YubiKey sera liée à votre compte."
+"Pour identifier et vérifier votre YubiKey, veuillez insérer un jeton dans le"
+" champ ci-dessous. Votre YubiKey sera liée à votre compte."
 
 #: .\account\templates\two_factor\core\setup_complete.html:33
 msgid "Two-Factor Authentication Activated"
@@ -645,8 +646,8 @@ msgid ""
 "However, it might happen that you don't have access to your primary token "
 "device. To enable account recovery, add a phone number."
 msgstr ""
-"Cependant, il peut arriver que vous n'ayez pas accès à votre jeton principal "
-"Pour permettre la récupération du compte, ajoutez un numéro de téléphone."
+"Cependant, il peut arriver que vous n'ayez pas accès à votre jeton principal"
+" Pour permettre la récupération du compte, ajoutez un numéro de téléphone."
 
 #: .\account\templates\two_factor\core\setup_complete.html:52
 #: .\account\templates\two_factor\profile\profile.html:61
@@ -722,11 +723,11 @@ msgstr "Afficher les codes"
 msgid "Your OTP token is %(token)s"
 msgstr "Votre jeton OTP est %(token)s"
 
-#: .\app\forms.py:33
+#: .\app\forms.py:34
 msgid "Subject"
 msgstr "Objet"
 
-#: .\app\forms.py:38
+#: .\app\forms.py:39
 msgid "Write your message"
 msgstr "Rédigez votre message"
 
@@ -760,8 +761,36 @@ msgid ""
 "your privacy, and your feedback is crucial for us to serve you better."
 msgstr ""
 "Vous avez des questions ou besoin d'aide ? Nous sommes là pour vous aider. "
-"Notre application vise à protéger votre vie privée, et vos commentaires sont "
-"essentiels pour nous permettre de mieux vous servir."
+"Notre application vise à protéger votre vie privée, et vos commentaires sont"
+" essentiels pour nous permettre de mieux vous servir."
+
+#: .\app\templates\app\error\404.html:12
+msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
+msgstr "Page non <span class=\"font-weight-bolder text-primary\">trouvée</span>"
+
+#: .\app\templates\app\error\404.html:13
+msgid ""
+"Oops! Looks like you followed a bad link. If you think this is a problem "
+"with us, please tell us."
+msgstr ""
+"Oups ! Il semble que vous ayez suivi un mauvais lien. Si vous pensez qu'il "
+"s'agit d'un problème, veuillez nous le signaler."
+
+#: .\app\templates\app\error\404.html:14 .\app\templates\app\error\500.html:13
+msgid "Go back home"
+msgstr "Revenir à l'accueil"
+
+#: .\app\templates\app\error\500.html:10
+msgid "Something has gone <span class=\"text-primary\">seriously</span> wrong"
+msgstr "Quelque chose a <span class=\"text-primary\">gravement dérapé</span>"
+
+#: .\app\templates\app\error\500.html:11
+msgid ""
+"It's always time for a coffee break. We should be back by the time you "
+"finish your coffee."
+msgstr ""
+"Il est toujours temps de faire une pause-café. Nous devrions être de retour "
+"le temps que vous finissiez votre café."
 
 #: .\app\templates\app\footer\about_us.html:38
 msgid "Who are we:"
@@ -824,8 +853,8 @@ msgstr ""
 #: .\app\templates\app\footer\about_us.html:58
 msgid ""
 "Our experienced team is here to guide you through the storage process, "
-"answer your questions, and help you find the best solution for your specific "
-"needs."
+"answer your questions, and help you find the best solution for your specific"
+" needs."
 msgstr ""
 "Notre équipe expérimentée est là pour vous guider tout au long du processus "
 "de stockage, répondre à vos questions et vous aider à trouver la meilleure "
@@ -850,7 +879,7 @@ msgstr "conditions générales"
 
 #: .\app\templates\app\footer\terms_of_service.html:44
 msgid "Acceptance of the terms:"
-msgstr "  Acceptation des conditions : "
+msgstr "Acceptation des conditions : "
 
 #: .\app\templates\app\footer\terms_of_service.html:45
 msgid ""
@@ -887,8 +916,8 @@ msgid ""
 "for the availability, content, or any other information on these sites. The "
 "use of these links is at your own risk."
 msgstr ""
-"Ce site peut contenir des liens vers des sites web tiers. Nous ne sommes pas "
-"responsables de la disponibilité, du contenu ou de toute autre information "
+"Ce site peut contenir des liens vers des sites web tiers. Nous ne sommes pas"
+" responsables de la disponibilité, du contenu ou de toute autre information "
 "présente sur ces sites. L'utilisation de ces liens se fait à vos propres "
 "risques."
 
@@ -900,13 +929,13 @@ msgstr "Limitation de responsabilité :"
 msgid ""
 "We strive to provide accurate and up-to-date information on this site, but "
 "we cannot guarantee the accuracy or completeness of this information. We "
-"disclaim any liability for any harm or damage resulting from the use of this "
-"site."
+"disclaim any liability for any harm or damage resulting from the use of this"
+" site."
 msgstr ""
 "Nous nous efforçons de fournir des informations précises et à jour sur ce "
 "site, mais nous ne pouvons pas garantir l'exactitude ou l'exhaustivité de "
-"ces informations. Nous déclinons toute responsabilité pour tout préjudice ou "
-"dommage découlant de l'utilisation de ce site."
+"ces informations. Nous déclinons toute responsabilité pour tout préjudice ou"
+" dommage découlant de l'utilisation de ce site."
 
 #: .\app\templates\app\footer\terms_of_service.html:52
 msgid "Modification of terms:"
@@ -930,8 +959,8 @@ msgstr "Collecte d'informations :"
 
 #: .\app\templates\app\footer\terms_of_service.html:55
 msgid ""
-"We collect personal information, such as your name, email address, and phone "
-"number, when you voluntarily provide them during your interaction with our "
+"We collect personal information, such as your name, email address, and phone"
+" number, when you voluntarily provide them during your interaction with our "
 "site. This information will be used only to respond to your requests and "
 "provide the requested services."
 msgstr ""
@@ -1003,34 +1032,6 @@ msgstr ""
 "continuant à utiliser ce site après la publication des modifications, vous "
 "acceptez les termes de la politique de confidentialité mise à jour."
 
-#: .\app\templates\app\error\404.html:12
-msgid "Page not <span class=\"font-weight-bolder text-primary\">found</span>"
-msgstr "Page non <span class=\"font-weight-bolder text-primary\">trouvée</span>"
-
-#: .\app\templates\app\error\404.html:13
-msgid ""
-"Oops! Looks like you followed a bad link. If you think this is a problem "
-"with us, please tell us."
-msgstr ""
-"Oups ! Il semble que vous ayez suivi un mauvais lien. Si vous pensez qu'il "
-"s'agit d'un problème, veuillez nous le signaler."
-
-#: .\app\templates\app\error\404.html:14 .\app\templates\app\error\500.html:13
-msgid "Go back home"
-msgstr "Revenir à l'accueil"
-
-#: .\app\templates\app\error\500.html:10
-msgid "Something has gone <span class=\"text-primary\">seriously</span> wrong"
-msgstr "Quelque chose a <span class=\"text-primary\">gravement dérapé</span>"
-
-#: .\app\templates\app\error\500.html:11
-msgid ""
-"It's always time for a coffee break. We should be back by the time you "
-"finish your coffee."
-msgstr ""
-"Il est toujours temps de faire une pause-café. Nous devrions être de retour "
-"le temps que vous finissiez votre café."
-
 #: .\app\templates\app\hero.html:9
 msgid "Seamless Backup"
 msgstr "Sauvegarde Intégrée"
@@ -1079,8 +1080,8 @@ msgstr "Gestion Facile des Données"
 
 #: .\app\templates\app\home.html:51
 msgid ""
-"Seamlessly upload, download, and delete your backups using our user-friendly "
-"dashboard."
+"Seamlessly upload, download, and delete your backups using our user-friendly"
+" dashboard."
 msgstr ""
 "Chargez, téléchargez et supprimez vos sauvegardes en toute fluidité grâce à "
 "notre tableau de bord convivial."
@@ -1091,8 +1092,8 @@ msgstr "Cryptage Avancé"
 
 #: .\app\templates\app\home.html:62
 msgid ""
-"Your data is safeguarded through robust AES and asymmetrical key encryption, "
-"providing top-tier security."
+"Your data is safeguarded through robust AES and asymmetrical key encryption,"
+" providing top-tier security."
 msgstr ""
 "Vos données sont protégées par un cryptage AES robuste et des clés "
 "asymétriques, garantissant une sécurité de premier ordre."
@@ -1123,8 +1124,8 @@ msgstr "Gestion de l'abonnement"
 
 #: .\app\templates\app\home.html:95
 msgid ""
-"Easily manage your billing and payment history through the Stripe portal for "
-"a hassle-free experience."
+"Easily manage your billing and payment history through the Stripe portal for"
+" a hassle-free experience."
 msgstr ""
 "Gérez facilement votre abonnement et votre historique de paiement via le "
 "portail Stripe pour une expérience sans tracas."
@@ -1236,8 +1237,8 @@ msgid ""
 "Please confirm if you want to proceed to the checkout for your chosen "
 "subscription plan :"
 msgstr ""
-"Veuillez confirmer si vous souhaitez passer à la finalisation de la commande "
-"pour le plan d'abonnement que vous avez choisi :"
+"Veuillez confirmer si vous souhaitez passer à la finalisation de la commande"
+" pour le plan d'abonnement que vous avez choisi :"
 
 #: .\subscriptions\templates\subscriptions\confirm_checkout.html:14
 msgid "Yes, proceed to checkout"
@@ -1291,8 +1292,8 @@ msgid ""
 "ensure you complete your payment within the next 24 hours if you wish to "
 "continue using our services."
 msgstr ""
-"Veuillez noter que si vous annulez la procédure de paiement maintenant, vous "
-"disposerez de 24 heures pour effectuer votre paiement. Si votre paiement "
+"Veuillez noter que si vous annulez la procédure de paiement maintenant, vous"
+" disposerez de 24 heures pour effectuer votre paiement. Si votre paiement "
 "n'est pas reçu dans ce délai, votre compte sera désactivé et éventuellement "
 "supprimé. Veillez à effectuer votre paiement dans les prochaines 24 heures "
 "si vous souhaitez continuer à utiliser nos services."
@@ -1360,32 +1361,34 @@ msgstr ""
 
 #: .\team\templates\team\detail_team.html:130
 #, python-format
+#| msgid ""
+#| "\n"
+#| "                                        <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
+#| "                                                                                <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
+#| "                                        "
 msgid ""
 "\n"
-"                                        <small>Remember, you can only invite "
-"%(remaining_invitations)s more members.</small>\n"
-"                                    "
 "                                            <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
 "                                        "
 msgstr ""
 "\n"
-"                                        <small>N'oubliez pas que vous ne "
-"pouvez inviter que %(remaining_invitations)s de membres.</small>\n"
+"                                        <small>N'oubliez pas que vous ne pouvez inviter que %(remaining_invitations)s de membres.</small>\n"
 "                                    "
 
 #: .\team\templates\team\detail_team.html:138
 #, python-format
+#| msgid ""
+#| "\n"
+#| "                                        Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
+#| "                                                                                Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
+#| "                                        "
 msgid ""
 "\n"
-"                                        Your team is at full capacity "
-"(%(team_members.count)s), you can no longer invite more members.\n"
-"                                    "
 "                                            Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
 "                                        "
 msgstr ""
 "\n"
-"Votre équipe est au maximum de ses capacités (%(team_members.count)s), vous "
-"ne pouvez plus inviter d'autres membres.\n"
+"Votre équipe est au maximum de ses capacités (%(team_members.count)s), vous ne pouvez plus inviter d'autres membres.\n"
 "                                    "
 
 #: .\team\templates\team\detail_team.html:145
@@ -1415,19 +1418,18 @@ msgstr "Invitation à rejoindre une équipe"
 
 #: .\team\templates\team\invitation_landing.html:31
 #, python-format
+#| msgid ""
+#| "\n"
+#| "                    <p>You have been invited by <strong><u>%(invitation.sender.email)s</u></strong> to join the team: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
+#| "                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
+#| "                "
 msgid ""
 "\n"
-"                    <p>You have been invited by <strong><u>"
-"%(invitation.sender.email)s</u></strong> to join the team: <strong><u>"
-"%(invitation.team.team_name)s</u></strong></p>\n"
 "                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
 "                "
 msgstr ""
 "\n"
-"                    <p>Vous avez été invité par <strong><u>"
-"%(invitation.sender.email)s</u></strong> à rejoindre l'équipe: <strong><u>"
-"%(invitation.team.team_name)s</u></strong></p>\n"
-"<p>Vous avez été invité par <strong><u>%(invitation.sender.email)s</u></strong> à rejoindre l'équipe: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
+"<p>Vous avez été invité par <strong><u>%(sender_email)s</u></strong> à rejoindre l'équipe: <strong><u>%(team_name)s</u></strong></p>\n"
 "                "
 
 #: .\team\templates\team\invitation_landing.html:37
@@ -1490,7 +1492,8 @@ msgstr "Réinitialiser le mot de passe"
 
 #: .\templates\password_reset\password_reset_complete.html:9
 msgid "Your password has been reset. You may go ahead and"
-msgstr "Votre mot de passe a été réinitialisé. Vous pouvez aller de l'avant et"
+msgstr ""
+"Votre mot de passe a été réinitialisé. Vous pouvez aller de l'avant et"
 
 #: .\templates\password_reset\password_reset_complete.html:9
 msgid "login"
@@ -1558,7 +1561,8 @@ msgid "Our Social Networks"
 msgstr "Nos Réseaux Sociaux"
 
 #: .\templates\snippets\footer.html:71
-msgid "Connect with us on social media and join our thriving online community."
+msgid ""
+"Connect with us on social media and join our thriving online community."
 msgstr ""
 "Connectez-vous avec nous sur les médias sociaux et rejoignez notre "
 "communauté en ligne prospère."
@@ -1579,11 +1583,6 @@ msgstr "Profil"
 msgid "Logs"
 msgstr "Logs"
 
-#: .\templates\snippets\header.html:96 .\templates\snippets\header.html:103
-msgid "Contact"
-msgstr "Contact"
-
-#: .\templates\snippets\header.html:98
 #: .\templates\snippets\header.html:97 .\templates\snippets\header.html:104
 msgid "Contact"
 msgstr "Contact"
@@ -1593,13 +1592,12 @@ msgid "Logout"
 msgstr "Déconnexion"
 
 #: .\templates\snippets\header.html:107
-#: .\templates\snippets\header.html:106
 msgid "Login"
 msgstr "Connexion"
 
 #~ msgid ""
-#~ "DaStore est une entreprise de stockage de confiance dédiée à répondre à "
-#~ "vos besoins de stockage sécurisé."
+#~ "DaStore est une entreprise de stockage de confiance dédiée à répondre à vos "
+#~ "besoins de stockage sécurisé."
 #~ msgstr ""
 #~ "DaStore is a trusted storage company focused on your secure storage needs."
 
@@ -1616,25 +1614,24 @@ msgstr "Connexion"
 #~ "Avec notre vaste sélection d'offres de stockage, vous pouvez choisir la "
 #~ "solution qui correspond parfaitement à vos exigences."
 #~ msgstr ""
-#~ "With our wide selection of storage offers, you can choose the solution "
-#~ "that perfectly fits your requirements."
+#~ "With our wide selection of storage offers, you can choose the solution that "
+#~ "perfectly fits your requirements."
 
 #~ msgid ""
-#~ "Que vous ayez besoin d'un espace de stockage pour vos usages personnels "
-#~ "ou pour un usage au niveau entreprise, nous avons la solution adaptée à "
-#~ "vos besoins."
+#~ "Que vous ayez besoin d'un espace de stockage pour vos usages personnels ou "
+#~ "pour un usage au niveau entreprise, nous avons la solution adaptée à vos "
+#~ "besoins."
 #~ msgstr ""
-#~ "Whether you need storage space for your personal use or for corporate "
-#~ "use, we have the right solution for your needs."
+#~ "Whether you need storage space for your personal use or for corporate use, "
+#~ "we have the right solution for your needs."
 
 #~ msgid ""
-#~ "Notre installation de stockage est équipée de mesures de sécurité "
-#~ "avancées."
+#~ "Notre installation de stockage est équipée de mesures de sécurité avancées."
 #~ msgstr "Our storage facility is equipped with advanced security measures."
 
 #~ msgid ""
-#~ "Vous pouvez avoir l'esprit tranquille en sachant que vos données sont "
-#~ "entre de bonnes mains."
+#~ "Vous pouvez avoir l'esprit tranquille en sachant que vos données sont entre "
+#~ "de bonnes mains."
 #~ msgstr "Your data is in safe hands and you can feel confident."
 
 #~ msgid ""
@@ -1645,24 +1642,24 @@ msgstr "Connexion"
 #~ "service to our customers."
 
 #~ msgid ""
-#~ "Notre équipe expérimentée est là pour vous guider tout au long du "
-#~ "processus de stockage, répondre à vos questions et vous aider à trouver "
-#~ "la meilleure solution pour vos besoins spécifiques."
+#~ "Notre équipe expérimentée est là pour vous guider tout au long du processus "
+#~ "de stockage, répondre à vos questions et vous aider à trouver la meilleure "
+#~ "solution pour vos besoins spécifiques."
 #~ msgstr ""
 #~ "Our experienced team is here to guide you through the storage process, "
-#~ "answer your questions and help you find the best solution for your "
-#~ "specific needs."
+#~ "answer your questions and help you find the best solution for your specific "
+#~ "needs."
 
 #~ msgid "Faites confiance à DaStore pour tous vos besoins de stockage."
 #~ msgstr "Trust DaStore for all your storage needs."
 
 #~ msgid ""
 #~ "Contactez-nous dès aujourd'hui pour en savoir plus sur nos services et "
-#~ "découvrir comment nous pouvons vous aider à garder vos données en "
-#~ "sécurité sans risque de perte d'information."
+#~ "découvrir comment nous pouvons vous aider à garder vos données en sécurité "
+#~ "sans risque de perte d'information."
 #~ msgstr ""
-#~ "Contact us now to learn more about our services and how we can help you "
-#~ "keep your data secure without the risk of information loss."
+#~ "Contact us now to learn more about our services and how we can help you keep"
+#~ " your data secure without the risk of information loss."
 
 #, fuzzy
 #~ msgid "Acceptation des conditions :"
