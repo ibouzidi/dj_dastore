@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+
+{% block content %}
+
+<style>
+  .centered-text {
+    text-align: center;
+    font-weight: bold;
+  }
+
+
+  .centered-square {
+    width: 50%; /* Largeur du carré */
+    margin: 0 auto; /* Marges automatiques pour centrer horizontalement */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    padding: 20px;
+    margin-bottom : 20px;
+    line-height : 25px;
+  }
+
+  @media (max-width: 768px) {
+    .centered-square {
+      width: 100%; /* Largeur du carré pour les écrans plus larges */
+    }
+
+
+</style>
+
+
+
+
+    <div class="centered-text">
+        <h4>{% trans "Who are we:" %}</h4>
+    </div>
+
+
+    <div class="centered-square">
+        <br>
+        {% trans "DaStore is a trusted storage company dedicated to meeting your secure storage needs." %}
+        <br><br>
+        {% trans "We offer a comprehensive range of storage services, tailored to individuals and businesses, to help you organize, protect, and preserve your most valuable data." %}
+        <br><br>
+        {% trans "With our wide selection of storage offerings, you can choose the solution that perfectly matches your requirements." %}
+        <br><br>
+        {% trans "Whether you need storage space for personal or enterprise use, we have the solution that suits your needs." %}
+        <br><br>
+        {% trans "Our storage facility is equipped with advanced security measures." %}
+        <br><br>
+        {% trans "You can have peace of mind knowing that your data is in good hands." %}
+        <br><br>
+        {% trans "In addition to our commitment to security, we strive to provide exceptional service to our customers." %}
+        <br><br>
+        {% trans "Our experienced team is here to guide you through the storage process, answer your questions, and help you find the best solution for your specific needs." %}
+        <br><br>
+        {% trans "Trust DaStore for all your storage needs." %}
+        <br><br>
+        {% trans "Contact us today to learn more about our services and discover how we can help you keep your data secure without the risk of information loss." %}
+        <br>
+    </div>
+{% endblock content %}
+

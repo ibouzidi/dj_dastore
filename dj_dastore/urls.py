@@ -7,7 +7,7 @@ from django.contrib.auth import views as auth_view
 from django.views.generic import RedirectView
 from two_factor.urls import urlpatterns as tf_urls
 import app.views
-from account import views
+
 
 from app.views import (
     home_screen_view
@@ -16,6 +16,7 @@ from app.views import (
 localized_patterns  = [
     # path('', HomeView.as_view(), name='HomeView'),
     path('contact/', app.views.contact_view, name='contact_view'),
+    path('footer/', include("app.footer.urls")),
     path("subscriptions/", include("subscriptions.urls")),
     path('backup/', include('extbackup.urls')),
     path('folder/', include('folder.urls')),

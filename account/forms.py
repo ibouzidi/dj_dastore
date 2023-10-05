@@ -25,6 +25,8 @@ class RegistrationForm(UserCreationForm):
 
 	def clean_username(self):
 		username = self.cleaned_data['username']
+		if not re.match(r'^[A-Za-z0-9]+$', username): # Adjust the regex as needed
+			raise ValidationError("Username must contain only letters and numbers")
 		try:
 			account = Account.objects.exclude(pk=self.instance.pk).get(username=username)
 		except Account.DoesNotExist:
@@ -70,17 +72,15 @@ class AccountUpdateForm(forms.ModelForm):
 
 	def clean_phone(self):
 		phone = self.cleaned_data['phone']
-		if not re.match(r'^\+?1?\d{9,15}$',
-						phone):  # Adjust the regex as needed
+		if not re.match(r'^\+?1?\d{9,15}$',	phone):  # Adjust the regex as needed
 			raise ValidationError(
 				"Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
 		return phone
 
 	def clean_username(self):
 		username = self.cleaned_data['username']
-		if not re.match(r'^[\w.@+-]+$',
-						username):  # Django's default validation
-			raise ValidationError("Username contains invalid characters.")
+		if not re.match(r'^[A-Za-z0-9]+$', username): # Adjust the regex as needed
+			raise ValidationError("Username must contain only letters and numbers")
 		try:
 			account = Account.objects.exclude(pk=self.instance.pk).get(
 				username=username)
