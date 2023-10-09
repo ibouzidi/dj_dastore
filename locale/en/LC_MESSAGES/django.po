@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-09 11:54+0200\n"
+"POT-Creation-Date: 2023-10-09 13:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -365,23 +365,25 @@ msgstr ""
 msgid "Confirm Password"
 msgstr ""
 
-#: .\account\templates\account\register.html:134
-msgid "I agree to the"
+#: .\account\templates\account\register.html:135
+#, python-format
+msgid ""
+"\n"
+"                                        I agree to the\n"
+"                                        <a href=\"%(terms_url)s\">\n"
+"                                            terms and conditions.</a>\n"
+"                                        "
 msgstr ""
 
-#: .\account\templates\account\register.html:134
-msgid "terms and conditions"
-msgstr ""
-
-#: .\account\templates\account\register.html:139
+#: .\account\templates\account\register.html:144
 msgid "Sign in"
 msgstr ""
 
-#: .\account\templates\account\register.html:169
+#: .\account\templates\account\register.html:174
 msgid "Already have an account?"
 msgstr ""
 
-#: .\account\templates\account\register.html:170
+#: .\account\templates\account\register.html:175
 msgid "Login here"
 msgstr ""
 

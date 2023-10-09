@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-09 11:54+0200\n"
-"PO-Revision-Date: 2023-10-09 13:06+0009\n"
+"POT-Creation-Date: 2023-10-09 13:51+0200\n"
+"PO-Revision-Date: 2023-10-09 13:52+0009\n"
 "Last-Translator:   <admin@contact.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -381,23 +381,28 @@ msgstr "Votre mot de passe"
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
-#: .\account\templates\account\register.html:134
-msgid "I agree to the"
-msgstr "J'accepte les"
+#: .\account\templates\account\register.html:135
+#, python-format
+msgid ""
+"\n"
+"                                        I agree to the\n"
+"                                        <a href=\"%(terms_url)s\">\n"
+"                                            terms and conditions.</a>\n"
+"                                        "
+msgstr ""
+"\n"
+"J'accepte les <a href=\"%(terms_url)s\">\n"
+"conditions générales.</a>"
 
-#: .\account\templates\account\register.html:134
-msgid "terms and conditions"
-msgstr "conditions générales"
-
-#: .\account\templates\account\register.html:139
+#: .\account\templates\account\register.html:144
 msgid "Sign in"
 msgstr "S'inscrire"
 
-#: .\account\templates\account\register.html:169
+#: .\account\templates\account\register.html:174
 msgid "Already have an account?"
 msgstr "Vous avez déjà un compte ?"
 
-#: .\account\templates\account\register.html:170
+#: .\account\templates\account\register.html:175
 msgid "Login here"
 msgstr "Se connecter ici"
 
@@ -876,7 +881,7 @@ msgstr ""
 
 #: .\app\templates\app\footer\terms_of_service.html:38
 msgid "Terms and Conditions: "
-msgstr "conditions générales"
+msgstr "Conditions générales"
 
 #: .\app\templates\app\footer\terms_of_service.html:44
 msgid "Acceptance of the terms:"
@@ -1092,9 +1097,6 @@ msgid "Advanced Encryption"
 msgstr "Cryptage Avancé"
 
 #: .\app\templates\app\home.html:62
-#| msgid ""
-#| "Your data is safeguarded through robust AES and asymmetrical key encryption,"
-#| " providing top-tier security."
 msgid ""
 "Your data is safeguarded through robust AES and symmetrical key encryption, "
 "providing top-tier security."
@@ -1583,6 +1585,12 @@ msgstr "Déconnexion"
 #: .\templates\snippets\header.html:107
 msgid "Login"
 msgstr "Connexion"
+
+#~ msgid "I agree to the"
+#~ msgstr "J'accepte les"
+
+#~ msgid "terms and conditions"
+#~ msgstr "conditions générales"
 
 #~ msgid ""
 #~ "DaStore est une entreprise de stockage de confiance dédiée à répondre à vos "

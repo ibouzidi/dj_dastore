@@ -131,7 +131,12 @@
                                 <div class="form-check mb-4">
                                     <input class="form-check-input" type="checkbox" value="" id="terms" required>
                                     <label class="form-check-label" for="terms">
-                                        {% translate "I agree to the" %}<a href="#">{% translate "terms and conditions" %}</a>
+                                    {% url 'terms_service' as terms_url %}
+                                        {% blocktrans%}
+                                        I agree to the
+                                        <a href="{{ terms_url }}">
+                                            terms and conditions.</a>
+                                        {% endblocktrans %}
                                     </label>
                                 </div>
                                 {#                                {{ form.captcha }}#}

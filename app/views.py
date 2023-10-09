@@ -9,21 +9,19 @@ from django.utils import translation
 from app.forms import ContactForm
 
 
-# def set_language(request):
-#     lang_code = request.GET.get('lang', 'en')  # default to English if no language is specified
-#     translation.activate(lang_code)
-#     request.session[translation.LANGUAGE_SESSION_KEY] = lang_code
-#
-#     next = request.GET.get('next', '/')
-#     response = HttpResponseRedirect(next)
-#
-#     return response
-
-
 def home_screen_view(request):
     context = {}
     return render(request, "app/home.html", context)
 
+
+def terms_service_view(request):
+    context = {}
+    return render(request, "app/footer/terms_of_service.html", context)
+
+
+def about_us_view(request):
+    context = {}
+    return render(request, "app/footer/about_us.html", context)
 
 def contact_view(request):
     initial_data = {}
