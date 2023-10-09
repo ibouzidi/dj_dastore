@@ -255,8 +255,13 @@
             $("#confirmModal").modal("show");
             $("#confirmButton").off('click').on('click', function(e) {
                 e.preventDefault();
+                var currentLanguage = window.location.pathname.split('/')[1];
+
+                // Construct the URL with the language prefix
+                var url = '/' + currentLanguage + '/account/team/cancel_invitation/' + code + '/';
+
                 $.ajax({
-                    url: '/account/team/cancel_invitation/' + code + '/',
+                    url: url,
                     type: 'POST',
                     data: {'csrfmiddlewaretoken': '{{ csrf_token }}'},
                     success: function (response) {
