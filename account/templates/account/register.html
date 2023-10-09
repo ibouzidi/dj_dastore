@@ -104,7 +104,8 @@
                                 <label for="username">{% translate "Your Username" %}</label>
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon3"><span class="fas fa-user"></span></span>
-                                    <input name="username" type="username" class="form-control" placeholder="b.david42" id="username" autofocus required>
+                                    <input name="username" type="username" class="form-control" placeholder="bdavid42" id="username" pattern="[A-Za-z0-9]+"
+                                           title="Username must contain only letters and numbers" autofocus required>
                                 </div>
                             </div>
                             <!-- End of Form -->

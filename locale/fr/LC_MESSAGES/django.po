@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 16:56+0200\n"
-"PO-Revision-Date: 2023-09-28 16:56+0009\n"
-"Last-Translator:   <admin@gmail.com>\n"
+"POT-Creation-Date: 2023-10-05 18:44+0200\n"
+"PO-Revision-Date: 2023-10-05 18:49+0009\n"
+"Last-Translator:   <lucas42@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -57,7 +57,7 @@ msgstr "Information sur le stockage"
 msgid "Profile information"
 msgstr "Informations de profil"
 
-#: .\account\templates\account\account.html:112 .\app\forms.py:19
+#: .\account\templates\account\account.html:112 .\app\forms.py:20
 msgid "First Name"
 msgstr "Prénom"
 
@@ -65,7 +65,7 @@ msgstr "Prénom"
 msgid "Enter your first name"
 msgstr "Saisissez votre prénom"
 
-#: .\account\templates\account\account.html:125 .\app\forms.py:25
+#: .\account\templates\account\account.html:125 .\app\forms.py:26
 msgid "Last Name"
 msgstr "Nom de famille"
 
@@ -74,7 +74,7 @@ msgid "Also your last name"
 msgstr "Saisissez votre nom de famille"
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:29
 #: .\team\templates\team\detail_team.html:84
 #: .\team\templates\team\detail_team.html:158
 #: .\team\templates\team\membership_detail.html:43
@@ -276,7 +276,7 @@ msgstr "S'inscrire à notre plateforme"
 #: .\account\templates\account\password_change.html:12
 #: .\account\templates\account\password_change.html:22
 #: .\account\templates\account\password_change.html:32
-#: .\account\templates\account\register.html:117
+#: .\account\templates\account\register.html:118
 msgid "Password"
 msgstr "Mot de passe"
 
@@ -372,31 +372,31 @@ msgstr "Votre E-mail"
 msgid "Your Username"
 msgstr "Votre nom d'utilisateur"
 
-#: .\account\templates\account\register.html:114
+#: .\account\templates\account\register.html:115
 msgid "Your Password"
 msgstr "Votre mot de passe"
 
-#: .\account\templates\account\register.html:123
+#: .\account\templates\account\register.html:124
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
-#: .\account\templates\account\register.html:133
+#: .\account\templates\account\register.html:134
 msgid "I agree to the"
 msgstr "J'accepte les"
 
-#: .\account\templates\account\register.html:133
+#: .\account\templates\account\register.html:134
 msgid "terms and conditions"
 msgstr "conditions générales"
 
-#: .\account\templates\account\register.html:138
+#: .\account\templates\account\register.html:139
 msgid "Sign in"
 msgstr "S'inscrire"
 
-#: .\account\templates\account\register.html:168
+#: .\account\templates\account\register.html:169
 msgid "Already have an account?"
 msgstr "Vous avez déjà un compte ?"
 
-#: .\account\templates\account\register.html:169
+#: .\account\templates\account\register.html:170
 msgid "Login here"
 msgstr "Se connecter ici"
 
@@ -723,11 +723,11 @@ msgstr "Afficher les codes"
 msgid "Your OTP token is %(token)s"
 msgstr "Votre jeton OTP est %(token)s"
 
-#: .\app\forms.py:33
+#: .\app\forms.py:34
 msgid "Subject"
 msgstr "Objet"
 
-#: .\app\forms.py:38
+#: .\app\forms.py:39
 msgid "Write your message"
 msgstr "Rédigez votre message"
 
@@ -791,6 +791,246 @@ msgid ""
 msgstr ""
 "Il est toujours temps de faire une pause-café. Nous devrions être de retour "
 "le temps que vous finissiez votre café."
+
+#: .\app\templates\app\footer\about_us.html:38
+msgid "Who are we:"
+msgstr "Qui sommes nous :"
+
+#: .\app\templates\app\footer\about_us.html:44
+msgid ""
+"DaStore is a trusted storage company dedicated to meeting your secure "
+"storage needs."
+msgstr ""
+"DaStore est une entreprise de stockage de confiance dédiée à répondre à vos "
+"besoins de stockage sécurisé."
+
+#: .\app\templates\app\footer\about_us.html:46
+msgid ""
+"We offer a comprehensive range of storage services, tailored to individuals "
+"and businesses, to help you organize, protect, and preserve your most "
+"valuable data."
+msgstr ""
+"Nous proposons une gamme complète de services de stockage, adaptés aux "
+"particuliers et aux entreprises, pour vous aider à organiser, protéger et "
+"conserver vos données les plus précieuses."
+
+#: .\app\templates\app\footer\about_us.html:48
+msgid ""
+"With our wide selection of storage offerings, you can choose the solution "
+"that perfectly matches your requirements."
+msgstr ""
+"Avec notre vaste sélection d'offres de stockage, vous pouvez choisir la "
+"solution qui correspond parfaitement à vos exigences."
+
+#: .\app\templates\app\footer\about_us.html:50
+msgid ""
+"Whether you need storage space for personal or enterprise use, we have the "
+"solution that suits your needs."
+msgstr ""
+"Que vous ayez besoin d'un espace de stockage pour vos usages personnels ou "
+"pour un usage au niveau entreprise, nous avons la solution adaptée à vos "
+"besoins."
+
+#: .\app\templates\app\footer\about_us.html:52
+msgid "Our storage facility is equipped with advanced security measures."
+msgstr ""
+"Notre installation de stockage est équipée de mesures de sécurité avancées."
+
+#: .\app\templates\app\footer\about_us.html:54
+msgid "You can have peace of mind knowing that your data is in good hands."
+msgstr ""
+"Vous pouvez avoir l'esprit tranquille en sachant que vos données sont entre "
+"de bonnes mains."
+
+#: .\app\templates\app\footer\about_us.html:56
+msgid ""
+"In addition to our commitment to security, we strive to provide exceptional "
+"service to our customers."
+msgstr ""
+"En plus de notre engagement envers la sécurité, nous nous efforçons de "
+"fournir un service exceptionnel à nos clients."
+
+#: .\app\templates\app\footer\about_us.html:58
+msgid ""
+"Our experienced team is here to guide you through the storage process, "
+"answer your questions, and help you find the best solution for your specific"
+" needs."
+msgstr ""
+"Notre équipe expérimentée est là pour vous guider tout au long du processus "
+"de stockage, répondre à vos questions et vous aider à trouver la meilleure "
+"solution pour vos besoins spécifiques."
+
+#: .\app\templates\app\footer\about_us.html:60
+msgid "Trust DaStore for all your storage needs."
+msgstr "Faites confiance à DaStore pour tous vos besoins de stockage."
+
+#: .\app\templates\app\footer\about_us.html:62
+msgid ""
+"Contact us today to learn more about our services and discover how we can "
+"help you keep your data secure without the risk of information loss."
+msgstr ""
+"Contactez-nous dès aujourd'hui pour en savoir plus sur nos services et "
+"découvrir comment nous pouvons vous aider à garder vos données en sécurité "
+"sans risque de perte d'information."
+
+#: .\app\templates\app\footer\terms_of_service.html:38
+msgid "Terms and Conditions: "
+msgstr "conditions générales"
+
+#: .\app\templates\app\footer\terms_of_service.html:44
+msgid "Acceptance of the terms:"
+msgstr "Acceptation des conditions : "
+
+#: .\app\templates\app\footer\terms_of_service.html:45
+msgid ""
+"By using this site, you agree to these terms and conditions. If you do not "
+"agree with these terms, please do not use this site."
+msgstr ""
+"En utilisant ce site, vous acceptez les présentes conditions générales "
+"d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas "
+"utiliser ce site."
+
+#: .\app\templates\app\footer\terms_of_service.html:46
+msgid "Use of content:"
+msgstr "Utilisation du contenu :"
+
+#: .\app\templates\app\footer\terms_of_service.html:47
+msgid ""
+"All content displayed on this site is the property of Dastore and is "
+"protected by copyright laws. You are not authorized to copy, modify, "
+"distribute, or use the content of this site without our prior written "
+"consent."
+msgstr ""
+"Tout le contenu présenté sur ce site est la propriété de Dastore et est "
+"protégé par les lois sur le droit d'auteur. Vous n'êtes pas autorisé à "
+"copier, modifier, distribuer ou utiliser le contenu de ce site sans notre "
+"consentement écrit préalable."
+
+#: .\app\templates\app\footer\terms_of_service.html:48
+msgid "External Links:"
+msgstr "Liens externes :"
+
+#: .\app\templates\app\footer\terms_of_service.html:49
+msgid ""
+"This site may contain links to third-party websites. We are not responsible "
+"for the availability, content, or any other information on these sites. The "
+"use of these links is at your own risk."
+msgstr ""
+"Ce site peut contenir des liens vers des sites web tiers. Nous ne sommes pas"
+" responsables de la disponibilité, du contenu ou de toute autre information "
+"présente sur ces sites. L'utilisation de ces liens se fait à vos propres "
+"risques."
+
+#: .\app\templates\app\footer\terms_of_service.html:50
+msgid "Limitation of Liability: "
+msgstr "Limitation de responsabilité :"
+
+#: .\app\templates\app\footer\terms_of_service.html:51
+msgid ""
+"We strive to provide accurate and up-to-date information on this site, but "
+"we cannot guarantee the accuracy or completeness of this information. We "
+"disclaim any liability for any harm or damage resulting from the use of this"
+" site."
+msgstr ""
+"Nous nous efforçons de fournir des informations précises et à jour sur ce "
+"site, mais nous ne pouvons pas garantir l'exactitude ou l'exhaustivité de "
+"ces informations. Nous déclinons toute responsabilité pour tout préjudice ou"
+" dommage découlant de l'utilisation de ce site."
+
+#: .\app\templates\app\footer\terms_of_service.html:52
+msgid "Modification of terms:"
+msgstr "Modification des conditions :"
+
+#: .\app\templates\app\footer\terms_of_service.html:53
+msgid ""
+"We reserve the right to modify these terms and conditions at any time. The "
+"changes will be effective upon posting on this site. It is your "
+"responsibility to regularly check this page for any updates."
+msgstr ""
+"Nous nous réservons le droit de modifier ces conditions générales "
+"d'utilisation à tout moment. Les modifications seront effectives dès leur "
+"publication sur ce site. Il est de votre responsabilité de consulter "
+"régulièrement cette page pour prendre connaissance des éventuelles mises à "
+"jour.   "
+
+#: .\app\templates\app\footer\terms_of_service.html:54
+msgid "Information Collection:"
+msgstr "Collecte d'informations :"
+
+#: .\app\templates\app\footer\terms_of_service.html:55
+msgid ""
+"We collect personal information, such as your name, email address, and phone"
+" number, when you voluntarily provide them during your interaction with our "
+"site. This information will be used only to respond to your requests and "
+"provide the requested services."
+msgstr ""
+"Nous collectons des informations personnelles, telles que votre nom, votre "
+"adresse e-mail et votre numéro de téléphone, lorsque vous les fournissez "
+"volontairement lors de votre interaction avec notre site. Ces informations "
+"seront utilisées uniquement dans le but de répondre à vos demandes et de "
+"vous fournir les services demandés."
+
+#: .\app\templates\app\footer\terms_of_service.html:56
+msgid "Use of Information:"
+msgstr "Utilisation des informations :"
+
+#: .\app\templates\app\footer\terms_of_service.html:57
+msgid ""
+"The information you provide to us will be treated confidentially and will "
+"not be shared with third parties unless necessary to respond to your "
+"requests or as required by law."
+msgstr ""
+"Les informations que vous nous fournissez seront traitées de manière "
+"confidentielle et ne seront pas partagées avec des tiers, sauf si cela est "
+"nécessaire pour répondre à vos demandes ou si cela est requis par la loi."
+
+#: .\app\templates\app\footer\terms_of_service.html:58
+msgid "Information Security:"
+msgstr "Sécurité des informations :"
+
+#: .\app\templates\app\footer\terms_of_service.html:59
+msgid ""
+"We take appropriate security measures to protect your personal information "
+"from misuse, loss, or unauthorized access. However, please note that no "
+"method of transmission over the Internet or electronic storage is entirely "
+"secure."
+msgstr ""
+"Nous prenons des mesures de sécurité appropriées pour protéger vos "
+"informations personnelles contre toute utilisation abusive, perte ou accès "
+"non autorisé. Cependant, veuillez noter qu'aucune méthode de mission sur "
+"Internet ou de stockage électronique n'est totalement sécurisée."
+
+#: .\app\templates\app\footer\terms_of_service.html:60
+msgid "Cookies:"
+msgstr "Cookies :"
+
+#: .\app\templates\app\footer\terms_of_service.html:61
+msgid ""
+"This site uses cookies to enhance your browsing experience. Cookies are "
+"small files stored on your computer that help us recognize you when you "
+"return to our site. You can disable cookies in your browser settings if you "
+"wish."
+msgstr ""
+"Ce site utilise des cookies pour améliorer votre expérience de navigation. "
+"Les cookies sont de petits fichiers stockés sur votre ordinateur qui nous "
+"aident à vous reconnaître lorsque vous revenez sur notre site. Vous pouvez "
+"désactiver les cookies dans les paramètres de votre navigateur si vous le "
+"souhaitez."
+
+#: .\app\templates\app\footer\terms_of_service.html:62
+msgid "Privacy Policy Changes:"
+msgstr "Changements sur la politique de confidentialité"
+
+#: .\app\templates\app\footer\terms_of_service.html:63
+msgid ""
+"We reserve the right to modify this privacy policy at any time. The changes "
+"will be posted on this page. By continuing to use this site after the "
+"changes are posted, you accept the terms of the updated privacy policy."
+msgstr ""
+"Nous nous réservons le droit de modifier cette politique de confidentialité "
+"à tout moment. Les modifications seront publiées sur cette page. En "
+"continuant à utiliser ce site après la publication des modifications, vous "
+"acceptez les termes de la politique de confidentialité mise à jour."
 
 #: .\app\templates\app\hero.html:9
 msgid "Seamless Backup"
@@ -1121,6 +1361,11 @@ msgstr ""
 
 #: .\team\templates\team\detail_team.html:130
 #, python-format
+#| msgid ""
+#| "\n"
+#| "                                        <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
+#| "                                                                                <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
+#| "                                        "
 msgid ""
 "\n"
 "                                            <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
@@ -1132,6 +1377,11 @@ msgstr ""
 
 #: .\team\templates\team\detail_team.html:138
 #, python-format
+#| msgid ""
+#| "\n"
+#| "                                        Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
+#| "                                                                                Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
+#| "                                        "
 msgid ""
 "\n"
 "                                            Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
@@ -1168,13 +1418,18 @@ msgstr "Invitation à rejoindre une équipe"
 
 #: .\team\templates\team\invitation_landing.html:31
 #, python-format
+#| msgid ""
+#| "\n"
+#| "                    <p>You have been invited by <strong><u>%(invitation.sender.email)s</u></strong> to join the team: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
+#| "                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
+#| "                "
 msgid ""
 "\n"
 "                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
 "                "
 msgstr ""
 "\n"
-"<p>Vous avez été invité par <strong><u>%(invitation.sender.email)s</u></strong> à rejoindre l'équipe: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
+"<p>Vous avez été invité par <strong><u>%(sender_email)s</u></strong> à rejoindre l'équipe: <strong><u>%(team_name)s</u></strong></p>\n"
 "                "
 
 #: .\team\templates\team\invitation_landing.html:37
@@ -1339,6 +1594,88 @@ msgstr "Déconnexion"
 #: .\templates\snippets\header.html:107
 msgid "Login"
 msgstr "Connexion"
+
+#~ msgid ""
+#~ "DaStore est une entreprise de stockage de confiance dédiée à répondre à vos "
+#~ "besoins de stockage sécurisé."
+#~ msgstr ""
+#~ "DaStore is a trusted storage company focused on your secure storage needs."
+
+#~ msgid ""
+#~ "Nous proposons une gamme complète de services de stockage, adaptés aux "
+#~ "particuliers et aux entreprises, pour vous aider à organiser, protéger et "
+#~ "conserver vos données les plus précieuses."
+#~ msgstr ""
+#~ "We offer a full range of storage services, tailored to individuals and "
+#~ "businesses, to help you organize, protect and retain your most valuable "
+#~ "data."
+
+#~ msgid ""
+#~ "Avec notre vaste sélection d'offres de stockage, vous pouvez choisir la "
+#~ "solution qui correspond parfaitement à vos exigences."
+#~ msgstr ""
+#~ "With our wide selection of storage offers, you can choose the solution that "
+#~ "perfectly fits your requirements."
+
+#~ msgid ""
+#~ "Que vous ayez besoin d'un espace de stockage pour vos usages personnels ou "
+#~ "pour un usage au niveau entreprise, nous avons la solution adaptée à vos "
+#~ "besoins."
+#~ msgstr ""
+#~ "Whether you need storage space for your personal use or for corporate use, "
+#~ "we have the right solution for your needs."
+
+#~ msgid ""
+#~ "Notre installation de stockage est équipée de mesures de sécurité avancées."
+#~ msgstr "Our storage facility is equipped with advanced security measures."
+
+#~ msgid ""
+#~ "Vous pouvez avoir l'esprit tranquille en sachant que vos données sont entre "
+#~ "de bonnes mains."
+#~ msgstr "Your data is in safe hands and you can feel confident."
+
+#~ msgid ""
+#~ "En plus de notre engagement envers la sécurité, nous nous efforçons de "
+#~ "fournir un service exceptionnel à nos clients."
+#~ msgstr ""
+#~ "In addition to our commitment to safety, we strive to provide exceptional "
+#~ "service to our customers."
+
+#~ msgid ""
+#~ "Notre équipe expérimentée est là pour vous guider tout au long du processus "
+#~ "de stockage, répondre à vos questions et vous aider à trouver la meilleure "
+#~ "solution pour vos besoins spécifiques."
+#~ msgstr ""
+#~ "Our experienced team is here to guide you through the storage process, "
+#~ "answer your questions and help you find the best solution for your specific "
+#~ "needs."
+
+#~ msgid "Faites confiance à DaStore pour tous vos besoins de stockage."
+#~ msgstr "Trust DaStore for all your storage needs."
+
+#~ msgid ""
+#~ "Contactez-nous dès aujourd'hui pour en savoir plus sur nos services et "
+#~ "découvrir comment nous pouvons vous aider à garder vos données en sécurité "
+#~ "sans risque de perte d'information."
+#~ msgstr ""
+#~ "Contact us now to learn more about our services and how we can help you keep"
+#~ " your data secure without the risk of information loss."
+
+#, fuzzy
+#~ msgid "Acceptation des conditions :"
+#~ msgstr "conditions générales"
+
+#, fuzzy
+#~ msgid "Collecte d'informations :"
+#~ msgstr "Informations de profil"
+
+#, fuzzy
+#~ msgid "Utilisation des informations :"
+#~ msgstr "Information sur le stockage"
+
+#, fuzzy
+#~ msgid "Sécurité des informations :"
+#~ msgstr "Information sur le stockage"
 
 #~ msgid "Your remaining storage after deduction:"
 #~ msgstr "Votre stockage restant après déduction:"

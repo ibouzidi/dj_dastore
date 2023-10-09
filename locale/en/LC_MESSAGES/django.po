@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-28 16:56+0200\n"
+"POT-Creation-Date: 2023-10-05 18:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Translated-Using: django-rosetta 0.9.9\n"
 
 #: .\account\templates\account\account.html:44
 msgid "EDIT YOUR PROFILE INFORMATION"
@@ -56,7 +57,7 @@ msgstr ""
 msgid "Profile information"
 msgstr ""
 
-#: .\account\templates\account\account.html:112 .\app\forms.py:19
+#: .\account\templates\account\account.html:112 .\app\forms.py:20
 msgid "First Name"
 msgstr ""
 
@@ -64,7 +65,7 @@ msgstr ""
 msgid "Enter your first name"
 msgstr ""
 
-#: .\account\templates\account\account.html:125 .\app\forms.py:25
+#: .\account\templates\account\account.html:125 .\app\forms.py:26
 msgid "Last Name"
 msgstr ""
 
@@ -73,7 +74,7 @@ msgid "Also your last name"
 msgstr ""
 
 #: .\account\templates\account\account.html:140
-#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:28
+#: .\account\templates\account\send_invitation.html:8 .\app\forms.py:29
 #: .\team\templates\team\detail_team.html:84
 #: .\team\templates\team\detail_team.html:158
 #: .\team\templates\team\membership_detail.html:43
@@ -259,7 +260,7 @@ msgstr ""
 #: .\account\templates\account\password_change.html:12
 #: .\account\templates\account\password_change.html:22
 #: .\account\templates\account\password_change.html:32
-#: .\account\templates\account\register.html:117
+#: .\account\templates\account\register.html:118
 msgid "Password"
 msgstr ""
 
@@ -355,31 +356,31 @@ msgstr ""
 msgid "Your Username"
 msgstr ""
 
-#: .\account\templates\account\register.html:114
+#: .\account\templates\account\register.html:115
 msgid "Your Password"
 msgstr ""
 
-#: .\account\templates\account\register.html:123
+#: .\account\templates\account\register.html:124
 msgid "Confirm Password"
 msgstr ""
 
-#: .\account\templates\account\register.html:133
+#: .\account\templates\account\register.html:134
 msgid "I agree to the"
 msgstr ""
 
-#: .\account\templates\account\register.html:133
+#: .\account\templates\account\register.html:134
 msgid "terms and conditions"
 msgstr ""
 
-#: .\account\templates\account\register.html:138
+#: .\account\templates\account\register.html:139
 msgid "Sign in"
 msgstr ""
 
-#: .\account\templates\account\register.html:168
+#: .\account\templates\account\register.html:169
 msgid "Already have an account?"
 msgstr ""
 
-#: .\account\templates\account\register.html:169
+#: .\account\templates\account\register.html:170
 msgid "Login here"
 msgstr ""
 
@@ -647,11 +648,11 @@ msgstr ""
 msgid "Your OTP token is %(token)s"
 msgstr ""
 
-#: .\app\forms.py:33
+#: .\app\forms.py:34
 msgid "Subject"
 msgstr ""
 
-#: .\app\forms.py:38
+#: .\app\forms.py:39
 msgid "Write your message"
 msgstr ""
 
@@ -707,6 +708,184 @@ msgstr ""
 msgid ""
 "It's always time for a coffee break. We should be back by the time you "
 "finish your coffee."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:38
+msgid "Who are we:"
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:44
+msgid ""
+"DaStore is a trusted storage company dedicated to meeting your secure "
+"storage needs."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:46
+msgid ""
+"We offer a comprehensive range of storage services, tailored to individuals "
+"and businesses, to help you organize, protect, and preserve your most "
+"valuable data."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:48
+msgid ""
+"With our wide selection of storage offerings, you can choose the solution "
+"that perfectly matches your requirements."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:50
+msgid ""
+"Whether you need storage space for personal or enterprise use, we have the "
+"solution that suits your needs."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:52
+msgid "Our storage facility is equipped with advanced security measures."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:54
+msgid "You can have peace of mind knowing that your data is in good hands."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:56
+msgid ""
+"In addition to our commitment to security, we strive to provide exceptional "
+"service to our customers."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:58
+msgid ""
+"Our experienced team is here to guide you through the storage process, "
+"answer your questions, and help you find the best solution for your specific "
+"needs."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:60
+msgid "Trust DaStore for all your storage needs."
+msgstr ""
+
+#: .\app\templates\app\footer\about_us.html:62
+msgid ""
+"Contact us today to learn more about our services and discover how we can "
+"help you keep your data secure without the risk of information loss."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:38
+msgid "Terms and Conditions: "
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:44
+msgid "Acceptance of the terms:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:45
+msgid ""
+"By using this site, you agree to these terms and conditions. If you do not "
+"agree with these terms, please do not use this site."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:46
+msgid "Use of content:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:47
+msgid ""
+"All content displayed on this site is the property of Dastore and is "
+"protected by copyright laws. You are not authorized to copy, modify, "
+"distribute, or use the content of this site without our prior written "
+"consent."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:48
+msgid "External Links:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:49
+msgid ""
+"This site may contain links to third-party websites. We are not responsible "
+"for the availability, content, or any other information on these sites. The "
+"use of these links is at your own risk."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:50
+msgid "Limitation of Liability: "
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:51
+msgid ""
+"We strive to provide accurate and up-to-date information on this site, but "
+"we cannot guarantee the accuracy or completeness of this information. We "
+"disclaim any liability for any harm or damage resulting from the use of this "
+"site."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:52
+msgid "Modification of terms:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:53
+msgid ""
+"We reserve the right to modify these terms and conditions at any time. The "
+"changes will be effective upon posting on this site. It is your "
+"responsibility to regularly check this page for any updates."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:54
+msgid "Information Collection:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:55
+msgid ""
+"We collect personal information, such as your name, email address, and phone "
+"number, when you voluntarily provide them during your interaction with our "
+"site. This information will be used only to respond to your requests and "
+"provide the requested services."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:56
+msgid "Use of Information:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:57
+msgid ""
+"The information you provide to us will be treated confidentially and will "
+"not be shared with third parties unless necessary to respond to your "
+"requests or as required by law."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:58
+msgid "Information Security:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:59
+msgid ""
+"We take appropriate security measures to protect your personal information "
+"from misuse, loss, or unauthorized access. However, please note that no "
+"method of transmission over the Internet or electronic storage is entirely "
+"secure."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:60
+msgid "Cookies:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:61
+msgid ""
+"This site uses cookies to enhance your browsing experience. Cookies are "
+"small files stored on your computer that help us recognize you when you "
+"return to our site. You can disable cookies in your browser settings if you "
+"wish."
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:62
+msgid "Privacy Policy Changes:"
+msgstr ""
+
+#: .\app\templates\app\footer\terms_of_service.html:63
+msgid ""
+"We reserve the right to modify this privacy policy at any time. The changes "
+"will be posted on this page. By continuing to use this site after the "
+"changes are posted, you accept the terms of the updated privacy policy."
 msgstr ""
 
 #: .\app\templates\app\hero.html:9
@@ -1087,11 +1266,11 @@ msgstr ""
 
 #: .\team\templates\team\team_list.html:29
 msgid "Teams Detail"
-msgstr "Détail de l'équipe"
+msgstr ""
 
 #: .\team\templates\team\team_list.html:32
 msgid "Create Team"
-msgstr "Création d'une équipe"
+msgstr ""
 
 #: .\team\templates\team\team_list.html:58
 msgid "Edit"

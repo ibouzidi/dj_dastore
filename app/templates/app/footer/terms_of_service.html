@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block content %}
+
+<style>
+  .centered-text {
+    text-align: center;
+    font-weight: bold;
+  }
+
+
+  .centered-square {
+    width: 60%; /* Largeur du carré */
+    margin: 0 auto; /* Marges automatiques pour centrer horizontalement */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    padding: 20px;
+    margin-bottom : 20px;
+    line-height : 25px;
+  }
+
+  @media (max-width: 768px) {
+    .centered-square {
+      width: 100%; /* Largeur du carré pour les écrans plus larges */
+    }
+  }
+
+  ul li {
+    list-style-type: disc;
+    font-size: 18px;
+  }
+</style>
+
+<div class="centered-text">
+    <h4>{% trans "Terms and Conditions: " %} </h4>
+</div>
+
+
+<div class="centered-square">
+    <ul>
+        <li><b>{% trans "Acceptance of the terms:" %}</b> <br>
+            {% trans "By using this site, you agree to these terms and conditions. If you do not agree with these terms, please do not use this site." %}</li>
+        <li><b>{% trans "Use of content:" %}</b> <br>
+            {% trans "All content displayed on this site is the property of Dastore and is protected by copyright laws. You are not authorized to copy, modify, distribute, or use the content of this site without our prior written consent." %}</li>
+        <li><b>{% trans "External Links:" %}</b> <br>
+            {% trans "This site may contain links to third-party websites. We are not responsible for the availability, content, or any other information on these sites. The use of these links is at your own risk." %}</li>
+        <li><b>{% trans "Limitation of Liability: " %}</b> <br>
+            {% trans "We strive to provide accurate and up-to-date information on this site, but we cannot guarantee the accuracy or completeness of this information. We disclaim any liability for any harm or damage resulting from the use of this site." %}</li>
+        <li><b>{% trans "Modification of terms:" %}</b> <br>
+            {% trans "We reserve the right to modify these terms and conditions at any time. The changes will be effective upon posting on this site. It is your responsibility to regularly check this page for any updates." %}</li>
+        <li><b>{% trans "Information Collection:" %}</b> <br>
+            {% trans "We collect personal information, such as your name, email address, and phone number, when you voluntarily provide them during your interaction with our site. This information will be used only to respond to your requests and provide the requested services." %}</li>
+        <li><b>{% trans "Use of Information:" %}</b> <br>
+            {% trans "The information you provide to us will be treated confidentially and will not be shared with third parties unless necessary to respond to your requests or as required by law." %}</li>
+        <li><b>{% trans "Information Security:" %}</b> <br>
+            {% trans "We take appropriate security measures to protect your personal information from misuse, loss, or unauthorized access. However, please note that no method of transmission over the Internet or electronic storage is entirely secure." %}</li>
+        <li><b>{% trans "Cookies:" %}</b> <br>
+            {% trans "This site uses cookies to enhance your browsing experience. Cookies are small files stored on your computer that help us recognize you when you return to our site. You can disable cookies in your browser settings if you wish." %}</li>
+        <li><b>{% trans "Privacy Policy Changes:" %}</b> <br>
+            {% trans "We reserve the right to modify this privacy policy at any time. The changes will be posted on this page. By continuing to use this site after the changes are posted, you accept the terms of the updated privacy policy." %}</li>
+    </ul>
+</div>
+{% endblock content %}
