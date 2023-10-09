@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-05 18:44+0200\n"
-"PO-Revision-Date: 2023-10-05 18:49+0009\n"
-"Last-Translator:   <lucas42@gmail.com>\n"
+"POT-Creation-Date: 2023-10-09 11:54+0200\n"
+"PO-Revision-Date: 2023-10-09 13:06+0009\n"
+"Last-Translator:   <admin@contact.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -356,6 +356,7 @@ msgstr "mois"
 
 #: .\account\templates\account\register.html:70
 #: .\subscriptions\templates\subscriptions\plan_list.html:107
+#: .\subscriptions\templates\subscriptions\plan_list.html:109
 msgid "year"
 msgstr "année"
 
@@ -1091,12 +1092,15 @@ msgid "Advanced Encryption"
 msgstr "Cryptage Avancé"
 
 #: .\app\templates\app\home.html:62
+#| msgid ""
+#| "Your data is safeguarded through robust AES and asymmetrical key encryption,"
+#| " providing top-tier security."
 msgid ""
-"Your data is safeguarded through robust AES and asymmetrical key encryption,"
-" providing top-tier security."
+"Your data is safeguarded through robust AES and symmetrical key encryption, "
+"providing top-tier security."
 msgstr ""
 "Vos données sont protégées par un cryptage AES robuste et des clés "
-"asymétriques, garantissant une sécurité de premier ordre."
+"symétriques, garantissant une sécurité de premier ordre."
 
 #: .\app\templates\app\home.html:73
 msgid ""
@@ -1361,11 +1365,6 @@ msgstr ""
 
 #: .\team\templates\team\detail_team.html:130
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                                        <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
-#| "                                                                                <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
-#| "                                        "
 msgid ""
 "\n"
 "                                            <small>Remember, you can only invite %(remaining_invitations)s more members.</small>\n"
@@ -1377,11 +1376,6 @@ msgstr ""
 
 #: .\team\templates\team\detail_team.html:138
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                                        Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
-#| "                                                                                Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
-#| "                                        "
 msgid ""
 "\n"
 "                                            Your team is at full capacity (%(team_members.count)s), you can no longer invite more members.\n"
@@ -1418,11 +1412,6 @@ msgstr "Invitation à rejoindre une équipe"
 
 #: .\team\templates\team\invitation_landing.html:31
 #, python-format
-#| msgid ""
-#| "\n"
-#| "                    <p>You have been invited by <strong><u>%(invitation.sender.email)s</u></strong> to join the team: <strong><u>%(invitation.team.team_name)s</u></strong></p>\n"
-#| "                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"
-#| "                "
 msgid ""
 "\n"
 "                    <p>You have been invited by <strong><u>%(sender_email)s</u></strong> to join the team: <strong><u>%(team_name)s</u></strong></p>\n"

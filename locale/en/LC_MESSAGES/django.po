@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-05 18:44+0200\n"
+"POT-Creation-Date: 2023-10-09 11:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -340,6 +340,7 @@ msgstr ""
 
 #: .\account\templates\account\register.html:70
 #: .\subscriptions\templates\subscriptions\plan_list.html:107
+#: .\subscriptions\templates\subscriptions\plan_list.html:109
 msgid "year"
 msgstr ""
 
@@ -942,7 +943,7 @@ msgstr ""
 
 #: .\app\templates\app\home.html:62
 msgid ""
-"Your data is safeguarded through robust AES and asymmetrical key encryption, "
+"Your data is safeguarded through robust AES and symmetrical key encryption, "
 "providing top-tier security."
 msgstr ""
 
