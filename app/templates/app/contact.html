@@ -64,16 +64,16 @@
                                     {% endif %}
                                 </div>
                             </div>
-                        <div class="row my-2">
-                            <div class="col-md-12 form-group">
-                                {{ form.captcha }}
-                                {% if form.captcha.errors %}
-                                        <div class="alert alert-danger" role="alert">
-                                            {{ form.captcha.errors.0 }}
-                                        </div>
-                                    {% endif %}
-                            </div>
-                        </div>
+{#                        <div class="row my-2">#}
+{#                            <div class="col-md-12 form-group">#}
+{#                                {{ form.captcha }}#}
+{#                                {% if form.captcha.errors %}#}
+{#                                        <div class="alert alert-danger" role="alert">#}
+{#                                            {{ form.captcha.errors.0 }}#}
+{#                                        </div>#}
+{#                                    {% endif %}#}
+{#                            </div>#}
+{#                        </div>#}
                             <div class="row">
                                 <div class="col-md-12">
                                     <input type="submit" value="{% trans "Send Message" %}" class="custom-button btn btn-block">

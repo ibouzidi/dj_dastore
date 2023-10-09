@@ -1,5 +1,8 @@
 from .base import *
 
+# RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', cast=str)
+# RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', cast=str)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
