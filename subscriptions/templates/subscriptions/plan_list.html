@@ -106,7 +106,7 @@
                                                         {% if LANGUAGE_CODE == "fr" %}
                                                             {{ price.amount }} €/{% translate "year" %}
                                                         {% else %}
-                                                            ${{ price.amount }} /{{ plan.interval }}
+                                                            ${{ price.amount }} /{% translate "year" %}
                                                         {% endif %}
                                                     </option>
                                                 {% endif %}

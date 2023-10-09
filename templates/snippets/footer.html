@@ -24,9 +24,9 @@
                                     {% get_language_info_list for LANGUAGES as languages %}
                                     <!-- Display the selected language flag -->
                                     {% if LANGUAGE_CODE == 'en' %}
-                                        <img src="{% static 'flags/gb_flag.svg' %}" alt="English">
+                                        {% include 'flags/gb_flag.svg' %}
                                     {% elif LANGUAGE_CODE == 'fr' %}
-                                        <img src="{% static 'flags/fr_flag.svg' %}" alt="French">
+                                        {% include 'flags/fr_flag.svg' %}
                                     {% else %}
                                         <!-- Default to some symbol if the language flag is not set -->
                                         <i class="material-symbols-outlined">language</i>
