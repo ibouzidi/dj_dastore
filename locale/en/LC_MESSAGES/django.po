@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-09 13:51+0200\n"
+"POT-Creation-Date: 2023-10-10 09:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -719,8 +719,8 @@ msgstr ""
 
 #: .\app\templates\app\footer\about_us.html:44
 msgid ""
-"DaStore is a trusted storage company dedicated to meeting your secure "
-"storage needs."
+"DaKeep is a trusted storage company dedicated to meeting your secure storage "
+"needs."
 msgstr ""
 
 #: .\app\templates\app\footer\about_us.html:46
@@ -764,7 +764,7 @@ msgid ""
 msgstr ""
 
 #: .\app\templates\app\footer\about_us.html:60
-msgid "Trust DaStore for all your storage needs."
+msgid "Trust DaKeep for all your storage needs."
 msgstr ""
 
 #: .\app\templates\app\footer\about_us.html:62
@@ -793,7 +793,7 @@ msgstr ""
 
 #: .\app\templates\app\footer\terms_of_service.html:47
 msgid ""
-"All content displayed on this site is the property of Dastore and is "
+"All content displayed on this site is the property of DaKeep and is "
 "protected by copyright laws. You are not authorized to copy, modify, "
 "distribute, or use the content of this site without our prior written "
 "consent."
@@ -916,7 +916,7 @@ msgid "Our features"
 msgstr ""
 
 #: .\app\templates\app\home.html:25
-msgid "Empower your data security and backup needs with DaStore."
+msgid "Empower your data security and backup needs with DaKeep."
 msgstr ""
 
 #: .\app\templates\app\home.html:38 .\templates\snippets\footer.html:60
@@ -961,7 +961,7 @@ msgstr ""
 
 #: .\app\templates\app\home.html:84
 msgid ""
-"With DaStore, access dedicated support around the clock to ensure a smooth "
+"With DaKeep, access dedicated support around the clock to ensure a smooth "
 "and secure backup process."
 msgstr ""
 

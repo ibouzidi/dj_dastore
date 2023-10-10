@@ -1,5 +1,5 @@
 
-# Project DaStore
+# Project DaKeep
 
 ## Overview
 This Django web application provides users with a convenient way to backup and restore their files by enabling file downloads. To support the development and maintenance of the application, a subscription feature has been implemented using dj_stripe and Stripe payment gateway. Users can select a plan, register for it, and proceed to the checkout session where they can securely enter their banking information for payment processing. Upon successful payment confirmation through the Stripe webhook, users gain access to the application's features and can log in.

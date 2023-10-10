@@ -1,6 +1,6 @@
 {
-    "name": "DaStore",
-    "short_name": "DaStore",
+    "name": "DaKeep",
+    "short_name": "DaKeep",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",

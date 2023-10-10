@@ -182,7 +182,7 @@ JAZZMIN_SETTINGS = {
     "site_header": "Panel",
     "site_logo": "dastore/logo_dastore_no_text.png",
     "site_logo_classes": ".logo-panel",
-    "copyright": "DaStore",
+    "copyright": "DaKeep",
 
 }
 
