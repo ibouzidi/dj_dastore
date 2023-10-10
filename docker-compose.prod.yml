@@ -23,8 +23,8 @@ services:
       build: ./nginx
       restart: always
       volumes:
-        - static_cdn:/home/dj_dastore/web/static_cdn
-        - media_cdn:/home/dj_dastore/web/media_cdn
+        - /mnt/nfs/static_cdn:/home/dj_dastore/web/static_cdn
+        - /mnt/nfs/media_cdn:/home/dj_dastore/web/media_cdn
         - /home/topaze/certs:/etc/nginx/certs
       ports:
         - 80:80
@@ -69,6 +69,4 @@ services:
     environment:
       - STRIPE_DEVICE_NAME=djstripe_docker
 volumes:
-  media_cdn:
-  static_cdn:
   postgres_data:
