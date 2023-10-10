@@ -16,7 +16,7 @@ def receive_signal_accounts_login(sender, request, user, **kwargs):
         description=f'Username: {user.username}, '
                      f'First name: {user.first_name}, '
                      f'Last name: {user.last_name}',
-        date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+        date_open=datetime.datetime.now()
     )
     myreq.save()
 
@@ -31,6 +31,6 @@ def receive_signal_accounts_logout(sender, request, user, **kwargs):
             description=f'Username: {user.username}, '
                          f'First name: {user.first_name}, '
                          f'Last name: {user.last_name}',
-            date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+            date_open=datetime.datetime.now()
         )
         myreq.save()

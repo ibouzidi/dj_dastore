@@ -20,8 +20,8 @@ def receive_signal_file_post_save(sender, instance, created, **kwargs):
                         f'Folder: {instance.folder}, '
                         f'Size: {convert_size(instance.size)[0]} '
                         f'{convert_size(instance.size)[1]}, '
-                        f'Uploaded At: {instance.uploaded_at}',
-            date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+                        f'Uploaded At: {instance.uploaded_at.strftime("%Y-%m-%d %H:%M")}',
+            date_open=datetime.datetime.now()
         )
         myreq.save()
 
@@ -38,7 +38,7 @@ def receive_signal_file_pre_delete(sender, instance, **kwargs):
              f'Folder: {instance.folder}, '
              f'Size: {convert_size(instance.size)[0]} '
              f'{convert_size(instance.size)[1]}, '
-             f'Uploaded At: {instance.uploaded_at}',
-        date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+             f'Uploaded At: {instance.uploaded_at.strftime("%Y-%m-%d %H:%M")}',
+        date_open=datetime.datetime.now()
     )
     myreq.save()

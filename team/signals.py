@@ -15,7 +15,7 @@ def post_save_membership(sender, instance, created, **kwargs):
             description=f'Membership created. User: {instance.user.username}, '
                         f'Team: {instance.team.team_name}, '
                         f'Role: {instance.get_role_display()}',
-            date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+            date_open=datetime.datetime.now()
         )
     else:
         log = Log(
@@ -25,7 +25,7 @@ def post_save_membership(sender, instance, created, **kwargs):
             description=f'Membership updated. User: {instance.user.username}, '
                         f'Team: {instance.team.team_name}, '
                         f'Role: {instance.get_role_display()}',
-            date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+            date_open=datetime.datetime.now()
         )
     log.save()
 
@@ -39,7 +39,7 @@ def pre_delete_membership(sender, instance, **kwargs):
         description=f'Membership deleted. User: {instance.user.username}, '
                     f'Team: {instance.team.team_name}, '
                     f'Role: {instance.get_role_display()}',
-        date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+        date_open=datetime.datetime.now()
     )
     log.save()
 
@@ -54,7 +54,7 @@ def post_save_invitation(sender, instance, created, **kwargs):
             description=f'Invitation sent to {instance.email} '
                         f'for team {instance.team.team_name} '
                         f'by {instance.sender.username}',
-            date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+            date_open=datetime.datetime.now()
         )
     else:
         log = Log(
@@ -64,7 +64,7 @@ def post_save_invitation(sender, instance, created, **kwargs):
             description=f'Invitation updated for {instance.email} '
                         f'for team {instance.team.team_name} '
                         f'by {instance.sender.username}',
-            date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+            date_open=datetime.datetime.now()
         )
     log.save()
 
@@ -78,6 +78,6 @@ def pre_delete_invitation(sender, instance, **kwargs):
         description=f'Invitation for {instance.email} '
                     f'to team {instance.team.team_name} '
                     f'cancelled by {instance.sender.username}',
-        date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+        date_open=datetime.datetime.now()
     )
     log.save()
