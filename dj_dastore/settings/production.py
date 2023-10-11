@@ -89,8 +89,8 @@ CSP_SCRIPT_SRC = (
     "https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.min.js",
     "https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js",
     "https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js",
-    "https://www.google.com/recaptcha/api.js"
-    ,
+    "https://www.google.com/recaptcha/api.js",
+    "https://www.gstatic.com/recaptcha/",
 )
 
 
