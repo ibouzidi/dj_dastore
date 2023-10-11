@@ -17,7 +17,6 @@ LOGGING = {
     },
 }
 
-
 # =====================================================================
 # STATIC FILES AND MEDIA FILES SETTINGS
 # =====================================================================
@@ -33,11 +32,10 @@ MEDIA_ROOT = BASE_DIR.parent / 'media_cdn'
 
 TEMP = BASE_DIR.parent / 'media_cdn/temp'
 
-
 MIDDLEWARE += [
-		'dj_dastore.securityheadersmiddleware.PermissionsPolicyMiddleware',
-		'csp.middleware.CSPMiddleware',
-		]
+    'dj_dastore.securityheadersmiddleware.PermissionsPolicyMiddleware',
+    'csp.middleware.CSPMiddleware',
+]
 
 # ==============================================================================
 # DATABASE SETTINGS
@@ -53,7 +51,6 @@ DATABASES = {
         "PORT": config("SQL_PORT"),
     }
 }
-
 
 # ==============================================================================
 # SECURITY SETTINGS
@@ -80,7 +77,7 @@ SECURE_REFERRER_POLICY = 'strict-origin'
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-CSP_DEFAULT_SRC = ("'self'", )
+CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = (
     "'self'",
     "'unsafe-inline'",
@@ -93,7 +90,6 @@ CSP_SCRIPT_SRC = (
     "https://www.gstatic.com/recaptcha/",
 )
 
-
 CSP_STYLE_SRC = (
     "'self'",
     "'unsafe-inline'",
@@ -101,7 +97,7 @@ CSP_STYLE_SRC = (
     "https://cdnjs.cloudflare.com",
     "https://fonts.googleapis.com",
     "https://js.stripe.com",
-    
+
 )
 CSP_IMG_SRC = (
     "'self'",
@@ -117,16 +113,19 @@ CSP_FONT_SRC = (
     "https://cdnjs.cloudflare.com",
 )
 CSP_OBJECT_SRC = ("'none'",)
-CSP_BASE_URI = ("'self'", )
+CSP_BASE_URI = ("'self'",)
 CSP_CONNECT_SRC = (
-	"'self'",
-	"https://api.stripe.com",
-	"https://js.stripe.com",
+    "'self'",
+    "https://api.stripe.com",
+    "https://js.stripe.com",
 )
-CSP_FRAME_SRC = ("'self'", "https://js.stripe.com", "https://hooks.stripe.com",)
-CSP_MANIFEST_SRC = ("'self'", )
-CSP_MEDIA_SRC = ("'self'", )
-CSP_WORKER_SRC = ("'none'", )
+CSP_FRAME_SRC = ("'self'",
+                 "https://js.stripe.com",
+                 "https://hooks.stripe.com",
+                 "https://www.google.com",)
+CSP_MANIFEST_SRC = ("'self'",)
+CSP_MEDIA_SRC = ("'self'",)
+CSP_WORKER_SRC = ("'none'",)
 CSP_REPORT_URI = "https://64c2850b0d9f1715d85086c4.endpoint.csper.io/?v=2"
 
 # CONFIGURE Storage
@@ -149,4 +148,3 @@ RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', cast=str)
 
 # DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
 # FTP_STORAGE_LOCATION = config('FTP_STORAGE')
-
