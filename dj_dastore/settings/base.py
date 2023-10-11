@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     'django_otp.plugins.otp_totp',
     'two_factor',
     # Recaptcha
-    # 'captcha',
+    'captcha',
 
     'djstripe',
     'rosetta',
@@ -180,7 +180,7 @@ JAZZMIN_SETTINGS = {
     "welcome_sign": "Welcome to Admin Panel.",
     "site_title": "Admin Panel",
     "site_header": "Panel",
-    "site_logo": "dastore/logo_dastore_no_text.png",
+    "site_logo": "dastore/logo_dakeep_no_text.png",
     "site_logo_classes": ".logo-panel",
     "copyright": "DaKeep",
 

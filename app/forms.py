@@ -12,7 +12,7 @@ name_validator = RegexValidator(
 
 
 class ContactForm(forms.Form):
-    # captcha = ReCaptchaField()
+    captcha = ReCaptchaField()
     fname = forms.CharField(
         min_length=2,
         max_length=50,

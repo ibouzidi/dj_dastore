@@ -43,10 +43,15 @@ DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 #
 # MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_HOST = config('EMAIL_HOST', cast=str)
-# EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast=str)
-# EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast=str)
-# EMAIL_PORT = config('EMAIL_PORT', cast=str)
-# EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
-# EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = config('EMAIL_HOST', cast=str)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', cast=str)
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast=str)
+EMAIL_PORT = config('EMAIL_PORT', cast=str)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
+
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', cast=str)
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', cast=str)
+

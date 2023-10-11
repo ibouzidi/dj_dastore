@@ -142,6 +142,10 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', cast=str)
 EMAIL_PORT = config('EMAIL_PORT', cast=str)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_USE_SSL = config('EMAIL_USE_SSL', cast=bool)
+
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY', cast=str)
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY', cast=str)
+
 # DEFAULT_FILE_STORAGE = 'storages.backends.ftp.FTPStorage'
 # FTP_STORAGE_LOCATION = config('FTP_STORAGE')
 

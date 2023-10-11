@@ -23,6 +23,7 @@ def about_us_view(request):
     context = {}
     return render(request, "app/footer/about_us.html", context)
 
+
 def contact_view(request):
     initial_data = {}
     if request.user.is_authenticated:
@@ -49,12 +50,20 @@ def contact_view(request):
             email_html_message = render_to_string('app/email_template.html',
                                                   context)
             msg = EmailMessage(subject, email_html_message, 'from@example.com',
-                               [settings.EMAIL_HOST_USER], headers={'Reply-To': email})
+                               [settings.EMAIL_HOST_USER],
+                               headers={'Reply-To': email})
 
             msg.content_subtype = "html"
-            msg.send()
-            # Redirect or show a success message
-            messages.success(request, 'Email sent successfully')
+            try:
+                msg.send()
+                # Redirect or show a success message
+                messages.success(request, 'Email sent successfully')
+            except Exception as e:
+                print(f"Email sending failed: {e}")
+                messages.error(request,
+                               'There was an error sending your email. '
+                               'Please try again later.')
+
             return redirect("contact_view")
     else:
         form = ContactForm(initial=initial_data)
