@@ -14,5 +14,4 @@ class Log(models.Model):
         # gestion si date pas définie, on prend la date actuelle
         if not self.date_open:
             self.date_open = datetime.datetime.now()
-        print(datetime.datetime.now())
         super().save(*args, **kwargs)

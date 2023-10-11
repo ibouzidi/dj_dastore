@@ -1,14 +1,10 @@
 from unittest import TestCase
 from log.models import Log
 from faker import Faker
-import random
-from datetime import datetime, timedelta
 import time
-from django.utils import timezone
 import random
 from datetime import datetime, timedelta
 from django.utils import timezone
-from django.db import models
 
 
 class LogFactory(TestCase):
@@ -27,9 +23,8 @@ class LogFactory(TestCase):
         # Générez une date aléatoire dans les 7 derniers jours
         days_in_past = random.randint(1, 7)
         random_date = timezone.now() - timedelta(days=days_in_past)
-        #print(random_date)
+        print(random_date)
         logtest.date_open = random_date
-        print(logtest.date_open)
         return logtest
 
     def test_log(self):

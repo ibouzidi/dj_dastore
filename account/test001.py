@@ -1,10 +1,12 @@
 import os
+from datetime import timedelta
 from unittest import TestCase
 from account.models import Account
 from faker import Faker
 from random import randrange
 import random
 import time
+from django.utils import timezone
 
 
 class AccountFactory(TestCase):
@@ -23,9 +25,12 @@ class AccountFactory(TestCase):
         accountest = Account()
         fake = Faker()
         accountest.password = AccountFactory.make_random_password()
-
         accountest.email = str(val)+fake.email()
         accountest.username = str(val)+fake.user_name()
+        # Générez une date aléatoire
+        days_in_past = random.randint(1, 7)
+        date_joined = timezone.now() - timedelta(days=days_in_past)
+        accountest.date_open = date_joined
         accountest.date_joined = fake.date()
         accountest.first_name = fake.first_name()
         accountest.last_name = fake.last_name()
@@ -53,6 +58,7 @@ class AccountFactory(TestCase):
         # accountest.last_request_timestamp = fake.date_time_between(start_date=start_date, end_date=end_date)
         # accountest.last_request_timestamp =  #non géré par appli
         print("username:", accountest.username)
+        print("date_joined:", accountest.date_joined)
         return accountest
 
     def test_account(self):
