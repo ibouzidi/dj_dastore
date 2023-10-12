@@ -21,4 +21,6 @@ urlpatterns = [
 
     # Subscriptions Management
     path('billing/', views.account_billing, name="account_billing"),
+    path('stripe/portal/', views.customer_portal,
+         name='customer_portal'),
 ]

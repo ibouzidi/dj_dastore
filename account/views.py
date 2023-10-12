@@ -1,6 +1,8 @@
+import hashlib
 import math
 import time
 from datetime import datetime, timedelta
+import stripe
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -416,3 +418,24 @@ class DeleteAccountView(View):
                          'Your account has been successfully deleted.')
 
         return HttpResponseRedirect(reverse('home'))
+
+@user_is_active_subscriber
+def customer_portal(request):
+    # Authenticate your user.
+    customer_id = request.user.customer.id
+
+    # Generate a unique token based on user information.
+    token = hashlib.sha256(
+        f"{customer_id}{request.user.username}".encode()).hexdigest()
+
+    # Store the token in the user's session for verification.
+
+    # Create a session.
+    session = stripe.billing_portal.Session.create(
+        customer=customer_id,
+        return_url=request.build_absolute_uri(
+            reverse('account:account_billing')),
+    )
+
+    # Directly redirect the user to the validation endpoint.
+    return redirect(session.url)
