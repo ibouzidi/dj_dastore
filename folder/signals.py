@@ -13,7 +13,7 @@ def receive_signal_folder_post_save(sender, instance, created, **kwargs):
             appli='Folder',
             action='CREATE',
             description=f'Name: {instance.name}, Parent: {instance.parent}',
-            date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+            date_open=datetime.datetime.now()
         )
         myreq.save()
 
@@ -25,6 +25,6 @@ def receive_signal_folder_post_delete(sender, instance, **kwargs):
         appli='Folder',
         action='DELETE',
         description=f'Name: {instance.name}, Parent: {instance.parent}',
-        date_open=datetime.datetime.now().strftime('%Y-%m-%d')
+        date_open=datetime.datetime.now()
     )
     myreq.save()

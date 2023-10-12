@@ -52,8 +52,13 @@ def get_default_profile_image():
 class Account(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name="email", max_length=60, unique=True)
     username = models.CharField(max_length=30, unique=True)
-    date_joined = models.DateTimeField(verbose_name='date joined',
-                                       auto_now_add=True)
+    date_joined = models.DateTimeField(verbose_name='date joined')
+
+    def save(self, *args, **kwargs):
+        # gestion si date pas définie, on prend la date actuelle
+        if not self.date_joined:
+            self.date_joined = datetime.datetime.now()
+        super().save(*args, **kwargs)
     first_name = models.CharField(max_length=20, blank=True)
     last_name = models.CharField(max_length=20, blank=True)
     phone = models.CharField(max_length=32, null=True, blank=True)

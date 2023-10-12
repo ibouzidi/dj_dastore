@@ -24,7 +24,7 @@ localized_patterns  = [
     path('', home_screen_view, name='home'),
     path('terms/', app.views.terms_service_view, name='terms_service'),
     path('about/', app.views.about_us_view, name='about_us'),
-    path('admin_panel/', admin.site.urls),
+    path('admin_panel/', admin.site.urls, name='admin_panel'),
     path('', include(tf_urls)),
     path('account/', include('account.urls')),
     path('account/team/', include('team.urls')),
