@@ -16,4 +16,6 @@ python manage.py makemigrations account team extbackup folder log
 echo "Make Migrations files done."
 python manage.py migrate
 
+python manage.py migrate two_factor
+
 exec "$@"
