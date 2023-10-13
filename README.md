@@ -20,6 +20,42 @@ This Django web application provides users with a convenient way to backup and r
 
 This application offers a comprehensive solution for users to securely backup and restore their files, manage subscriptions, and facilitate collaboration within organizations through the Customized plan.
 
+### Dossiers Principaux : 
+
+- account, app, extbackup, folder, subscriptions, team : Ces dossiers représentent différentes applications Django dans le projet, chacun ayant un objectif spécifique. 
+
+- dj_dastore : Contient les configurations de base du projet. 
+
+- locale : Pour la gestion de la localisation (Traduction). 
+
+- media et media_cdn : Pour le stockage des fichiers média. 
+
+- static et static_cdn : Pour le stockage des fichiers statiques. 
+
+- templates : Contient les templates HTML utilisés dans le projet. 
+
+### Fichiers Importants : 
+
+- Dockerfile et Dockerfile.prod : Pour construire des images Docker pour les environnements de développement et de production respectivement. 
+
+- docker-compose.yml et docker-compose.prod.yml : Pour gérer les services Docker en développement et en production. 
+
+- manage.py : Script de gestion de Django. 
+
+- requirements.txt : Liste des dépendances Python. 
+
+- .env et .env.prod : Contiennent les informations d’authentifications. 
+
+### Configuration de Django : 
+
+Dans le dossier dj_dastore, la configuration de Django est séparée en trois fichiers pour une meilleure gestion et une séparation claire entre les environnements de développement et de production : 
+
+- settings/base.py : Configuration de base commune à tous les environnements. 
+
+- settings/local.py : Configuration spécifique pour le développement local et les tests. 
+
+- settings/production.py : Configuration pour l'environnement de production. 
+
 ## Installation
 
 To set up and configure the Django web application, follow the steps below:
